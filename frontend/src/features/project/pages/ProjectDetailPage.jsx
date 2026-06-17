@@ -930,7 +930,7 @@ export default function ProjectDetailPage() {
           <div className="footBrand">
             <div>
               <Link to="/" onClick={() => window.scrollTo(0, 0)}>
-                <img className="footLogo" src="/src/unieed_pic/logo.png" alt="Unieed" />
+                <img className="footLogo" src="/unieed_pic/logo.png" alt="Unieed" />
               </Link>
               <div className="footDesc">แพลตฟอร์มส่งต่อแบ่งปันชุดนักเรียน<br />เพื่อมอบโอกาสทางการศึกษาให้กับนักเรียน</div>
             </div>

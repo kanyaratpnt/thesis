@@ -93,7 +93,7 @@ export default function SchoolWelcomePage() {
       <main className="swMain">
         <div className="swHero">
           <div className="swIllustration">
-            <img src="/src/unieed_pic/illustrator.png" alt="Illustration"/>
+            <img src="/unieed_pic/illustrator.png" alt="Illustration"/>
           </div>
 
           <div className="swWelcomeText">

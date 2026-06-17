@@ -75,7 +75,7 @@ export default function VerifyEmailPage() {
         {/* ===== LEFT PANEL (blue side) ===== */}
         <div className="lgLeftPanel">
           <div className="lgBgImage" />
-          <img className="lgLogo" src="/src/unieed_pic/logo1.png" alt="Unieed" />
+          <img className="lgLogo" src="/unieed_pic/logo1.png" alt="Unieed" />
           <div className="lgWelcomeBlock">
             <div className="lgWelcomeTitle">ยืนยันตัวตน</div>
             <div className="lgWelcomeSub">

@@ -86,7 +86,7 @@ export default function LoginPage() {
           {/* Logo */}
           <img
             className="lgLogo"
-            src="/src/unieed_pic/logo1.png"
+            src="/unieed_pic/logo1.png"
             alt="Unieed"
           />
 

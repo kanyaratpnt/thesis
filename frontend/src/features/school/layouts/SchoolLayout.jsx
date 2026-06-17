@@ -62,7 +62,7 @@ export default function SchoolLayout() {
       {/* ── Sidebar (desktop only) ── */}
       <aside className="scSide">
         <button className="scBrand" onClick={() => nav("/school/dashboard")} type="button">
-          <img className="scLogo" src="/src/unieed_pic/logo.png" alt="Unieed Logo" />
+          <img className="scLogo" src="/unieed_pic/logo.png" alt="Unieed Logo" />
         </button>
         <div className="scSideLine" />
         <NavMenu />
@@ -75,7 +75,7 @@ export default function SchoolLayout() {
       <aside className={`scDrawer ${menuOpen ? "scDrawerOpen" : ""}`}>
         <div className="scDrawerHead">
           <button className="scBrand" onClick={() => { nav("/school/dashboard"); setMenuOpen(false); }} type="button">
-            <img className="scLogo" src="/src/unieed_pic/logo.png" alt="Unieed Logo" />
+            <img className="scLogo" src="/unieed_pic/logo.png" alt="Unieed Logo" />
           </button>
           <button className="scDrawerClose" onClick={() => setMenuOpen(false)} type="button">
             <Icon icon="mdi:close" width="24" />

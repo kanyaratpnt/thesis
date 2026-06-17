@@ -708,7 +708,7 @@ const displayedProducts = useMemo(() => {
               <Link to="/" onClick={() => window.scrollTo(0, 0)}>
                 <img
                   className="footLogo"
-                  src="/src/unieed_pic/logo.png"
+                  src="/unieed_pic/logo.png"
                   alt="Unieed"
                 />
               </Link>

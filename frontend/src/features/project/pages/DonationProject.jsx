@@ -887,10 +887,10 @@ useEffect(() => {
       <div className="dpHero">
         {/* Slide backgrounds */}
         {heroSlides.map((p, i) => (
-          <div key={p.request_id} style={{ position: "absolute", inset: 0, backgroundImage: `url(${p.request_image_url || "/src/unieed_pic/BannerDonation.png"})`, backgroundSize: "cover", backgroundPosition: "center", opacity: i === heroIdx ? 1 : 0, transition: "opacity 0.8s ease" }} />
+          <div key={p.request_id} style={{ position: "absolute", inset: 0, backgroundImage: `url(${p.request_image_url || "/unieed_pic/BannerDonation.png"})`, backgroundSize: "cover", backgroundPosition: "center", opacity: i === heroIdx ? 1 : 0, transition: "opacity 0.8s ease" }} />
         ))}
         {(!heroSlides.length || loading) && (
-          <div style={{ position: "absolute", inset: 0, backgroundImage: "url(/src/unieed_pic/BannerDonation.png)", backgroundSize: "cover", backgroundPosition: "center top" }} />
+          <div style={{ position: "absolute", inset: 0, backgroundImage: "url(/unieed_pic/BannerDonation.png)", backgroundSize: "cover", backgroundPosition: "center top" }} />
         )}
         <div className="dpHeroOverlay" />
         {/* Content */}
@@ -1176,7 +1176,7 @@ useEffect(() => {
               <Link to="/" onClick={() => window.scrollTo(0, 0)}>
                 <img
                   className="footLogo"
-                  src="/src/unieed_pic/logo.png"
+                  src="/unieed_pic/logo.png"
                   alt="Unieed"
                 />
               </Link>

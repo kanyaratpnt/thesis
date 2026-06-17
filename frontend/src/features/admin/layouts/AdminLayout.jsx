@@ -19,7 +19,7 @@ export default function AdminLayout() {
       <aside className="boSide">
         <div className="boBrand">
           <div className="boBrandName">
-            <img src="/src/unieed_pic/logo.png" alt="Unieed Logo" />
+            <img src="/unieed_pic/logo.png" alt="Unieed Logo" />
           </div>
         </div>
 

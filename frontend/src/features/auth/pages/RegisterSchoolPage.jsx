@@ -379,7 +379,7 @@ export default function RegisterSchoolPage() {
         {/* ===== แผงสีฟ้า (ขวา) ===== */}
         <div className="lgLeftPanel">
           <div className="lgBgImage" />
-          <img className="lgLogo" src="/src/unieed_pic/logo1.png" alt="Unieed" />
+          <img className="lgLogo" src="/unieed_pic/logo1.png" alt="Unieed" />
           <div className="lgWelcomeBlock">
             <div className="lgWelcomeTitle">ลงทะเบียนโรงเรียน</div>
             <div className="lgWelcomeSub">

@@ -39,7 +39,7 @@ export default function SellerLayout() {
       <aside className="slSide">
         {/* Platform logo at the very top */}
         <div className="slLogoTop">
-          <img src="/src/unieed_pic/logo2.png" alt="Unieed" className="slLogoImg" />
+          <img src="/unieed_pic/logo2.png" alt="Unieed" className="slLogoImg" />
         </div>
 
         {/* Seller profile */}

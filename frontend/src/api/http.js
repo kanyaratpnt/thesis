@@ -1,4 +1,11 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
+export function apiUrl(path) {
+  if (/^https?:\/\//i.test(path)) return path;
+  const base = BASE_URL.replace(/\/+$/, "");
+  const normalizedPath = String(path).startsWith("/") ? path : `/${path}`;
+  return `${base}${normalizedPath}`;
+}
 
 export async function request(path, options = {}) {
   const { method = "GET", body, auth = true, headers: extraHeaders = {} } = options;
@@ -13,7 +20,7 @@ export async function request(path, options = {}) {
     if (token) headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(BASE_URL + path, {
+  const res = await fetch(apiUrl(path), {
     method,
     headers,
     body: body === undefined ? undefined : isFormData ? body : JSON.stringify(body),
@@ -49,7 +56,7 @@ export function postJson(path, body, auth = true) {
 }
 
 export async function getBlob(path, auth = true) {
-  const res = await fetch(BASE_URL + path, {
+  const res = await fetch(apiUrl(path), {
     method: "GET",
     headers: auth
       ? {

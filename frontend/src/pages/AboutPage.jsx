@@ -38,8 +38,8 @@ function ImpactCard({ icon, value, label, color, started }) {
 
 const heroImages = [
   "https://www.unicef.org/thailand/sites/unicef.org.thailand/files/styles/hero_extended/public/PF4C%20Technical%20Paper.webp?itok=Zswnoyta",
-  "/src/unieed_pic/PY-1-scaled.jpg",
-  "/src/unieed_pic/bannerabout.jpg",
+  "/unieed_pic/PY-1-scaled.jpg",
+  "/unieed_pic/bannerabout.jpg",
 ];
 
 export default function AboutPage() {
@@ -141,7 +141,7 @@ export default function AboutPage() {
           </p>
         </div>
         <div className="ab-story-img-wrap">
-          <img src="/src/unieed_pic/BannerDonation.png" alt="การบริจาค" className="ab-story-img" />
+          <img src="/unieed_pic/BannerDonation.png" alt="การบริจาค" className="ab-story-img" />
         </div>
       </section>
 
@@ -314,7 +314,7 @@ export default function AboutPage() {
           <div className="footBrand">
             <div>
               <Link to="/" onClick={() => window.scrollTo(0, 0)}>
-                <img className="footLogo" src="/src/unieed_pic/logo.png" alt="Unieed" />
+                <img className="footLogo" src="/unieed_pic/logo.png" alt="Unieed" />
               </Link>
               <div className="footDesc">
                 แพลตฟอร์มส่งต่อแบ่งปันชุดนักเรียน<br />

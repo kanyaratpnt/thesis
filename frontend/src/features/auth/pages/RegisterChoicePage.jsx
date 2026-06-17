@@ -10,7 +10,7 @@ export default function RegisterChoicePage() {
         {/* <div className="brandMini">
           <img
             className="brandMiniLogo"
-            src="src/unieed_pic/logo2.png"
+            src="/unieed_pic/logo2.png"
             alt="Unieed"
           />
         </div> */}
@@ -24,7 +24,7 @@ export default function RegisterChoicePage() {
           <div className="brandCenter">
             <img
               className="brandCenterLogo"
-              src="src/unieed_pic/logo1.png"
+              src="/unieed_pic/logo1.png"
               alt="Unieed"
             />
             <div className="brandCenterName">Unieed</div>

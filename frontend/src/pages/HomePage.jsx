@@ -1711,7 +1711,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="schoolCtaRight">
-            <img src="/src/unieed_pic/BannerDonation.png" alt="นักเรียน" className="schoolCtaImg" />
+            <img src="/unieed_pic/BannerDonation.png" alt="นักเรียน" className="schoolCtaImg" />
           </div>
         </div>
       </section>
@@ -1724,7 +1724,7 @@ export default function HomePage() {
               <Link to="/" onClick={() => window.scrollTo(0, 0)}>
                 <img
                   className="footLogo"
-                  src="/src/unieed_pic/logo.png"
+                  src="/unieed_pic/logo.png"
                   alt="Unieed"
                 />
               </Link>

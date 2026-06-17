@@ -146,7 +146,7 @@ function QRLoginPanel({ onLoginSuccess }) {
         {/* ===== LEFT PANEL ===== */}
         <div className="lgLeftPanel">
           <div className="lgBgImage" />
-          <img className="lgLogo" src="/src/unieed_pic/logo1.png" alt="Unieed" />
+          <img className="lgLogo" src="/unieed_pic/logo1.png" alt="Unieed" />
           <div className="lgWelcomeBlock">
             <div className="lgWelcomeTitle">ยินดีต้อนรับ</div>
             <div className="lgWelcomeSub">
@@ -384,7 +384,7 @@ function DonationDetailPanel({ donationId, token }) {
             <div style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", marginBottom: 2 }}>ยืนยันรับบริจาคชุดนักเรียน</div>
             <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>{donation?.school_name || "—"}</div>
           </div>
-          <img src="/src/unieed_pic/logo.png" alt="Unieed" style={{ height: 30, opacity: 0.9, filter: "brightness(0) invert(1)" }} />
+          <img src="/unieed_pic/logo.png" alt="Unieed" style={{ height: 30, opacity: 0.9, filter: "brightness(0) invert(1)" }} />
         </div>
 
         {/* ยืนยันแล้ว */}

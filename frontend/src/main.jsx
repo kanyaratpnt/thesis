@@ -14,6 +14,9 @@ import "@fontsource/mitr/500.css";
 import "@fontsource/mitr/600.css";
 import "@fontsource/mitr/700.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { installFetchBase } from "./api/installFetchBase.js";
+
+installFetchBase();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>

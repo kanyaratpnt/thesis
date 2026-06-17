@@ -1383,10 +1383,10 @@ export function QRLabelPage({
   };
 
   const carrierLogos = {
-    "ไปรษณีย์ไทย": "/src/unieed_pic/ship1.png",
-    "Flash Express": "/src/unieed_pic/ship2.png",
-    "J&T": "/src/unieed_pic/ship3.png",
-    "Kerry": "/src/unieed_pic/ship4.png",
+    "ไปรษณีย์ไทย": "/unieed_pic/ship1.png",
+    "Flash Express": "/unieed_pic/ship2.png",
+    "J&T": "/unieed_pic/ship3.png",
+    "Kerry": "/unieed_pic/ship4.png",
   };
   const carrierLogo = carrierLogos[courier] || null;
 

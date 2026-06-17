@@ -99,7 +99,7 @@ export default function RegisterGeneralPage() {
         </div>
         <div className="lgLeftPanel">
           <div className="lgBgImage" />
-          <img className="lgLogo" src="/src/unieed_pic/logo1.png" alt="Unieed" />
+          <img className="lgLogo" src="/unieed_pic/logo1.png" alt="Unieed" />
           <div className="lgWelcomeBlock">
             <div className="lgWelcomeTitle">เข้าร่วมกับเรา</div>
             <div className="lgWelcomeSub">ร่วมส่งต่อโอกาส<br />ให้น้องที่ต้องการ</div>
@@ -205,7 +205,7 @@ return (
       {/* ===== LEFT PANEL (blue side) ===== */}
       <div className="lgLeftPanel">
         <div className="lgBgImage" />
-        <img className="lgLogo" src="/src/unieed_pic/logo1.png" alt="Unieed" />
+        <img className="lgLogo" src="/unieed_pic/logo1.png" alt="Unieed" />
         <div className="lgWelcomeBlock">
           <div className="lgWelcomeTitle">เข้าร่วมกับเรา</div>
           <div className="lgWelcomeSub">

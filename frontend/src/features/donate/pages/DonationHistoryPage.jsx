@@ -34,10 +34,10 @@ function parseItems(snapshot) {
 }
 
 const CARRIERS = [
-  { name: "ไปรษณีย์ไทย", logo: "/src/unieed_pic/ship1.png" },
-  { name: "Flash Express", logo: "/src/unieed_pic/ship2.png" },
-  { name: "J&T Express",  logo: "/src/unieed_pic/ship3.png" },
-  { name: "Kerry Express", logo: "/src/unieed_pic/ship4.png" },
+  { name: "ไปรษณีย์ไทย", logo: "/unieed_pic/ship1.png" },
+  { name: "Flash Express", logo: "/unieed_pic/ship2.png" },
+  { name: "J&T Express",  logo: "/unieed_pic/ship3.png" },
+  { name: "Kerry Express", logo: "/unieed_pic/ship4.png" },
 ];
 
 function CarrierSelect({ value, onChange }) {

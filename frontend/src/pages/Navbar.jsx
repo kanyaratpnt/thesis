@@ -64,7 +64,7 @@ export default function Navbar({ activeLink = "" }) {
         </button>
 
         <Link to="/" className="brand">
-          <img className="brandLogo" src="/src/unieed_pic/logo.png" alt="Unieed" />
+          <img className="brandLogo" src="/unieed_pic/logo.png" alt="Unieed" />
         </Link>
 
         <nav className="navLinks">
@@ -83,7 +83,7 @@ export default function Navbar({ activeLink = "" }) {
           <div className="mobileMenuOverlay" onClick={close} />
           <nav className="mobileMenu">
             <div className="mobileMenuHeader">
-              <img className="mobileMenuLogo" src="/src/unieed_pic/logo.png" alt="Unieed" />
+              <img className="mobileMenuLogo" src="/unieed_pic/logo.png" alt="Unieed" />
             </div>
             <div className="mobileMenuLinks">
               {isDonor && hasPendingTracking && (
