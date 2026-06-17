@@ -1,0 +1,320 @@
+.dbPage { display: flex; flex-direction: column; gap: 20px; }
+.dbLoading { padding: 40px; text-align: center; color: #6B7280; }
+
+/* ── Time Filter ── */
+.dbTimeFilter {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+.dbTimeFilter__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.dbTimeFilter__icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: #5285e8;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; flex-shrink: 0;
+}
+.dbTimeFilter__title { font-weight: 800; font-size: 14px; color: #1e293b; }
+.dbTimeFilter__sub { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+.dbTimeFilter__badge {
+  margin-left: auto;
+  background: #eff6ff; border: 1px solid #bfdbfe;
+  border-radius: 20px; padding: 5px 12px;
+  font-size: 12px; font-weight: 700; color: #1d4ed8;
+  display: flex; align-items: center; gap: 4px;
+}
+.dbTimeFilter__chips {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.dbTimeChip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 7px 14px; border-radius: 20px; border: 1.5px solid #e2e8f0;
+  font-size: 13px; font-weight: 700; cursor: pointer; background: #f8fafc;
+  color: #475569; transition: all 0.15s ease; font-family: inherit;
+}
+.dbTimeChip--active {
+  background: #5285e8; color: #fff; border-color: #5285e8;
+  box-shadow: 0 2px 8px rgba(82,133,232,0.3);
+  transform: translateY(-1px);
+}
+.dbTimeChip--custom { border-color: #e2e8f0; }
+.dbTimeChip--customActive {
+  background: #5285e8; color: #fff; border-color: #5285e8;
+  box-shadow: 0 2px 8px rgba(82,133,232,0.3);
+}
+.dbTimeFilter__range {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-top: 12px; padding: 12px 16px;
+  background: linear-gradient(135deg,#f5f3ff,#faf5ff);
+  border-radius: 12px; border: 1px solid #ddd6fe;
+}
+.dbTimeFilter__rangeGroup { display: flex; align-items: center; gap: 8px; }
+.dbTimeFilter__rangeIcon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: #5285e8; color: #fff; display: flex;
+  align-items: center; justify-content: center; font-size: 12px;
+}
+.dbTimeFilter__rangeLabel { font-size: 10px; font-weight: 700; color: #5285e8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+.dbTimeFilter__arrow { font-size: 18px; color: #5285e8; padding-top: 14px; }
+.dbTimeFilter__dateInput {
+  border: 1.5px solid #ddd6fe; border-radius: 8px;
+  padding: 5px 10px; font-size: 13px; color: #1e293b;
+  background: #fff; font-family: inherit; cursor: pointer;
+  transition: border-color 0.15s;
+}
+.dbTimeFilter__dateInput:focus { outline: none; border-color: #5285e8; box-shadow: 0 0 0 3px rgba(82,133,232,0.2); }
+
+/* ── Project banner ── */
+.dbProjectCard {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.dbProjectEmpty { align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: #9CA3AF; }
+.dbProjectLeft { flex: 1; }
+.dbProjectTitle { font-size: 20px; font-weight: 700; color: #1E3A5F; margin-bottom: 8px; }
+.dbProjectMeta { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.dbStatusBadge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+}
+.dbStatusDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dbProjectDate { font-size: 13px; color: #5285E8; font-weight: 500; }
+.dbProgressLabel { display: flex; justify-content: space-between; font-size: 13px; color: #6B7280; margin-bottom: 6px; }
+.dbProgressCount { font-weight: 700; color: #5285E8; font-size: 14px; }
+.dbProgressBar { height: 10px; background: #E5E7EB; border-radius: 999px; overflow: hidden; }
+.dbProgressFill { height: 100%; background: linear-gradient(90deg, #5285E8, #3A6FD4); border-radius: 999px; transition: width .5s; }
+.dbProgressPct { font-size: 12px; color: #9CA3AF; margin-top: 4px; }
+.dbManageBtn {
+  background: #5285E8; color: #fff; border: none; border-radius: 10px;
+  padding: 10px 20px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  transition: background .2s;
+}
+.dbManageBtn:hover { background: #3A6FD4; }
+
+/* ── Stat cards ── */
+.dbStatGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.dbStatCard {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px; padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.dbStatIconWrap {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.dbStatCard--red    .dbStatIconWrap { background: #FEF2F2; color: #EF4444; }
+.dbStatCard--orange .dbStatIconWrap { background: #FFF7ED; color: #F59E0B; }
+.dbStatCard--green  .dbStatIconWrap { background: #D1FAE5; color: #10B981; }
+.dbStatCard--blue   .dbStatIconWrap { background: #EEF2FF; color: #5285E8; }
+.dbStatCard--sky    .dbStatIconWrap { background: #E0F2FE; color: #0284C7; }
+.dbStatCard--violet .dbStatIconWrap { background: #EDE9FE; color: #7C3AED; }
+.dbStatValue { font-size: 26px; font-weight: 700; line-height: 1; color: #111827; }
+.dbStatCard--red    .dbStatValue { color: #EF4444; }
+.dbStatCard--orange .dbStatValue { color: #F59E0B; }
+.dbStatCard--green  .dbStatValue { color: #10B981; }
+.dbStatCard--blue   .dbStatValue { color: #5285E8; }
+.dbStatCard--sky    .dbStatValue { color: #0284C7; }
+.dbStatCard--violet .dbStatValue { color: #7C3AED; }
+.dbStatUnit { font-size: 13px; font-weight: 500; }
+.dbStatSub  { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+.dbStatLabel { font-size: 12px; color: #6B7280; margin-top: 3px; }
+
+/* ── Charts ── */
+.dbChartRow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.dbChartCard {
+  background: #fff; border-radius: 14px; padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06); position: relative;
+}
+.dbChartTitle { font-size: 15px; font-weight: 700; color: #1E3A5F; margin-bottom: 12px; }
+.dbChartEmpty { text-align: center; color: #9CA3AF; padding: 40px 0; font-size: 14px; }
+.dbDonutLegend { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 8px; }
+.dbDonutLegendItem { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #374151; }
+.dbDonutDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dbDonutCenter {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center; font-size: 22px; font-weight: 800; color: #1E3A5F; pointer-events: none;
+}
+.dbDonutSub { text-align: center; font-size: 12px; color: #9CA3AF; margin-top: 4px; }
+
+/* ── Generic card ── */
+.dbCard {
+  background: #fff; border-radius: 14px; padding: 20px 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.dbCardHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; }
+.dbCardTitle { font-size: 16px; font-weight: 700; color: #1E3A5F; }
+.dbCardSub { font-size: 12px; color: #9CA3AF; margin-top: 2px; }
+.dbBadgeCount {
+  background: #EF4444; color: #fff; font-size: 12px; font-weight: 700;
+  padding: 2px 8px; border-radius: 999px; min-width: 24px; text-align: center;
+}
+
+/* ── Action items ── */
+.dbActionList { display: flex; flex-direction: column; gap: 10px; }
+.dbActionItem {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: 10px; background: #F9FAFB;
+}
+.dbActionIcon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.dbActionBody { flex: 1; min-width: 0; }
+.dbActionTitle { font-size: 14px; font-weight: 600; color: #111827; }
+.dbActionSub { font-size: 12px; color: #6B7280; margin-top: 2px; }
+.dbActionBtn {
+  background: #F3F4F6; border: none; border-radius: 8px;
+  padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; color: #374151;
+}
+.dbActionBtn:hover { background: #E5E7EB; }
+.dbActionEmpty {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 32px; color: #9CA3AF; font-size: 14px; text-align: center;
+}
+
+/* ── Tab bar ── */
+.dbTabBar { display: flex; gap: 6px; margin-left: auto; }
+.dbTab {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 8px;
+  border: 1.5px solid #E5E7EB; background: white;
+  font-size: 13px; font-weight: 500; color: #6B7280;
+  cursor: pointer; transition: all 0.15s;
+}
+.dbTab:hover { border-color: #D1D5DB; color: #374151; }
+.dbTab--active.dbTab--sky    { background: #E0F2FE; border-color: #BAE6FD; color: #0284C7; font-weight: 600; }
+.dbTab--active.dbTab--violet { background: #EDE9FE; border-color: #DDD6FE; color: #7C3AED; font-weight: 600; }
+.dbTabBadge {
+  background: currentColor; color: white;
+  border-radius: 20px; padding: 1px 6px; font-size: 10px; font-weight: 700;
+  opacity: 0.85;
+}
+.dbColList {
+  border: 1px solid #E5E7EB; border-radius: 10px;
+  overflow: hidden; margin-top: 12px;
+}
+.dbColEmpty {
+  padding: 32px; text-align: center; font-size: 13px; color: #9CA3AF;
+}
+.dbColItem {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-bottom: 1px solid #F3F4F6;
+  transition: background 0.1s;
+}
+.dbColItem:last-child { border-bottom: none; }
+.dbColItem:hover { background: #F9FAFB; }
+.dbColItem--today   { background: #FFFBEB; }
+.dbColItem--overdue { background: #FEF2F2; }
+.dbColItemMain { flex: 1; min-width: 0; }
+.dbColItemName {
+  font-size: 13px; font-weight: 600; color: #111827;
+  display: flex; align-items: center; gap: 6px;
+}
+.dbColItemSub { font-size: 11px; color: #6B7280; margin-top: 2px; }
+.dbColTag {
+  font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+}
+.dbColTag--today    { background: #FEF3C7; color: #B45309; }
+.dbColTag--overdue  { background: #FEE2E2; color: #DC2626; }
+.dbColTag--market   { background: #F0FDF4; color: #15803D; }
+.dbColTag--postal   { background: #E0F2FE; color: #0284C7; }
+
+/* ── Testimonials ── */
+.dbTestiGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.dbTestiCard {
+  background: #F8FBFE; border: 1px solid #E0F0FA;
+  border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+}
+.dbTestiQuote { font-size: 28px; color: #5285E8; line-height: 1; font-family: Georgia, serif; }
+.dbTestiText { font-size: 13px; color: #374151; line-height: 1.6; flex: 1; }
+.dbTestiMeta { margin-top: auto; }
+.dbTestiProject { display: block; font-size: 12px; font-weight: 600; color: #1E3A5F; }
+.dbTestiDate { font-size: 11px; color: #9CA3AF; }
+
+/* ── Buttons ── */
+.dbPriBtn {
+  background: #5285E8; color: #fff; border: none; border-radius: 8px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.dbPriBtn:hover { background: #3A6FD4; }
+.dbSecBtn {
+  background: transparent; color: #5285E8; border: 1px solid #5285E8; border-radius: 8px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.dbSecBtn:hover { background: #F0F9FF; }
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .dbStatGrid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .dbStatGrid { grid-template-columns: repeat(2, 1fr); }
+  .dbChartRow { grid-template-columns: 1fr; }
+  .dbTestiGrid { grid-template-columns: 1fr; }
+  .dbTabBar { flex-wrap: wrap; }
+}
+ 
+/* ── Mobile responsive (≤768px) ── */
+@media (max-width: 768px) {
+  /* stat grid 2 คอลัมน์ */
+  .dbStatGrid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .dbStatCard { padding: 12px 14px; gap: 10px; }
+  .dbStatValue { font-size: 20px; }
+  .dbStatUnit { font-size: 11px; }
+  .dbStatLabel { font-size: 11px; }
+  .dbStatIconWrap { width: 36px; height: 36px; border-radius: 10px; }
+ 
+  /* chart stack */
+  .dbChartRow { grid-template-columns: 1fr; }
+  .dbChartCard { padding: 16px; }
+  .dbChartTitle { font-size: 13px; }
+ 
+  /* testimonials stack */
+  .dbTestiGrid { grid-template-columns: 1fr; }
+  .dbTestiText { font-size: 12px; }
+ 
+  /* project banner */
+  .dbProjectCard { flex-direction: column; padding: 16px; gap: 12px; }
+  .dbProjectTitle { font-size: 15px; }
+  .dbProjectDate { font-size: 12px; }
+  .dbManageBtn { width: 100%; text-align: center; padding: 10px; }
+ 
+  /* card header */
+  .dbCard { padding: 16px; }
+  .dbCardHeader { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .dbCardTitle { font-size: 14px; }
+  .dbCardSub { font-size: 11px; }
+ 
+  /* tab bar */
+  .dbTabBar { margin-left: 0; flex-wrap: wrap; gap: 4px; width: 100%; }
+  .dbTab { font-size: 12px; padding: 5px 10px; }
+ 
+  /* action list */
+  .dbColItem { gap: 8px; padding: 10px 10px; }
+  .dbColItemName { font-size: 12px; flex-wrap: wrap; }
+  .dbColItemSub { font-size: 10px; }
+  .dbActionBtn { font-size: 12px; padding: 6px 10px; }
+ 
+  /* time filter */
+  .dbTimeFilter { padding: 12px 14px; }
+  .dbTimeFilter__chips { gap: 4px; }
+  .dbTimeChip { font-size: 11px; padding: 5px 10px; }
+  .dbTimeFilter__title { font-size: 13px; }
+}

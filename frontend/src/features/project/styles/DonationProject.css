@@ -1,0 +1,1030 @@
+/* ===== DONATION PROJECT PAGE ===== */
+
+/* Hero Banner */
+.dpHero {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  height: 450px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dpHeroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.05) 0%,
+    rgba(0,0,0,0.45) 100%
+  );
+}
+.dpHeroContent {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  padding: 18px 28px 18px 60px;
+  max-width: 500px;
+  margin-right: auto;
+}
+
+.dpHeroTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.dpHeroSub {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.9);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dpHeroCTA {
+  margin-top: 14px;
+  background: #fff;
+  color: #053f5c;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.dpHeroCTA:hover {
+  background: #e0f2fe;
+}
+
+/* ===== Search Section ===== */
+.dpSearchSection {
+  max-width: 100%;
+  margin: 28px auto 0;
+  padding: 0 20px;
+}
+
+.dpSearchRow {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dpSearchBox {
+  flex: 1;
+  height: 50px;
+  background: #fff;
+  max-width: 600px;
+  border-radius: 999px;
+  border: 1.5px solid #5285E8;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(82, 133, 232, 0.08);
+}
+
+.dpSearchBox input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: #374151;
+  background: transparent;
+  font-family: 'Mitr', sans-serif;
+}
+.dpSearchBox input:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+.dpSearchBox input::placeholder {
+  color: #b5b5b5;
+  font-size: 14px;
+  font-weight: lighter;
+  font-family: 'Mitr', sans-serif;
+}
+
+.dpSearchIcon {
+  color: #5285E8;
+  font-size: 18px;
+}
+
+.dpFilterBtn {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  border: none;
+  color: #5285E8;
+  font-size: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* transition: background 0.2s; */
+  flex-shrink: 0;
+}
+
+.dpFilterBtn:hover,
+.dpFilterBtnActive {
+  color: #7c9fff;
+  transform: none; /* ← เพิ่มตรงนี้ */
+}
+
+/* ===== Filter Panel ===== */
+.dpFilterPanel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.dpFilterPanelOpen {
+  max-height: 520px;
+  opacity: 1;
+  margin-top: 20px;
+}
+
+.dpFilterLabel {
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Mitr';
+  color: #053f5c;
+  margin-bottom: 14px;
+  margin-left: 200px;
+}
+
+.dpFilterSubLabel {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Mitr';
+  color: #6b7280;
+  margin-left: 200px;
+}
+
+.dpFilterGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.dpFilterGroup {
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  font-family: 'Mitr';
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dpFilterGroupLabel {
+  font-size: 13px;
+  font-weight: 500;
+  margin-left: 200px;
+  color: #5285e8;
+}
+
+/* ประเภทชุด buttons */
+.dpTypeRow {
+  display: flex;
+  gap: 10px;
+  margin-left: 200px;
+}
+
+.dpTypeBtn {
+  margin-top: 10px;
+  display: flex;
+  overflow: visible;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  /* padding: 30px; */
+  border-radius: 999px;
+  border: 2px solid #b5b5b5;
+  background: #87c7eb;
+  cursor: pointer;
+  transition: all 0.18s;
+  width: 80px;
+  height: 80px;
+}
+.dpSliderTag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.dpSliderTagFirst {
+  background: #fff9c4;
+  color: #92610a;
+}
+
+.dpSliderTagMost {
+  background: #ffe4e4;
+  color: #c0392b;
+}
+
+.dpSliderTagUrgent {
+  background: #fff0e0;
+  color: #d35400;
+}
+.dpCard .dpSliderTag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 2;
+}
+/* 
+.dpTypeBtn:hover {
+  border-color: #b5b5b5;
+  background: #f3f3dc;
+} */
+.dpSliderCardMulti {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  align-items: stretch;
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+.dpSliderMiniCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.dpSliderMiniImg {
+  position: relative;
+  height: 140px;
+  overflow: hidden;
+}
+
+.dpSliderMiniImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.dpTypeBtnActive {
+  border-color: #5285E8;
+  background: #e8f0fe;
+}
+
+.dpTypeIcon {
+  margin-top: 9px;
+  font-size: 28px;
+}
+
+.dpTypeLabel {
+  font-size: 12px;
+   margin-top: 0;
+  font-weight: 400;
+  color: #5285E8;
+  font-family: 'Mitr', sans-serif;
+  white-space: nowrap;
+}
+.dpTypeBtnWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.dpTypeBtnActive .dpTypeLabel {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+/* Select dropdowns */
+.dpSelect {
+  height: 42px;
+  padding: 0 36px 0 14px;
+  border-radius: 10px;
+  border: 1.5px solid #d0e8f7;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235285E8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;
+  appearance: none;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  font-family: 'Kanit', sans-serif;
+  width: 155px;
+}
+.dpFilterGroupNarrow {
+  align-self: flex-start;
+  margin-left: -200px;
+}
+.dpSelect:disabled {
+  background-color: #f3f4f6;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.dpResetBtn {
+  margin-top: 8px;
+  margin-left: auto;
+  margin-right: 180px;
+  padding: 6px 18px;
+  font-weight: 500;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #888;
+  font-size: 13px;
+  display: block;
+  cursor: pointer;
+  font-family: 'Kanit', sans-serif;
+}
+
+.dpResetBtn:hover {
+  background: #f3f4f6;
+}
+
+/* ===== Main Project List ===== */
+.dpMain {
+  width: fit-content;
+  min-width: 960px;
+  margin: 36px auto 60px;
+  margin-top: 40px;
+  padding: 0 20px;
+}
+
+.dpListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.dpListTitle {
+display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #1d4ed8;
+  margin: 0;
+   margin-left: 0;
+}
+
+.dpSortSelect {
+  height: 40px;
+  padding: 0 36px 0 14px;
+  border-radius: 10px;
+  border: 1.5px solid #d0e8f7;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235285E8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;
+  appearance: none;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  font-family: 'Kanit', sans-serif;
+}
+
+/* ===== Project Cards Grid ===== */
+.dpGrid {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  scroll-margin-top: 120px;
+}
+
+.dpCard {
+  background: #fff;
+  width: 400px;
+  border-radius: 16px;
+  overflow: hidden;          /* ← คืนค่าเดิม */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s;
+  border: 1px solid #f0f4f8;
+}
+
+.dpCard.dpCardHoverWrap {
+  overflow: visible !important;
+  border-radius: 16px;
+}
+
+.dpCardImg {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #eef2ff;
+}
+
+.dpCardImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.dpCard:hover {
+  transform: none;
+  box-shadow: 0 8px 24px rgba(82, 133, 232, 0.13);
+}
+
+.dpCardImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+}
+
+.dpCardBody {
+  padding: 18px 20px;
+  background: #fff;              /* ← เพิ่ม */
+  border-radius: 0 0 16px 16px; /* ← เพิ่ม */
+}
+
+.dpCardBadge {
+  display: inline-block;
+  align-self: flex-start;
+  background: #e8f0fe;
+  color: #5285E8;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 999px;
+  padding: 3px 12px;
+  margin-bottom: 8px;
+}
+
+.dpCardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.dpCardSchool {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.dpCardAddr {
+  font-size: 13px;
+  color: #888;
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  column-gap: 4px;
+  align-items: start;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.dpCardAddrIcon {
+  margin-top: 3px;
+  line-height: 0;
+  display: flex;
+}
+
+.dpCardBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dpCardFulfilled {
+  font-size: 15px;
+  color: #374151;
+}
+
+.dpCardFulfilled strong {
+  font-size: 20px;
+  color: #5285E8;
+}
+
+.dpCardBtn {
+  background: #FC8D1F;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Kanit', sans-serif;
+  transition: background 0.18s;
+}
+
+.dpCardBtn:hover {
+  background: #e07010;
+}
+
+@media (max-width: 640px) {
+  .dpGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dpMain {
+    width: 100% !important;
+    min-width: unset !important;
+    padding: 0 12px !important;
+    margin: 24px auto 40px !important;
+    box-sizing: border-box;
+  }
+
+  .dpListTitle {
+    font-size: 22px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px;
+  }
+
+  .dpListCount {
+    margin-left: 0 !important;
+  }
+
+  .dpCard {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+
+  .dpHero { height: 360px; }
+  .dpHeroContent {
+    left: 0;
+    right: 0;
+    padding: 14px 16px 14px 16px;
+    bottom: 24px;
+    max-width: 100%;
+  }
+  .dpHeroTitle { font-size: 20px; }
+  .dpHeroSub { font-size: 13px; }
+  .dpHeroCTA { font-size: 13px; padding: 6px 16px; margin-top: 10px; }
+
+  /* — Filter Panel — */
+  .dpFilterLabel { margin-left: 0; font-size: 15px; margin-bottom: 10px; }
+  .dpFilterSubLabel { margin-left: 0; font-size: 12px; }
+  .dpFilterGroupLabel { margin-left: 0 !important; font-size: 12px; }
+  .dpFilterGroupNarrow { margin-left: 0 !important; align-self: auto; }
+  .dpTypeRow { margin-left: 0 !important; flex-wrap: wrap; gap: 8px; }
+  .dpTypeBtn { width: 64px; height: 64px; }
+  .dpFilterGrid { flex-direction: column; gap: 14px; align-items: flex-start; }
+  .dpFilterGroup { font-size: 14px; flex-direction: column; gap: 4px; width: 100%; }
+  .dpSelect { width: 100% !important; font-size: 13px !important; }
+  .dpFilterSectionLabel { margin-left: 0 !important; }
+  .dpFilterBtnRow { margin-left: 0 !important; flex-wrap: wrap; }
+  .dpResetBtn { margin-left: auto; margin-right: 0 !important; display: block; }
+  .dpFilterPanelOpen { max-height: 900px; }
+
+  .dpFilterGrid {
+    flex-direction: column;
+  }
+}
+/* ===== Slider Sections (Section 1 & 2) ===== */
+.dpUrgentSection,
+.dpNoFulfillmentSection {
+  max-width: 100%;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.dpSectionTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #5285E8;
+  margin: 0 0 5px;
+  text-align: center;
+}
+.dpSectionTitle svg{
+  color: #f0ad00;
+}
+.dpSliderWrapper {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.dpSlider {
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.dpSliderTrack {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.dpSliderCard {
+  min-width: 100%;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+.dpRowLabel {
+  font-size: 18px;
+  font-weight: 700;
+  color: #053F5C;
+  margin: 32px 0 12px;
+  padding-left: 4px;
+}
+.dpSliderCardImg {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background: #eef2ff;
+}
+
+.dpSliderCardImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dpSliderCardImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+}
+
+/* Badge on Image */
+.dpSliderCardBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(221, 46, 68, 0.95);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Kanit', sans-serif;
+  backdrop-filter: blur(4px);
+  max-width: 140px;
+  text-align: center;
+  line-height: 1.3;
+}
+.dpSliderCardBody {
+  padding: 20px;
+}
+
+.dpSliderCardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.dpSliderCardSchool {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.dpSliderCardAddr {
+  font-size: 13px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.dpSliderCardNeed {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #fff;
+  background-color: #ff1b1b;
+  font-weight: 600;
+  display: block;
+  max-width: 200px;
+  text-align: center;
+  line-height: 1.4;
+  white-space: normal;
+  z-index: 10;
+}
+.dpSectionSub{
+  text-align: center;   
+  margin-top: 2px;      
+  color: #666;         
+  font-size: 18px;     
+  margin-bottom: 15px;
+}
+.dpSliderCardBtn {
+  width: 100%;
+  height: 42px;
+  background: #5285E8;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Kanit', sans-serif;
+  transition: background 0.18s;
+}
+
+.dpSliderCardBtn:hover {
+  background: #3d6bc7;
+}
+
+/* Slider dots */
+.dpSliderDots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.dpSliderDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  border: none;
+  background: #d0e8f7;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.dpSliderDotActive {
+  background: #5285E8;
+}
+/* ── Wrapper: ไม่ยกการ์ดตอน hover ── */
+.dpCardHoverWrap {
+  position: relative;
+  /* ลบ overflow: visible ออก */
+}
+.dpCardHoverWrap:hover {
+  transform: none !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07) !important;
+  overflow: visible !important;  /* ← ใส่เฉพาะตอน hover */
+}
+
+/* แก้ .dpCard:hover ไม่ให้ขัดกับ overflow: visible */
+.dpCard.dpCardHoverWrap {
+  overflow: visible !important;
+  border-radius: 16px;
+}
+
+/* ── แก้มุมการ์ดให้มน ── */
+/* เพิ่ม border-radius ให้ทั้ง thumb และ body ส่วนบน */
+.dpCard.dpCardHoverWrap .dpCardImg {
+  border-radius: 16px 16px 0 0;  /* ← มนเฉพาะมุมบน */
+}
+
+/* projCard ใน Homepage */
+.projCard.dpCardHoverWrap:hover {
+  overflow: visible !important;
+}
+
+.projCard.dpCardHoverWrap .thumb {
+  border-radius: 14px 14px 0 0;
+}
+
+.projCard .dpCardOverlay {
+  border-radius: 14px;
+}
+
+.projCard.dpCardHoverWrap .thumb {
+  border-radius: 14px 14px 0 0;  /* ← มนเฉพาะมุมบน */
+}
+
+/* ── Overlay มืดทับทั้งการ์ด ── */
+.dpCardOverlay {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  transition: background 0.2s ease;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 16px;           /* ← ทำให้ overlay มนตาม */
+}
+
+/* สำหรับ projCard ใน Homepage */
+.projCard .dpCardOverlay {
+  border-radius: 14px;   /* ← projCard radius */
+}
+
+.dpCardOverlayVisible {
+  background: rgba(0, 0, 0, 0.50);
+}
+
+/* ── Popup Card ── */
+.dpHoverCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  padding: 16px;
+  z-index: 20;
+  pointer-events: auto;
+  animation: dpHoverIn 0.15s ease;
+}
+
+@keyframes dpHoverIn {
+  from { opacity: 0; transform: translate(-50%, -47%); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* Header */
+.dpHoverHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+.dpHoverSchool {
+  font-weight: 700;
+  font-size: 15px;
+  color: #053F5C;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dpHoverMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.dpHoverNeed { color: #e53935; font-weight: 700; }
+.dpHoverGot  { color: #43a047; font-weight: 700; }
+.dpHoverSep  { color: #ccc; }
+
+/* Divider */
+.dpHoverLine {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 6px 0;
+}
+
+/* Section label */
+.dpHoverSection {
+  font-size: 12px;
+  color: #888;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* รูปภาพชุด 3 ช่อง */
+.dpHoverImgRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  justify-content: flex-start;  /* ← เพิ่ม: ชิดซ้าย ไม่ขยาย */
+}
+/* แก้ .dpHoverImgItem ให้ล็อกขนาดคงที่ */
+.dpHoverImgItem {
+  width: 70px;        /* ← ล็อกขนาดตายตัว */
+  flex: none;         /* ← ไม่ stretch */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.dpHoverImgBox {
+  width: 70px;   /* ← เล็กลงนิดหน่อย */
+  height: 70px;
+  aspect-ratio: unset; /* ← เอา aspect-ratio ออก */
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f0f4ff;
+  border: 1.5px solid #e0e7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dpHoverImgBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.dpHoverImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #5285E8;
+  background: #e8eeff;
+}
+.dpHoverImgName {
+  font-size: 10px;
+  font-weight: 500;
+  color: #6B7280;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 70px;
+  min-height: 2.6em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dpHoverImgQty {
+  font-size: 11px;
+  font-weight: 600;
+  color: #053F5C;
+}
+
+/* รายการ item แต่ละชิ้น */
+.dpHoverItemList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 2px;
+  width: 100%;   /* ← เพิ่ม */
+}
+.dpHoverItemRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+.dpHoverItemBadge {
+  padding: 2px 6px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.dpHoverBadgeGender { background: #e3f0ff; color: #1565c0; }
+.dpHoverBadgeLevel  { background: #fff3e0; color: #e65100; }
+.dpHoverItemName    { color: #333; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dpHoverItemSize    { color: #5285E8; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+.dpHoverItemQtyBadge {
+  background: #FDD888;
+  color: #7a4f00;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.dpHoverMore  { font-size: 11px; color: #aaa; text-align: center; padding: 2px 0; }
+.dpHoverEmpty { font-size: 12px; color: #aaa; }
+.dpHoverDetailBtn {
+  display: inline-flex; align-items: center;
+  margin-top: 8px; padding: 4px 0;
+  background: none; border: none;
+  font-size: 12px; font-weight: 600; color: #5285E8;
+  cursor: pointer;
+}
+.dpHoverDetailBtn:hover { text-decoration: underline; }
+
+/* CTA */
+.dpHoverBtn {
+  width: 100%;
+  background: #053F5C;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Kanit', sans-serif;
+}
+.dpHoverBtn:hover { background: #5285E8; }
+
+@media (max-width: 640px) {
+  .dpSliderWrapper {
+    max-width: 100%;
+  }
+  
+  .dpSliderCard {
+    border-radius: 12px;
+  }
+}

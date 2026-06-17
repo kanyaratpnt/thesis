@@ -1,0 +1,2188 @@
+@import url('https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+
+}
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  /* เอาสี Gradient มาแปะตรงนี้ครับ */
+  background: linear-gradient(270deg, hsla(201, 100%, 78%, 0.15) 0%, hsla(54, 100%, 86%, 0.15) 99%);
+  background-attachment: fixed; /* ล็อกสีไม่ให้ขาดตอน */
+}
+
+.homePage {
+  width: 100%;
+  color: var(--text);
+  background-color: #fff; 
+  margin: 0 auto;
+  background: linear-gradient(270deg, hsla(201, 100%, 78%, 0.15) 0%, hsla(54, 100%, 86%, 0.15) 99%);
+  background-attachment: fixed; /* ล็อกสีไม่ให้ขาดตอน */
+}
+
+/* ===== TOP BAR ===== */
+.topBar {
+  background: #87C7EB;
+  width: 100vw;
+
+  /* เผื่อมี Parent padding แอบแฝง ใช้สูตรนี้จะทะลุออกมาเต็มจอ */
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+
+  /* จัดเนื้อหาลูกให้อยู่กลาง */
+  display: flex;
+  justify-content: center;
+
+  padding: 15px 15px;
+  /* ย้าย Padding บนล่างมาไว้ที่นี่ */
+}
+
+.topRow {
+  width: 100%;
+
+  /* กำหนดขอบเขตเนื้อหาตามที่คุณต้องการ */
+  max-width: 1440px;
+
+  /* จัดกึ่งกลางหน้าจอ */
+  margin: 0 auto;
+  padding: 0 30px;
+  /* กันเนื้อหาชิดขอบเกินไปเวลาจอเล็ก */
+
+  /* การจัดวางข้างในเหมือนเดิม */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 400;
+}
+
+.brandLogo {
+  width: 200px;
+  height: 84px;
+  object-fit: contain;
+}
+
+.navLinks {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.navLinks a {
+  color: #F1F1F1;
+  text-decoration: none;
+  font-weight: 400;
+  font-size: 20px;
+  opacity: .95;
+}
+
+.navLinks .active {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.navLinks a:hover {
+  color: #1d4ed8;
+}
+.navLinks button{
+  background: #1d4ed8;
+  padding: 5px 15px;
+}
+
+.navAuth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navUserActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.userNameText {
+  font-size: 25px;
+  display: inline-block;
+  color: #FFFFFF;
+  /* สำหรับภาษาไทย บางฟอนต์อาจต้องขยับขึ้นเล็กน้อยเพื่อให้ดูกึ่งกลางสายตา */
+  transform: translateY(-1px); 
+}
+
+/* .hello {
+  color: #fff;
+  font-weight: 700;
+  font-size: 22px;
+  opacity: .95;
+  white-space: nowrap;
+} */
+.hello {
+  display: flex;
+  align-items: center;
+  /* font-size: 22px; */
+  gap: 10px;        
+  color:#ffff ;
+  font-weight: 700;
+  margin-right: 15px;
+}
+.iconBorder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;            /* ขนาดวงกลมด้านนอก */
+  height: 35px;
+  border-radius: 50%;     /* ทำให้เป็นวงกลมเป๊ะ */
+  color: #ffff;         /* สีของตัวไอคอนข้างใน */
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3); /* เงาบางๆ ให้ดูมีมิติ */
+}
+
+.navBtn {
+  height: 28px;
+  padding: 18px 17px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 14px;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navBtnOutline {
+  background: #FFBE1B;
+  color: #fff;
+}
+
+.navBtnWhite {
+  background: #fff;
+  color: #5285E8;
+}
+
+.navBtnOutline:hover {
+  filter: brightness(.98);
+}
+
+.navBtnWhite:hover {
+  filter: brightness(.98);
+}
+
+.searchRow {
+  width: 100%;
+  margin: 5px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+.searchBox {
+  width: 700px;
+  height: 48px;
+  background: #fff;
+  border-radius: 35px;
+  padding: 5px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid#a2c0fd;
+  box-shadow: 0 2px 2px rgba(51, 51, 51, 0.12);
+}
+
+.searchBox input {
+  border: none;
+  outline: none;
+  flex: 1;
+  color: #999999;
+  background: transparent;
+
+}
+
+.searchBox input::placeholder {
+  color: #999999;
+  opacity: 1;
+  font-size: 16px;
+  font-weight: 100;
+  letter-spacing: 1px;
+}
+
+.searchBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 26px;
+}
+
+.fa-magnifying-glass {
+  color: #484848;
+}
+
+.fa-magnifying-glass:hover {
+  color: #b6b6b6;
+}
+
+.searchBox input:focus,
+.searchBox input:focus-visible {
+  outline: none;
+  border: none;
+  box-shadow: none;
+  /* สำคัญ: ลบเงาเรืองแสง */
+}
+
+
+
+/* ===== HERO ===== */
+.hero {
+  background-image: url("/src/unieed_pic/bannerunieed.png");
+  /* padding: 22px 18px 26px; */
+  padding: 0;
+  overflow: hidden;
+  /* width: 100vw; */
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  background-size: cover;
+  background-position: top center;
+  min-height: 380px;
+}
+
+.heroInner {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1440px;
+  min-height: 380px;
+  background-position: center;
+}
+
+.heroLeft {
+  margin: 50px 80px;
+  width: 100%;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+  line-height: 20px;
+}
+
+.heroLeft h1 {
+  /* margin:0; */
+  font-size: 50px;
+  font-weight: 500;
+  margin-top: 30px;
+}
+
+.heroLeft p {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.heroSub span {
+  font-size: 40px;
+  font-weight: 500;
+  color: #FFEDBF;
+}
+
+.heroSearchBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 22px;
+  border-radius: 99px;
+  border: 2px solid #fff;
+  background: #FC8D1F;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: Kanit, sans-serif;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.heroSearchBtn:hover {
+  background: #e07010;
+  color: #fff;
+}
+.heroSearchArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  color: #FC8D1F;
+  font-size: 18px;
+  line-height: 1;
+  transition: color 0.18s;
+}
+.heroSearchBtn:hover .heroSearchArrow {
+  color: #e07010;
+}
+
+.heroActions {
+  /* position: relative; */
+  margin-top: 220px;
+  display: flex;
+    /* กำหนดขอบเขตเนื้อหาตามที่คุณต้องการ */
+  /* max-width: 1440px; */
+  width: 100%;
+  justify-content: flex-end;
+  /* จัดกึ่งกลางหน้าจอ */
+  padding: 0;
+  /* flex-direction: column;  */
+  /* justify-content: flex-end; */
+  gap: 20px;
+
+  padding-right: 110px;
+  position: relative;
+  /* right: 30px; */
+}
+
+
+.hero-icon {
+  /* กำหนดขนาดรูปกล่องของขวัญ (ปรับเลขนี้ตามใจชอบ) */
+  height: auto;
+  margin-bottom: 20px;
+  /* เว้นระยะห่างจากตัวหนังสือ */
+
+  /* เพิ่มลูกเล่นให้มันลอยๆ ดุ๊กดิ๊กได้ (ถ้าชอบ) */
+  animation: float 3s ease-in-out infinite;
+}
+
+/* สร้าง Animation การลอย */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  /* ลอยขึ้น 10px */
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.pill {
+  height: 72px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font-weight: 400;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: none;
+  position: relative;
+  bottom: 20px;
+  transition: background 0.18s;
+}
+
+.text-ban a {
+  font-size: 22px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.pill .pillYellow svg {
+  margin-right: 8px;
+}
+
+.pillYellow {
+  background: #FC8D1F;
+  color: #fff;
+  border: 2.5px solid #fff;
+}
+
+.pillWhite {
+  background: #2563eb;
+  color: #fff;
+  border: 2.5px solid #fff;
+}
+
+.pillYellow:hover {
+  background: #e07010;
+}
+
+.pillWhite:hover {
+  background: #1d4ed8;
+}
+
+/* ===== STATS ===== */
+.stats {
+  margin-top: 10px;
+  padding: 50px 0 20px;
+  text-align: center;
+}
+
+.stats h2 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 400;
+  color: #5285E8;
+}
+
+.stats .sub {
+  margin: 6px 0 16px;
+  font-size: 20px;
+  font-weight: 100;
+  color: #000;
+}
+
+.statGrid {
+  /* 1. เอา width: 65%; ออก แล้วใช้ fit-content แทน */
+  /* fit-content จะล็อกความกว้างให้พอดีกับกล่อง 3 ใบรวมกัน ห้ามยืดห้ามหด */
+  width: fit-content; 
+  gap: 3px;
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: repeat(3, 280px); /* ล็อกคอลัมน์ไว้ที่ 280px */
+  padding: 0; 
+  /* 2. จัดให้กล่องลูกอยู่กึ่งกลางคอลัมน์พอดีเป๊ะ */
+  justify-items: center; 
+}
+
+.statCard {
+  border-radius: 17px;
+  /* 3. ล็อกขนาดกล่องลูกให้ตายตัว */
+  width: 260px;
+  height: 230px;
+  padding: 15px 0;
+  border: 1px solid var(--line);
+  
+  /* 4. บังคับไม่ให้ padding หรือ border ไปดันขนาดกล่องให้เพี้ยน */
+  box-sizing: border-box; 
+  
+  /* 5. ถ้าอยากให้เนื้อหาข้างในอยู่ตรงกลางทั้งแนวตั้งและแนวนอน ให้ใช้ Flexbox ช่วยครับ */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  text-align: center;
+  font-weight: 700;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, .12);
+}
+
+.statIcon1 svg {
+  margin-top: 10px;
+}
+
+.statIcon2 svg {
+  margin-top: -1px;
+}
+
+.statIcon {
+  font-size: 40px;
+}
+
+.statValue1 {
+  font-size: 56px;
+  font-weight: 500;
+  font-family: 'Kanit';
+  margin-top: 4px;
+}
+
+.statValue {
+  font-size: 56px;
+  font-weight: 500;
+  font-family: 'Kanit';
+  margin-top: -8px;
+}
+
+.statLabel {
+  font-size: 20px;
+  font-weight: 200;
+  color: #595959;
+}
+
+.statBlue {
+  background: #CCDEFF;
+  color: #88B1FF;
+}
+
+.statGreen {
+  background: #E6FFBB;
+  color: #92CC2C;
+}
+
+.statYellow {
+  background: #FFEDBF;
+  color: #FFBE1B;
+}
+
+/* ===== STEPS ===== */
+.steps {
+  background: #E0EBFF;
+width: 100vw;
+  /* เผื่อมี Parent padding แอบแฝง ใช้สูตรนี้จะทะลุออกมาเต็มจอ */
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  padding: 30px;
+  margin-top: 100px;
+}
+
+.stepsWrap {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepsSide {
+  width: 20%;
+  height: 100px;
+  /* margin-top: -150px; */
+  /* padding: 14px 30px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stepsBig {
+  font-size: 30px;
+  font-weight: 700;
+  color: #5285E8;
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* .stepsHint {
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: 400;
+  color: #5285E8;
+  text-align: center;
+} */
+
+.stepsCards {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 180px);
+  gap: 14px;
+  width: 292px;
+  height: 200px;
+
+}
+
+.stepCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, .08);
+  justify-content: center;
+  text-align: center;
+  
+}
+
+/* .stepNo {
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 6px;
+  font-size: 24px;
+} */
+
+.stepPic svg, 
+.stepPic img {
+  margin-top: 15px;
+}
+.stepTitle {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 3px;
+  color: #000;
+  position: relative;
+  top: 20px;
+}
+
+.stepDesc {
+  max-width: 260px;
+  font-weight: 500;
+  font-size: 10px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0 auto;
+  padding: 20px 0 0;
+}
+
+/* ===== FAQ ===== */
+.faqSection {
+  background: #fff;
+  padding: 52px 24px;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+}
+.faqWrap {
+  width: 100%;
+  max-width: 680px;
+  margin: 32px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.faqTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #5285E8;
+  font-family: Kanit, sans-serif;
+  margin-bottom: 6px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.faqItem {
+  background: #fff;
+  border-radius: 12px;
+  border: 1.5px solid #dbeafe;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.faqItem.faqItemOpen {
+  border-color: #5285E8;
+}
+.faqQ {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: Kanit, sans-serif;
+  color: #111827;
+  text-align: left;
+}
+.faqChevron {
+  flex-shrink: 0;
+  color: #5285E8;
+  transition: transform 0.25s;
+}
+.faqItemOpen .faqChevron {
+  transform: rotate(180deg);
+}
+.faqA {
+  max-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Kanit, sans-serif;
+  color: #4b5563;
+  line-height: 1.7;
+  padding: 0 20px;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+.faqItemOpen .faqA {
+  max-height: 120px;
+  padding: 0 20px 16px;
+}
+
+/* ===== SECTIONS ===== */
+#projects {
+  width: 100%;
+  margin-top: 100px;
+}
+
+.section {
+  padding: 30px;
+}
+
+.sectionBlue {
+  background: #f8fafc;
+}
+
+.sectionSoftBlue {
+  /* background: #dbeafe; */
+}
+
+.sectionHead {
+  width: 100%;
+  margin: 0 auto 20px;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+
+}
+
+.sectionHead h3 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 500;
+  /* color: #5285E8; */
+  color:#1d4ed8;
+}
+.sectionHead h3 span{
+  display: inline-flex;   /* จัดให้กล่องมันยืดหยุ่น */
+  align-items: center;    /* จัดกึ่งกลางในตัวมันเอง */
+  
+  /* --- พระเอกของเรา --- */
+  /* ค่าบวก (+) = ขยับลง */
+  /* ค่าลบ (-) = ขยับขึ้น */
+  transform: translateY(3px);
+}
+.btnGhost {
+  appearance: none;
+  font-family: inherit;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 400;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  outline: none;
+
+  /* สีปกติ */
+  background: #fbbf24;
+  color: #fff;
+
+  /* 1. ล้างขอบจริงทิ้งไปให้หมด */
+  border: 0 !important; 
+  /* 2. สร้างเส้นขอบปลอมๆ (เงา) สีใสรอไว้ */
+  box-shadow: inset 0 0 0 1px transparent; 
+
+  transition: all 0.2s ease;
+}
+
+.btnGhost:hover {
+  background: #fff !important;
+  color: #fbbf24 !important;
+
+  /* 3. ล้างขอบจริงทิ้งให้ชัวร์ */
+  border: 0 !important; 
+  /* 4. เปลี่ยนสีเส้นขอบปลอม (เงา) เป็นสีเหลือง ขนาดปุ่มจะเท่าเดิมเป๊ะ! */
+  box-shadow: inset 0 0 0 1px #fbbf24 !important; 
+
+  /* 5. ล็อกพิกัดกันลอย (ที่คุณเทสแล้วว่าเวิร์ค) */
+  transform: none !important;
+  margin: 0 !important;
+}
+
+
+/* ===== PROJECT SEARCH BAR ===== */
+.projSearchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 99px;
+  padding: 8px 8px 8px 18px;
+  max-width: 500px;
+  margin: 18px auto 0;
+  outline: none;
+}
+.projSearchBar:focus-within {
+  border-color: #e2e8f0;
+  box-shadow: none;
+  outline: none;
+}
+.projSearchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  font-size: 14px;
+  color: #374151;
+  font-family: Mitr, sans-serif;
+  background: transparent;
+  min-width: 0;
+}
+.projSearchInput:focus {
+  outline: none;
+  box-shadow: none;
+}
+.projSearchInput::placeholder { color: #94a3b8; }
+.projSearchBtn {
+  background: #5285E8;
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-family: Mitr, sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.projSearchBtn:hover { background: #3b6fd4; }
+
+/* ===== PROJECT 2-ROW GRID ===== */
+.projGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.projRowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1240px;
+  margin: 0 auto 14px;
+  width: 100%;
+}
+
+.projRowLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: Mitr, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.projRowSeeAll {
+  font-family: Mitr, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #5285E8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+.projRowSeeAll:hover { color: #3b6fd4; }
+
+/* Mobile-only "see all" button — hidden on desktop */
+.projSeeAllMobile { display: none; }
+
+/* ===== CAROUSEL PROJECTS ===== */
+/* ===== CAROUSEL PROJECTS (SMOOTH) ===== */
+.carouselRow {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  /* ลบ overflow: visible ออก */
+}
+
+.carouselViewport {
+  flex: 1;
+  overflow: hidden;    /* ← คืนเป็น hidden */
+  border-radius: 14px;
+  padding: 2px;
+}
+
+
+.carouselTrack {
+  display: flex;
+  width: 100%;
+  will-change: transform;
+  transition: transform 420ms cubic-bezier(.22, .61, .36, 1);
+}
+
+.carouselPage {
+   flex: 0 0 100%;
+  width: 100%;          
+  height: auto;         
+ display: flex;
+flex-direction: row;
+justify-content: center;
+gap: 20px;
+  gap: 20px;
+  background: transparent;
+  align-items: stretch; 
+}
+
+.navArrow {
+  height: 40px;
+  width: 40px;
+  font-size: 30px;
+  border-radius: 50%;
+  border: 1px solid#D9D9D9;
+  background: #fff;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+}
+
+.navArrow:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* การ์ดโครงการ */
+.projCard {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
+  padding-bottom: 10px;
+  /* grid layout */
+  flex: 0 0 400px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.15s;
+}
+.projCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .10);
+}
+/* ใน carousel เดิม: ยังคงขนาดเดิม */
+.carouselPage .projCard {
+  flex: 0 0 380px;
+  width: 380px;
+  min-width: 380px;
+  max-width: 380px;
+}
+
+
+.projCardGhost {
+  visibility: hidden;
+}
+
+
+
+.muted {
+  color: #888888;
+}
+
+.thumb {
+  width: 100%;
+  height: 200px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #eef2ff;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbPlaceholder {
+  width: 100%;
+  height: 100%;
+  /* background: linear-gradient(135deg, #e5e7eb, #f3f4f6); */
+}
+
+.projBody {
+  width: 100%;
+  padding: 15px 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.projTitle {
+  font-size: 19px;
+  color: #000;
+  font-weight: 600;
+  white-space: nowrap;      /* ← ไม่ตัดบรรทัด */
+  overflow: hidden;
+  text-overflow: ellipsis;  /* ← ตัดด้วย ... */
+}
+
+.projMeta {
+  font-size: 15px;
+  color: #525252;
+  font-weight: 400;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;    /* ← จำกัด 2 บรรทัด */
+  -webkit-box-orient: vertical;
+}
+
+.adr {
+  font-size: 12px;
+  color: #999999;
+  margin-top: 8px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;    /* ← จำกัด 2 บรรทัด */
+  -webkit-box-orient: vertical;
+}
+
+.projBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;         /* ← ดันลงล่างเสมอ */
+  padding-top: 8px;
+}
+.projBottom button {
+  background-color: #FFBE1B;
+  padding: 5px 23px;
+  font-size: 20px;
+  font-weight: 400;
+  color: #fff;
+
+}
+.projBottom button:hover{
+  background-color: #fce29f;
+}
+
+.projFilled {
+  color: #000;
+  font-size: 20px;
+}
+
+.projFilled span {
+  font-size: 25px;
+  color: #5285E8;
+}
+
+
+
+.marketTitle {
+  font-size: 32px;
+  font-weight: 500;
+  color: #5285E8;
+  margin: 0;
+}
+.marketSub {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* ===== MARKET ===== */
+/* ===== MARKET ===== */
+#market {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 0 50px 40px;
+}
+
+.grid3 {
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+.productCard {
+  background: #fff;
+  width: 100%;
+  border: 0.5px solid #f0f4f8;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  transition: transform 0.18s, box-shadow 0.18s;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+.productCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(82,133,232,0.13);
+}
+
+.pThumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+.pThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+.productCard:hover .pThumb img {
+  transform: scale(1.04);
+}
+
+.pBody {
+  padding: 12px 14px 14px;
+  color: #000;
+}
+
+.pTitle {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #111827;
+}
+
+.pSchool {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Meta rows แบบ MarketPage */
+.pMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.pMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.pMetaLabel {
+  color: #888;
+  min-width: 44px;
+  flex-shrink: 0;
+}
+.pMetaVal {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #111827;
+  flex-wrap: wrap;
+}
+.pMetaSep {
+  color: #bbb;
+  font-size: 11px;
+  margin: 0 2px;
+}
+.pBadgeLevel {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #E6F1FB;
+  color: #0C447C;
+}
+.pBadgeCond {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #FAEEDA;
+  color: #633806;
+}
+
+.pDivider {
+  height: 0.5px;
+  background: #e5e7eb;
+  margin: 10px 0;
+}
+
+.pBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pPrice {
+  font-size: 22px;
+  font-weight: 500;
+  color: #5285E8;
+}
+.pPrice span {
+  font-size: 13px;
+  font-weight: 400;
+  color: #888;
+  margin-left: 2px;
+}
+
+.cartBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #FFBE1B;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: background 0.18s;
+  flex-shrink: 0;
+}
+.cartBtn:hover { background: #f0ad00; }
+
+@media (max-width: 1024px) {
+  .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .projGrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  #market { padding: 0 12px 30px; }
+}
+/* ===== TESTIMONIALS (match Figma) ===== */
+/* ==================== */
+
+
+.sectionSoftBlue{
+  /* background:#fff; */
+  padding:80px 0;
+}
+
+/* Header */
+.tsHead{
+  max-width:1100px;
+  margin:0 auto 30px;
+  padding:0 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.tsQuoteMark{
+  font-size:64px;
+  font-weight:900;
+  line-height:1;
+  color:#1d4ed8;
+  transform:translateY(-4px);
+}
+
+.tsTitle{
+  font-size:32px;
+  font-weight:600;
+  font-family: Kanit, sans-serif;
+  letter-spacing:0;
+  margin:0;
+  color:#1d4ed8;
+}
+
+.tsControls{
+  display:flex;
+  gap:12px;
+}
+
+.tsNav{
+  width:46px;
+  height:46px;
+  border-radius:999px;
+  background:transparent;
+  border:2px solid #5285E8;
+  color:#1d4ed8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  cursor:pointer;
+  transition:.2s ease;
+  flex-shrink:0;
+}
+
+.tsNav:hover{ transform:scale(1.06); }
+.tsNav:active{ transform:scale(.98); }
+
+/* Stage (3 cards) */
+.tsStage{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 20px;
+  display:grid;
+  grid-template-columns: 1fr 1.25fr 1fr;
+  gap:24px;
+  align-items:stretch;
+}
+
+/* Card base */
+.tsCard{
+  background:#ffffff;
+  border-radius:22px;
+  box-shadow:0 20px 45px rgba(0,0,0,.08);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:.3s ease;
+}
+
+/* Center is emphasized */
+.tsCardMain{
+  transform:scale(1.05);
+  z-index:2;
+}
+
+.tsCardSide{
+  opacity:.35;
+  transform:scale(.95);
+}
+
+/* Image on top (fixed height = same size) */
+.tsImageWrap{
+  width:100%;
+  height:170px;
+  overflow:hidden;
+  background:#f1f5f9;
+}
+
+.tsImageWrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 30%;
+  display:block;
+  transition:.4s ease;
+}
+
+.tsCardMain .tsImageWrap img{
+  transform:scale(1.05);
+}
+
+.tsImgPlaceholder{
+  width:100%;
+  height:100%;
+  background:linear-gradient(135deg,#e5e7eb,#f3f4f6);
+}
+
+/* Content */
+.tsCardInner{
+  padding:18px 20px;
+  display:flex;
+  flex-direction:column;
+  text-align:center;
+  flex:1;
+}
+
+.tsTextQuote{
+  font-size:15px;
+  line-height:1.7;
+  color:#475569;
+  font-style:italic;
+  margin-top:8px;
+
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:4;
+  -webkit-box-orient:vertical;
+}
+
+.tsName{
+  margin-top:12px;
+  font-weight:700;
+  color:#1d4ed8;
+  font-size:16px;
+}
+
+.tsSub{
+  margin-top:4px;
+  font-size:13px;
+  color:#94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 980px){
+  .tsTitle{ font-size:28px; }
+  .tsQuoteMark{ font-size:60px; }
+
+  .tsStage{ grid-template-columns: 1fr; }
+  .tsCardSide{ display:none; }
+  .tsCardMain{ transform:scale(1); }
+
+  .tsImageWrap{ height:200px; }
+}
+
+
+/* ===== School CTA ===== */
+.schoolCta {
+  background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 60%, #bfdbfe 100%);
+  padding: 0;
+  overflow: hidden;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+.schoolCtaInner {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 340px;
+}
+.schoolCtaLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 56px 60px 48px;
+  gap: 16px;
+}
+.schoolCtaTag {
+  display: inline-block;
+  background: #5285E8;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: Kanit, sans-serif;
+  padding: 4px 14px;
+  border-radius: 99px;
+  width: fit-content;
+}
+.schoolCtaTitle {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1e3a8a;
+  font-family: Kanit, sans-serif;
+  line-height: 1.35;
+  margin: 0;
+}
+.schoolCtaSub {
+  font-size: 15px;
+  font-weight: 400;
+  color: #374151;
+  font-family: Kanit, sans-serif;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 420px;
+}
+.schoolCtaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 12px 28px;
+  border-radius: 99px;
+  background: #5285E8;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: Kanit, sans-serif;
+  text-decoration: none;
+  width: fit-content;
+  transition: background 0.18s;
+}
+.schoolCtaBtn:hover {
+  background: #3b6fd4;
+}
+.schoolCtaRight {
+  flex: 0 0 50%;
+  position: relative;
+  overflow: hidden;
+}
+.schoolCtaImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: #87C7EB;
+  min-height: 250px;
+  display: flex;
+  /* บังคับให้กว้างเต็มจอเสมอ ไม่สนลูกใคร */
+  width: 100vw;
+
+  /* เผื่อมี Parent padding แอบแฝง ใช้สูตรนี้จะทะลุออกมาเต็มจอ */
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  justify-content: center;
+  margin-top: 30px;
+  color: #fff;
+  display: flex;
+
+}
+
+.footerInner {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 30px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 18px;
+  padding: 30px 50px;
+
+}
+
+.footBrand {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.footLogo {
+  width: 300px;
+  height: auto;
+  object-fit: contain;
+  padding: 20px 0;
+}
+
+.footDesc {
+  font-weight: 400;
+  font-size: 18px;
+  opacity: .92;
+  line-height: 1.4;
+}
+
+.footCol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footTitle {
+  font-weight: 500;
+  margin-bottom: 6px;
+  font-size: 28px;
+}
+
+.footCol a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 400;
+  font-size: 18px;
+  opacity: .92;
+}
+
+.footCol a:hover {
+  text-decoration: underline;
+}
+
+.connect {
+  display: flex;
+  color: #fff;
+  font-size: 22px;
+  gap: 10px;
+}
+
+
+/* ===== Responsive ===== */
+@media (max-width: 980px) {
+  .navLinks { display: none; }
+  .statGrid { grid-template-columns: 1fr; }
+  .stepsWrap { flex-direction: column; }
+  .stepsSide { width: auto; text-align: center; }
+  .stepsCards { grid-template-columns: 1fr; }
+  .carouselCards { grid-template-columns: 1fr; }
+  .tsCard { grid-template-columns: 1fr; }
+  .heroLeft h1 { font-size: 34px; }
+}
+
+.projSectionTitle {
+  font-size: 32px;
+  font-weight: 500;
+  color: #5285E8;
+  margin: 0 0 18px;
+}
+
+/* ===== HAMBURGER MENU ===== */
+.hamburgerBtn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  margin-left: 8px;
+}
+.hamburgerLine {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+.hamburgerLine.open:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburgerLine.open:nth-child(2) { opacity: 0; }
+.hamburgerLine.open:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobileMenuOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 998;
+  animation: fadeInOverlay 0.25s ease;
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 72vw;
+  max-width: 300px;
+  background: #87C7EB;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+  animation: slideInDrawer 0.28s cubic-bezier(.22,.61,.36,1);
+  overflow-y: auto;
+}
+@keyframes slideInDrawer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+.mobileMenuHeader {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  gap: 10px;
+}
+.mobileMenuLogo {
+  height: 40px;
+  object-fit: contain;
+}
+
+.mobileMenuLinks {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 8px 0;
+}
+.mobileMenuLinks a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 15px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.15s;
+}
+.mobileMenuLinks a:last-child { border-bottom: none; }
+.mobileMenuLinks a:active { background: rgba(255,255,255,0.12); }
+
+.mobileMenuPending {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  border-left: 3px solid #FFBE1B !important;
+  border-radius: 6px !important;
+  margin: 4px 12px 8px !important;
+  padding: 10px 14px !important;
+}
+
+.mobileMenuLabel {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  padding: 4px 18px 2px;
+}
+
+.mobileMenuActive {
+  background: rgba(255,255,255,0.22) !important;
+  font-weight: 700 !important;
+  border-left: 4px solid #fff !important;
+  padding-left: 18px !important;
+}
+
+.mobileMenuSell {
+  margin: 16px 18px;
+  background: #1d4ed8;
+  border-radius: 99px;
+  text-align: center;
+  padding: 13px 24px !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  padding-left: 24px !important;
+  font-weight: 700 !important;
+  justify-content: center !important;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+/* ===== MOBILE (≤768px) ===== */
+@media (max-width: 768px) {
+  /* — Navbar — */
+  .topBar {
+    padding: 8px 12px;
+    position: relative;
+  }
+  .topRow {
+    padding: 0;
+    position: relative;
+    gap: 8px;
+  }
+  .brand {
+    position: static;
+    flex: 1 1 auto;
+    min-width: 0;
+    transform: none;
+  }
+  .brandLogo {
+    width: clamp(96px, 28vw, 122px);
+    height: 44px;
+  }
+  .navBtn { font-size: 12px; padding: 4px 10px; height: 28px; }
+  .userNameText { font-size: 16px; }
+  .hello { gap: 6px; margin-right: 6px; }
+  .iconBorder { width: 28px; height: 28px; }
+  .hamburgerBtn {
+    display: flex;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    margin-left: 0;
+    padding: 6px;
+  }
+  .navAuth {
+    flex-shrink: 0;
+    gap: 6px;
+  }
+  .navUserActions {
+    flex: 0 0 auto;
+    gap: 2px;
+  }
+  /* Profile */
+  .pd-avatar { width: 26px !important; height: 26px !important; }
+  .pd-name {
+    max-width: 78px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 12px !important;
+  }
+  .pd-role { font-size: 10px !important; }
+  .pd-info { min-width: 0 !important; }
+  .pd-trigger {
+    gap: 5px !important;
+    padding: 3px 5px !important;
+  }
+  /* Notification bell */
+  .nb-wrap { position: relative; }
+  .nb-btn { width: 30px !important; height: 30px !important; font-size: 16px !important; padding: 0 !important; }
+  /* Cart */
+  .cartIconWrap {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 20px !important;
+    padding: 2px !important;
+  }
+  .cartIconBadge { font-size: 9px !important; width: 14px !important; height: 14px !important; }
+  /* รอกรอกพัสดุ link */
+  .navPendingLink { display: none !important; }
+
+  /* — Search — */
+  .searchRow { padding: 0 12px; }
+  .searchBox { width: 100%; max-width: 100%; height: 42px; }
+
+  /* — Hero — */
+  .hero { min-height: 180px; }
+  .heroInner { min-height: 180px; }
+  .heroLeft { margin: 20px 16px; line-height: 1.4; }
+  .heroLeft h1 { font-size: 22px; margin-top: 8px; }
+  .heroLeft p { font-size: 14px; }
+  .heroSub span { font-size: 22px; }
+  .heroSearchBtn { font-size: 13px; padding: 8px 14px; margin-top: 10px; }
+  .heroActions { margin-top: 100px; padding-right: 24px; gap: 6px; }
+  .heroActions .pill { width: auto; height: 40px; padding: 6px 14px !important; font-size: 12px; min-width: 160px; justify-content: center; }
+  .text-ban a { font-size: 13px; margin-left: 6px; }
+  .pill svg { width: 16px; height: 16px; }
+  .heroSearchBtn { font-size: 12px; padding: 6px 12px; margin-top: 6px; }
+  .heroSearchArrow { width: 18px; height: 18px; font-size: 14px; }
+  .heroLeft h1 { margin-top: 8px; margin-bottom: 2px; }
+  .heroLeft p { margin: 0; }
+
+  /* — Stats — */
+  .stats { padding: 24px 16px 10px; margin-top: 0; }
+  .stats h2 { font-size: 22px; }
+  .stats .sub { font-size: 15px; }
+  .statGrid {
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    gap: 6px;
+    justify-items: stretch;
+  }
+  .statCard {
+    width: 100%;
+    height: auto;
+    min-height: 110px;
+    padding: 10px 4px;
+  }
+  .statValue1, .statValue { font-size: clamp(20px, 6vw, 28px); margin-top: 2px; }
+  .statLabel { font-size: clamp(9px, 2.5vw, 11px); line-height: 1.3; }
+  .statIcon1 svg, .statIcon2 svg { width: 36px !important; height: 36px !important; }
+  .statIcon1 img, .statIcon2 img { width: 36px !important; height: 36px !important; }
+
+  /* — Steps — */
+  .steps { padding: 16px 12px; margin-top: 32px; }
+  .stepsWrap { flex-direction: column; gap: 8px; }
+  .stepsSide { width: 100%; height: auto; }
+  .stepsBig { font-size: 18px; }
+  .stepsCards {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    width: 100%;
+    height: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  .stepsCards::-webkit-scrollbar { display: none; }
+  .stepCard {
+    flex: 0 0 calc(50% - 4px);
+    max-width: none;
+    scroll-snap-align: start;
+    padding: 8px 6px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+  }
+  .stepPic svg,
+  .stepPic img {
+    width: 36px !important;
+    height: 36px !important;
+    margin-top: 4px !important;
+  }
+  .stepTitle {
+    font-size: 9px;
+    top: 8px;
+    line-height: 1.35;
+  }
+  .stepDesc {
+    font-size: 8px;
+    padding: 8px 0 0;
+    line-height: 1.4;
+  }
+
+  /* — Section headings — */
+  #projects { margin-top: 40px; padding: 12px 12px; overflow-x: hidden; }
+  #projects .projRowHeader .projRowSeeAll { display: none; }
+  .projSeeAllMobile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    background: #5285E8;
+    border-radius: 99px;
+    color: #fff;
+    font-family: Mitr, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-top: 16px;
+  }
+  .section { padding: 12px; }
+  .projRowHeader { padding: 0 12px; }
+  .projSearchBar { margin: 0 12px; max-width: calc(100% - 24px); }
+  .projGrid { padding: 0; gap: 10px; width: 100%; }
+  .projCard { border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.08); min-width: 0; flex: unset; width: 100%; max-width: 100%; }
+  .sectionHead { padding: 0 4px; margin-bottom: 14px; }
+  .sectionHead h3 { font-size: 22px !important; font-weight: 400; }
+  .projSectionTitle { font-size: 22px !important; font-weight: 400 !important; }
+  .btnGhost { font-size: 14px; height: 32px; padding: 0 12px; }
+
+  /* — Grid: 1 column บนมือถือ — */
+  .projGrid { grid-template-columns: 1fr; gap: 14px; }
+  .projRowHeader { flex-wrap: wrap; gap: 8px; }
+  .projSearchBar { max-width: 100%; }
+
+  /* — Tab buttons: horizontal scroll บนมือถือ — */
+  .projTabRow {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  .projTabRow::-webkit-scrollbar { display: none; }
+
+  /* — Project cards: full width ใน grid — */
+  .projCard {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: auto;
+    flex: unset;
+  }
+  .thumb { height: 160px; }
+  .projTitle { font-size: 15px; }
+  .projMeta { font-size: 13px; }
+  .adr { font-size: 11px; }
+  .projBody { padding: 10px 12px; }
+  .projBottom button { font-size: 15px; padding: 4px 14px; }
+
+  /* — Carousel (legacy) — */
+  .carouselRow { gap: 0; }
+  .navArrow { display: none; }
+  .carouselViewport {
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-radius: 12px;
+  }
+  .carouselViewport::-webkit-scrollbar { display: none; }
+  .carouselTrack { transform: none !important; transition: none !important; width: auto; }
+  .carouselPage { flex: none; width: auto; flex-wrap: nowrap; justify-content: flex-start; gap: 12px; padding: 4px 0; }
+  .carouselPage .projCard { flex: 0 0 72vw; width: 72vw; min-width: 72vw; max-width: 72vw; scroll-snap-align: start; }
+
+  /* — Market — */
+  #market { padding: 0 16px 30px; margin-top: 30px; margin-bottom: 30px; }
+  .marketSectionHead { align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+  .marketTitle { font-size: 20px; }
+  .marketSub { font-size: 12px; margin-top: 2px; }
+  #market .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+  /* — Testimonials — */
+  .sectionSoftBlue { padding: 40px 0; }
+  .tsHead { padding: 0 16px; flex-wrap: wrap; gap: 10px; }
+  .tsTitle { font-size: 22px; }
+  .tsQuoteMark { font-size: 48px; }
+  .tsStage { padding: 0 16px; grid-template-columns: 1fr; }
+  .tsCardSide { display: none; }
+  .tsCardMain { transform: scale(1); }
+
+  /* — Closed Projects — */
+  .closedSection { padding: 36px 0; margin-top: 40px; overflow: visible; }
+  .closedSection::before, .closedSection::after { display: none; }
+  .closedSecHead { padding: 0 16px; }
+  .closedImpact { margin-left: 16px !important; margin-right: 16px !important; max-width: calc(100% - 32px) !important; }
+  .closedScroll {
+    padding-left: 16px;
+    padding-right: 0;
+    gap: 14px;
+    -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 48px), transparent 100%);
+    mask-image: linear-gradient(to right, black 0%, black calc(100% - 48px), transparent 100%);
+  }
+  .closedSecTitle { font-size: 22px !important; }
+  .closedSecSub { font-size: 15px !important; }
+  .closedCard { min-width: calc(100vw - 60px) !important; width: calc(100vw - 60px) !important; }
+  .closedImpact { flex-direction: row; padding: 16px 0; }
+  .closedImpactNum { font-size: 28px; }
+
+  /* — School CTA — */
+  .schoolCta { margin-top: 40px; margin-bottom: 40px; }
+  .schoolCtaInner { flex-direction: column; min-height: unset; }
+  .schoolCtaLeft { padding: 28px 20px; gap: 12px; }
+  .schoolCtaTitle { font-size: 24px; }
+  .schoolCtaSub { font-size: 14px; max-width: 100%; }
+  .schoolCtaRight { flex: 0 0 180px; }
+
+  /* — FAQ — */
+  .faqSection { padding: 36px 16px; }
+
+  /* — Footer — */
+  .footer { margin-top: 20px; }
+  .footerInner {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 14px 10px;
+    padding: 20px 16px;
+    margin: 0;
+  }
+  .footBrand { grid-column: 1 / -1; }
+  .footLogo { width: 120px; padding: 8px 0; }
+  .footTitle { font-size: 16px; margin-bottom: 4px; }
+  .footDesc { font-size: 13px; }
+  .footCol { gap: 5px; }
+  .footCol a { font-size: 13px; }
+  .footCol > div > svg { width: 24px !important; height: 24px !important; flex-shrink: 0; }
+  #contactfooter { font-size: 13px; }
+  .connect { font-size: 16px; gap: 8px; }
+  .connect svg { width: 32px !important; height: 32px !important; }
+}
+
+/* ===== SMALL MOBILE (≤480px) ===== */
+@media (max-width: 480px) {
+  .topBar { padding: 8px 10px; }
+  .topRow { gap: 6px; }
+  .brandLogo { width: clamp(84px, 25vw, 104px); height: 40px; }
+  .navBtn { font-size: 11px; padding: 3px 8px; }
+  .navUserActions { gap: 1px; }
+  .pd-trigger { gap: 4px !important; padding: 2px 3px !important; }
+  .pd-name { max-width: 62px !important; font-size: 11px !important; }
+  .pd-role { display: none !important; }
+  .pd-chevron { display: none !important; }
+  .nb-btn,
+  .cartIconWrap { width: 28px !important; height: 28px !important; }
+  .nb-btn svg { width: 22px !important; }
+
+  .heroLeft h1 { font-size: 18px; }
+  .heroSub span { font-size: 18px; }
+  .heroActions { margin-top: 80px; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .heroActions .pill { width: auto; height: 40px; padding: 6px 14px !important; font-size: 11px; min-width: 160px; justify-content: center; }
+
+  .statGrid { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .statCard { min-height: 100px; padding: 8px 2px; }
+  .statValue1, .statValue { font-size: clamp(18px, 5.5vw, 24px); }
+  .statLabel { font-size: 9px; }
+  .statIcon1 svg, .statIcon2 svg { width: 30px !important; height: 30px !important; }
+  .statIcon1 img, .statIcon2 img { width: 30px !important; height: 30px !important; }
+
+  .stepCard { flex: 0 0 calc(50% - 4px); padding: 7px 5px; }
+  .stepPic svg,
+  .stepPic img { width: 32px !important; height: 32px !important; }
+  .stepTitle { font-size: 8px; top: 6px; }
+  .stepDesc { font-size: 7px; padding: 6px 0 0; }
+  .stepsBig { font-size: 16px; }
+
+  #market .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+
+  .carouselPage .projCard { flex: 0 0 78vw; width: 78vw; min-width: 78vw; max-width: 78vw; }
+  .projGrid .projCard { flex: unset; width: 100%; min-width: 0; max-width: 100%; border-radius: 12px; }
+
+  .closedCard { min-width: calc(100vw - 90px) !important; width: calc(100vw - 90px) !important; height: auto !important; }
+  .closedCardImg { height: 180px !important; }
+  .closedCardBody { padding: 12px 14px !important; }
+  .closedCardTitle { font-size: 13px !important; margin-bottom: 8px !important; }
+  .closedImpact { flex-direction: column; gap: 12px; }
+  .closedImpactDivider { width: 60px; height: 1px; }
+}
+
+/* ── projCard: ไม่ยกตอน hover ── */
+.projCard.dpCardHoverWrap:hover {
+  z-index: 50;
+  overflow: visible !important;
+}
+
+/* ===== Closed Projects Section ===== */
+.closedSection {
+  background: #FFFBF0; padding: 60px 40px; margin-top: 100px;
+  position: relative; overflow: hidden;
+}
+.closedSection::before {
+  content: "";
+  position: absolute; top: -160px; left: -160px;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  background: #F3D79B;
+  opacity: 0.5; pointer-events: none;
+}
+.closedSection::after {
+  content: "";
+  position: absolute; bottom: -160px; right: -160px;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  background: #F3D79B;
+  opacity: 0.5; pointer-events: none;
+}
+.closedSecHead { display:flex; flex-direction:column; align-items:center; margin-bottom:32px; position: relative; z-index: 1; }
+.closedSecTitle {
+  font-size: 28px; font-weight: 800; color: #F59E0B;
+  text-align: center; margin-bottom: 8px;
+}
+.closedSecSub {
+  font-size: 18px; color: #1f2937; text-align: center;
+}
+
+/* Impact Numbers */
+.closedImpact { position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 40px;
+  background: #fff; border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(245,158,11,0.10);
+  border: 1.5px solid #fde68a;
+  max-width: 600px; margin-left: auto; margin-right: auto;
+  padding: 24px 0; margin-bottom: 40px;
+}
+.closedImpactItem { flex: 1; text-align: center; }
+.closedImpactNum { font-size: 36px; font-weight: 800; color: #F59E0B; line-height: 1; margin-bottom: 6px; }
+.closedImpactLabel { font-size: 13px; color: #6b7280; font-weight: 500; }
+.closedImpactDivider { width: 1px; height: 48px; background: #fde68a; flex-shrink: 0; }
+
+/* Horizontal Scroll */
+.closedScroll {
+  position: relative; z-index: 1;
+  display: flex; gap: 20px;
+  overflow-x: auto; padding-bottom: 12px;
+  max-width: 1200px; margin: 0 auto;
+  scrollbar-width: none;
+}
+.closedScroll::-webkit-scrollbar { display: none; }
+.closedCard {
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  border: 1.5px solid #e5e7eb;
+  overflow: hidden; cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+  display: flex; flex-direction: column;
+  min-width: 360px; width: 360px; flex-shrink: 0;
+}
+.closedCard:hover { background: #fafafa; }
+.closedCard:hover .closedCardArrow { color: #f97316; }
+.closedCardArrow {
+  position: absolute; top: 10px; right: 12px;
+  color: #d1d5db; font-size: 18px;
+  transition: color 0.15s;
+  line-height: 1;
+  z-index: 10;
+}
+.closedCardImg {
+  position: relative; height: 200px; overflow: hidden; flex-shrink: 0;
+  background: #F3F4F6;
+}
+.closedCardImg img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%); }
+.closedCardImgEmpty {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center; font-size: 48px;
+}
+.closedBadge {
+  position: absolute; top: 10px; left: 10px;
+  background: #6b7280;
+  border-radius: 20px;
+  padding: 4px 10px; font-size: 11px; font-weight: 600; color: #fff;
+  display: flex; align-items: center; gap: 4px;
+}
+.closedCardBody { padding: 15px 15px; flex: 1; display: flex; flex-direction: column; }
+.closedCardSchool { font-size: 12px; color: #9CA3AF; margin-bottom: 4px; }
+.closedCardTitle {
+  font-size: 14px; font-weight: 600; color: #374151;
+  line-height: 1.4; margin-bottom: 12px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.closedCardBar {
+  height: 6px; background: #E5E7EB; border-radius: 4px; overflow: hidden; margin-bottom: 6px;
+}
+.closedCardBarFill { height: 100%; background: #F59E0B; border-radius: 4px; }
+.closedCardPct { font-size: 12px; color: #6B7280; }

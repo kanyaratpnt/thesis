@@ -1,0 +1,1234 @@
+/* CheckoutPage.css — v2 with per-seller shipping */
+.coPage { min-height: 100vh; background: #f7f9fc; font-family: 'Mitr', 'Kanit', sans-serif; }
+.coContainer { max-width: 1060px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ── Steps ── */
+.coSteps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 32px;
+}
+.coStep {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #aaa;
+}
+.coStepLine {
+  width: 64px; height: 2px; background: #e5e7eb;
+  margin: 0 10px; flex-shrink: 0;
+}
+.coStepLineActive { background: #5285E8; }
+.coStepLineDone   { background: #22c55e; }
+
+.coStepCircle {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid #e5e7eb; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; color: #aaa;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.coStepActive .coStepCircle { border-color: #5285E8; color: #5285E8; background: #e8f0fe; }
+.coStepDone   .coStepCircle { border-color: #22c55e; color: #fff; background: #22c55e; }
+.coStepActive span, .coStepDone span { color: #374151; font-weight: 500; }
+
+/* ── Loading / Empty ── */
+.coLoading {
+  display: flex; align-items: center; gap: 10px;
+  justify-content: center; padding: 80px; color: #888;
+}
+.coSpinner { animation: spin 0.8s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.coEmpty {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 48px; color: #bbb; text-align: center;
+}
+.coEmpty p { color: #888; margin: 0; font-size: 15px; }
+
+/* ── Layout ── */
+.coLayout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+
+/* ── Section ── */
+.coSection {
+  background: #fff; border-radius: 16px; padding: 28px;
+  border: 0.5px solid #e5e7eb;
+}
+.coSection h2 {
+  font-size: 17px; font-weight: 600; color: #111827;
+  margin: 0 0 20px; display: flex; align-items: center; gap: 8px;
+}
+.coSectionHead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.coSectionHead h2 { margin: 0; }
+
+.coAddBtn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 999px;
+  border: 1.5px solid #5285E8; background: #fff; color: #5285E8;
+  font-size: 13px; cursor: pointer; transition: all 0.18s;
+  font-family: 'Mitr', sans-serif;
+}
+.coAddBtn:hover { background: #e8f0fe; }
+
+/* ── Address ── */
+.coAddrList { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+
+.coAddrCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+.coAddrCard:hover  { border-color: #93b4f5; }
+.coAddrCardSel     { border-color: #5285E8;
+  background: #f0f6ff;
+  box-shadow: 0 4px 12px rgba(82, 133, 232, 0.08); }
+
+.coAddrRadio { padding-top: 2px; }
+.coAddrRadio input { accent-color: #5285E8; width: 16px; height: 16px; }
+
+.coAddrBody { flex: 1; }
+.coAddrTop  {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 4px;
+}
+.coAddrName  { font-size: 14px; font-weight: 600; color: #111827; }
+.coAddrPhone { font-size: 13px; color: #555; }
+.coBadgeDefault {
+  font-size: 11px; padding: 2px 8px; border-radius: 20px;
+  background: #22c55e; color: #fff; font-weight: 500;
+}
+.coAddrText { font-size: 13px; color: #555; line-height: 1.6; }
+
+.coAddrBtns { display: flex; gap: 6px; flex-shrink: 0; }
+.coAddrBtn {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid #e5e7eb; background: #fff;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: #888; transition: all 0.15s; font-size: 15px;
+}
+.coAddrBtn:hover    { border-color: #5285E8; color: #5285E8; }
+.coAddrBtnDel:hover { border-color: #ef4444; color: #ef4444; }
+
+/* ── Shipping note ── */
+.coShipNote {
+  font-size: 13px; color: #6b7280;
+  display: flex; align-items: center; gap: 6px;
+  background: #f0f6ff; padding: 10px 14px; border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* ── Seller block ── */
+.coSellerList { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+
+.coSellerBlock {
+  border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden;
+}
+
+.coSellerHeader {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px; background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+.coSellerAvatarSm {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #E6F1FB; color: #185FA5;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; flex-shrink: 0;
+}
+.coSellerNameSm { font-size: 14px; font-weight: 500; color: #374151; flex: 1; }
+.coSellerSubtotal { font-size: 13px; color: #5285E8; font-weight: 500; }
+
+.coSellerItems { padding: 12px 18px; display: flex; flex-direction: column; gap: 10px; }
+
+.coSellerItem {
+  display: flex; align-items: center; gap: 12px;
+}
+.coSellerItemImg {
+  width: 56px; height: 56px; border-radius: 8px;
+  overflow: hidden; background: #f1f5f9; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #ccc; font-size: 22px;
+}
+.coSellerItemImg img { width: 100%; height: 100%; object-fit: cover; }
+.coSellerItemInfo { flex: 1; }
+.coSellerItemTitle { font-size: 13px; font-weight: 500; color: #111827; }
+.coSellerItemMeta  { font-size: 11px; color: #888; }
+.coSellerItemPrice { font-size: 13px; font-weight: 500; color: #5285E8; white-space: nowrap; }
+
+/* ── Shipping options ── */
+.coShipSection { border-top: 1px solid #f0f0f0; padding: 16px 18px; }
+.coShipSectionTitle {
+  font-size: 13px; font-weight: 600; color: #374151;
+  display: flex; align-items: center; gap: 6px; margin-bottom: 12px;
+}
+.coShipOptions { display: flex; flex-direction: column; gap: 10px; }
+
+.coShipOption {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-radius: 12px;
+  border: 1.5px solid #e5e7eb; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  background: #fff;
+}
+.coShipOption:hover   { border-color: #93b4f5; box-shadow: 0 2px 8px rgba(82,133,232,0.08); }
+.coShipOptionSel      { border-color: #5285E8; background: #f0f6ff; box-shadow: 0 2px 12px rgba(82,133,232,0.12); }
+.coShipOption input   { accent-color: #5285E8; flex-shrink: 0; width: 16px; height: 16px; }
+
+.coShipOptionLogo {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: #f5f7ff; border: 1px solid #e5e7eb;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0; overflow: hidden;
+}
+.coShipOptionLogo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+
+.coShipOptionCode {
+  font-size: 11px; font-weight: 700; padding: 3px 8px;
+  border-radius: 6px; background: #e8f0fe; color: #3b6fd4;
+  min-width: 44px; text-align: center; flex-shrink: 0;
+}
+.coShipOptionInfo { flex: 1; }
+.coShipOptionName { font-size: 13px; font-weight: 600; color: #111827; }
+.coShipOptionDesc { font-size: 11px; color: #888; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+.coShipOptionPrice { font-size: 15px; font-weight: 700; color: #5285E8; white-space: nowrap; }
+.coFree { color: #16a34a; }
+
+.coShipFreeHint {
+  display: flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  color: #15803d; font-size: 12px; font-weight: 500;
+  padding: 8px 12px; border-radius: 8px; margin-bottom: 10px;
+  border: 1px solid #bbf7d0;
+}
+
+/* ── Confirm ── */
+.coConfirmBlock {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; border-radius: 12px;
+  border: 1px solid #e5e7eb; margin-bottom: 12px;
+}
+.coConfirmIcon { color: #5285E8; font-size: 18px; margin-top: 2px; flex-shrink: 0; }
+.coConfirmContent { flex: 1; }
+.coConfirmLabelText { font-size: 12px; color: #888; margin-bottom: 4px; }
+.coConfirmVal { font-size: 13px; color: #374151; line-height: 1.6; }
+.coEditLink {
+  font-size: 12px; color: #5285E8; background: none;
+  border: none; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  padding: 4px 0;
+}
+.coEditLink:hover { text-decoration: underline; }
+
+.coConfirmSeller {
+  border: 1px solid #e5e7eb; border-radius: 12px;
+  overflow: hidden; margin-bottom: 12px;
+}
+.coConfirmSellerHead {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px; background: #fafafa;
+  border-bottom: 1px solid #f0f0f0; flex-wrap: wrap;
+}
+.coConfirmShipTag {
+  font-size: 12px; color: #5285E8;
+  background: #e8f0fe; padding: 3px 8px; border-radius: 20px;
+  display: flex; align-items: center; gap: 4px;
+}
+.coConfirmItem {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid #f5f5f5;
+}
+.coConfirmItem:last-of-type { border-bottom: none; }
+.coConfirmItemImg {
+  width: 52px; height: 52px; border-radius: 8px;
+  overflow: hidden; background: #f1f5f9; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #ccc; font-size: 22px;
+}
+.coConfirmItemImg img { width: 100%; height: 100%; object-fit: cover; }
+.coConfirmItemInfo { flex: 1; }
+.coConfirmItemTitle { font-size: 13px; font-weight: 500; color: #111827; }
+.coConfirmItemMeta  { font-size: 12px; color: #888; }
+.coConfirmItemPrice { font-size: 13px; font-weight: 500; color: #5285E8; white-space: nowrap; }
+.coConfirmSellerFoot {
+  padding: 10px 16px; font-size: 13px; color: #555;
+  background: #fafafa; text-align: right;
+  border-top: 1px solid #f0f0f0;
+}
+
+.coErr {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: 10px;
+  background: #fef2f2; color: #991b1b;
+  font-size: 13px; margin-bottom: 16px;
+}
+
+/* ── Buttons ── */
+.coNavBtns { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; }
+
+.coBtnPrimary {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: 999px;
+  border: none; background: #5285E8; color: #fff;
+  font-size: 15px; font-weight: 500; cursor: pointer;
+  transition: background 0.18s; font-family: 'Mitr', sans-serif;
+}
+.coBtnPrimary:hover:not(:disabled) { background: #3b6fd4; }
+.coBtnPrimary:disabled { background: #ccc; cursor: not-allowed; }
+
+.coBtnOutline {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 999px;
+  border: 1.5px solid #e5e7eb; background: #fff; color: #555;
+  font-size: 15px; cursor: pointer; text-decoration: none;
+  transition: border-color 0.18s; font-family: 'Mitr', sans-serif;
+}
+.coBtnOutline:hover { border-color: #5285E8; color: #5285E8; }
+
+.coBtnYellow {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 32px; border-radius: 999px;
+  border: none; background: #FFBE1B; color: #fff;
+  font-size: 15px; font-weight: 500; cursor: pointer;
+  transition: background 0.18s; font-family: 'Mitr', sans-serif;
+}
+.coBtnYellow:hover:not(:disabled) { background: #f0ad00; }
+.coBtnYellow:disabled { background: #ccc; cursor: not-allowed; }
+
+/* ── Summary ── */
+.coSummaryCard {
+  background: #fff; border-radius: 16px; padding: 22px;
+  border: 0.5px solid #e5e7eb; position: sticky; top: 24px;
+}
+.coSummaryTitle { font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 14px; }
+
+.coSummaryGroup { margin-bottom: 14px; }
+.coSummaryGroupName {
+  font-size: 12px; color: #888; font-weight: 500;
+  display: flex; align-items: center; gap: 4px;
+  margin-bottom: 6px;
+}
+.coSummaryItem  {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #555; gap: 8px; margin-bottom: 4px;
+}
+.coSummaryItemName { flex: 1; }
+.coSummaryShip {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #888; gap: 8px;
+  padding-top: 4px; border-top: 1px dashed #f0f0f0; margin-top: 4px;
+}
+
+.coSummaryDivider { height: 1px; background: #f0f0f0; margin: 12px 0; }
+.coSummaryRow     {
+  display: flex; justify-content: space-between;
+  font-size: 14px; color: #555; margin-bottom: 8px;
+}
+.coSummaryTotal   {
+  display: flex; justify-content: space-between;
+  font-size: 15px; font-weight: 600; color: #111827; margin-top: 4px;
+}
+.coTotalPrice { color: #5285E8; font-size: 20px; }
+
+/* ── Modal ── */
+.coModalOverlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.coModal {
+  background: #fff; border-radius: 20px; width: 100%; max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  max-height: 90vh; overflow-y: auto;
+}
+.coModalLg { max-width: 620px; }
+.coModalHeader {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 24px; border-bottom: 1px solid #f0f0f0;
+  position: sticky; top: 0; background: #fff; z-index: 2;
+  border-radius: 20px 20px 0 0;
+}
+.coModalHeaderLeft { display: flex; align-items: center; gap: 8px; color: #5285E8; }
+.coModalHeader h3 { margin: 0; font-size: 17px; font-weight: 600; color: #111827; }
+.coModalClose {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: none; background: #f5f5f5; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: #555;
+}
+.coModalBody   { padding: 22px 24px; }
+.coModalFooter {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 16px 24px; border-top: 1px solid #f0f0f0;
+  position: sticky; bottom: 0; background: #fff; z-index: 2;
+  border-radius: 0 0 20px 20px;
+}
+.coModalErr {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: 8px;
+  background: #fef2f2; color: #991b1b;
+  font-size: 13px; margin-bottom: 14px;
+}
+
+/* ── Modal Sections ── */
+.coModalSection {
+  background: #f9fafb; border-radius: 12px;
+  padding: 16px; margin-bottom: 14px;
+  border: 1px solid #f0f0f0;
+}
+.coModalSectionFlat { background: transparent; border: none; padding: 4px 0; margin-bottom: 4px; }
+.coModalSectionTitle {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: #5285E8;
+  margin-bottom: 12px;
+}
+
+/* ── Form ── */
+.coFormGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.coFormGrid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.coFormGrid3 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.coFormGridFull { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
+.coSpan2 { grid-column: 1 / -1; }
+
+.coFormGroup { display: flex; flex-direction: column; gap: 5px; }
+.coFormGroupErr .coFormInput,
+.coFormGroupErr input { border-color: #ef4444 !important; }
+.coFormLabel { font-size: 12.5px; color: #555; font-weight: 500; }
+.coFormRequired { color: #ef4444; margin-left: 2px; }
+.coFormErrMsg { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: #ef4444; margin-top: 2px; }
+
+.coFormGroup label { font-size: 13px; color: #555; font-weight: 500; }
+.coFormGroup input,
+.coFormInput {
+  height: 42px; padding: 0 14px; border-radius: 10px;
+  border: 1.5px solid #e5e7eb; font-size: 14px; outline: none;
+  transition: border-color 0.15s; font-family: 'Mitr', sans-serif;
+  width: 100%; box-sizing: border-box; background: #fff;
+}
+.coFormGroup input:focus,
+.coFormInput:focus { border-color: #5285E8; box-shadow: 0 0 0 3px rgba(82,133,232,0.1); }
+.coInputErr { border-color: #ef4444 !important; }
+
+/* ── Input with icon ── */
+.coInputWrap { position: relative; }
+.coInputIcon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 16px; color: #9ca3af; pointer-events: none;
+}
+.coInputWithIcon { padding-left: 36px !important; }
+.coInputWrapRel { position: relative; }
+
+/* ── Autocomplete Dropdown ── */
+.coAddrDropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: #fff; border: 1.5px solid #e0e7ff;
+  border-radius: 10px; z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12); overflow: hidden;
+  max-height: 260px; overflow-y: auto;
+}
+.coAddrDropdownLoading { max-height: none; }
+.coAddrDropdownHint {
+  color: #6b7280; font-size: 12px; cursor: default; justify-content: center;
+  background: #f9fafb;
+}
+.coAddrDropdownHint:hover { background: #f9fafb; }
+.coAddrSpin { animation: coAddrSpin 0.8s linear infinite; margin-right: 6px; }
+@keyframes coAddrSpin { to { transform: rotate(360deg); } }
+.coAddrDropdownItem {
+  padding: 9px 14px; cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; gap: 2px; flex-wrap: wrap;
+  transition: background 0.12s;
+}
+.coAddrDropdownItem:hover { background: #eef2ff; }
+.coAddrDropTambon { color: #1e40af; font-weight: 600; }
+.coAddrDropAmphoe { color: #374151; }
+.coAddrDropProv   { color: #6b7280; }
+.coAddrDropSep    { color: #d1d5db; }
+.coAddrDropZip    { margin-left: auto; background: #e0e7ff; color: #3730a3; border-radius: 20px; padding: 1px 8px; font-size: 11.5px; font-weight: 600; }
+
+/* ── Address hint ── */
+.coAddrHint {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: #6b7280; background: #fffbeb;
+  padding: 7px 12px; border-radius: 8px; margin-bottom: 10px;
+  border: 1px solid #fde68a;
+}
+
+.coCheckLabel {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; cursor: pointer; color: #374151;
+}
+.coCheckLabel input { width: 17px; height: 17px; accent-color: #5285E8; }
+
+.coShipFixed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f0fdf4;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #166534;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .coContainer { padding: 16px 14px 48px; }
+  .coLayout { grid-template-columns: 1fr; gap: 16px; }
+  .coSummaryCard { position: static; padding: 18px 16px; }
+  .coSection { padding: 20px 16px; border-radius: 14px; }
+  .coSection h2 { font-size: 16px; margin-bottom: 16px; }
+  .coSectionHead { flex-direction: column; align-items: flex-start; gap: 12px; }
+
+  /* Steps */
+  .coSteps {
+    margin-bottom: 20px;
+    padding: 0 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .coSteps::-webkit-scrollbar { display: none; }
+  .coStep { font-size: 11px; gap: 6px; flex-shrink: 0; }
+  .coStepCircle { width: 28px; height: 28px; font-size: 12px; }
+  .coStepLine { width: 24px; margin: 0 6px; }
+
+  /* Nav buttons */
+  .coNavBtns { flex-direction: column-reverse; gap: 10px; margin-top: 20px; }
+  .coNavBtns .coBtnPrimary,
+  .coNavBtns .coBtnOutline,
+  .coNavBtns a.coBtnOutline {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+    font-size: 14px;
+  }
+
+  /* Forms & modals */
+  .coFormGrid, .coFormGrid2, .coFormGrid3 { grid-template-columns: 1fr; }
+  .coSpan2 { grid-column: 1; }
+  .coModalLg { max-width: 100%; border-radius: 16px 16px 0 0; }
+  .coModalOverlay { padding: 0; align-items: flex-end; }
+  .coModalFooter { flex-direction: column-reverse; }
+  .coModalFooter .coBtnPrimary,
+  .coModalFooter .coBtnOutline { width: 100%; justify-content: center; }
+
+  /* Address cards */
+  .coAddrCard { padding: 14px; gap: 10px; }
+  .coAddrTop { gap: 6px; }
+  .coAddrName { font-size: 13px; }
+  .coAddrText { font-size: 12px; }
+
+  /* Shipping */
+  .coSellerHeader { padding: 12px 14px; }
+  .coSellerItems { padding: 10px 14px; }
+  .coShipSection { padding: 14px; }
+  .coShipOption { padding: 12px; gap: 10px; }
+  .coShipOptionLogo { width: 44px; height: 44px; }
+  .coShipOptionName { font-size: 13px; white-space: normal; }
+  .coShipOptionPrice { font-size: 13px; }
+
+  /* Confirm blocks */
+  .coConfirmBlock { padding: 12px 14px; gap: 10px; }
+  .coConfirmVal { font-size: 12px; }
+  .coSummaryGroup { margin-bottom: 12px; }
+  .coDonationNote { font-size: 12px; padding: 10px 12px; }
+
+  /* Pay method */
+  .coPayMethodBar { margin-bottom: 14px; }
+  .coPayMethodBtn { padding: 11px 12px; font-size: 13px; }
+
+  /* Card payment form */
+  .coCardForm {
+    padding: 18px 16px;
+    border-radius: 14px;
+    border-color: #e8edf5;
+  }
+  .coCardFormHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+  }
+  .coCardFormTitle { font-size: 14px; }
+  .coCardBrands {
+    width: 100%;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  .coCardBrandChip { width: 40px; height: 26px; }
+
+  .coCardFormBody {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 12px;
+    margin-bottom: 16px;
+  }
+  .coCardField { gap: 6px; }
+  .coCardField label { font-size: 11.5px; }
+  .coCardField input {
+    height: 44px;
+    font-size: 15px;
+    padding: 0 12px;
+  }
+  .coCardNumWrap input {
+    padding-left: 38px !important;
+    padding-right: 46px !important;
+    letter-spacing: 1px;
+    font-size: 14px;
+  }
+  .coCardTestNote {
+    font-size: 11px;
+    padding: 9px 10px;
+    line-height: 1.5;
+    margin-top: 6px;
+    border-radius: 10px;
+  }
+  .coCardTestNote svg { font-size: 14px; }
+
+  .coCardTotal {
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .coCardTotalAmt { font-size: 17px; }
+  .coCardPayBtn {
+    padding: 15px 20px !important;
+    font-size: 15px !important;
+    border-radius: 12px !important;
+  }
+  .coCardSecureNote {
+    font-size: 11px;
+    margin-top: 12px;
+    line-height: 1.5;
+    text-align: center;
+    padding: 0 4px;
+  }
+
+  /* Donation */
+  .coDonationBanner { font-size: 12px; padding: 9px 14px; }
+  .coDonationAddrToggle { flex-direction: column; gap: 6px; }
+  .coDonationAddrToggleBtn,
+  .coDonationToggleBtn { padding: 11px 14px; font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  .coContainer { padding: 12px 12px 40px; }
+  .coSection { padding: 16px 14px; }
+  .coStep span { max-width: 72px; text-align: center; line-height: 1.25; }
+  .coStepLine { width: 16px; margin: 0 4px; }
+
+  .coCardForm { padding: 16px 14px; }
+  .coCardFormBody { grid-template-columns: 1fr; gap: 14px; }
+  .coCardField.coSpan2 { grid-column: 1; }
+
+  .coCardFormTitle { font-size: 13px; }
+  .coCardField input { height: 46px; }
+
+  .coSellerItem { flex-wrap: wrap; }
+  .coSellerItemPrice { width: 100%; text-align: right; padding-top: 4px; }
+}
+
+/* ================================================================
+   CheckoutPage donation additions
+   เพิ่มต่อท้าย CheckoutPage.css เดิม
+   ================================================================ */
+
+/* ── Donation top banner ── */
+.coDonationBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #E6F1FB;
+  color: #0C447C;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 24px;
+  border-bottom: 1px solid #B5D4F4;
+}
+
+/* ── Donation address block (step 1) ── */
+.coDonationAddrBlock {
+  border: 1.5px solid #B5D4F4;
+  border-radius: 12px;
+  padding: 16px;
+  background: #F0F7FF;
+  margin-bottom: 16px;
+}
+
+.coDonationAddrBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #378ADD;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.coDonationProject {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #185FA5;
+  margin-bottom: 10px;
+}
+
+.coDonationAddrCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fff;
+  border: 0.5px solid #B5D4F4;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.coDonationAddrName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 3px;
+}
+
+.coDonationAddrText {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.coDonationAddrPhone {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+.coDonationAddrNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #185FA5;
+  margin-top: 10px;
+}
+
+/* ── Donation note (step 3) ── */
+.coDonationNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #F0FDF4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #15803d;
+  margin: 12px 0;
+}
+
+/* ── Green confirm button (donation) ── */
+.coBtnGreen {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 24px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.coBtnGreen:disabled { opacity: 0.6; cursor: not-allowed; }
+.coBtnGreen:hover:not(:disabled) { opacity: 0.9; }
+
+/* ── Summary sidebar donation tag ── */
+.coSummaryDonationTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #E6F1FB;
+  color: #0C447C;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+/* ── Summary donation address ── */
+.coSummaryDonationAddr {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+/* ── Pay Method Bar ── */
+.coPayMethodBar {
+  display: flex; gap: 10px; margin-bottom: 20px;
+}
+.coPayMethodBtn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 16px; border-radius: 12px;
+  border: 1.5px solid #e5e7eb; background: #fff;
+  font-size: 14px; font-weight: 500; color: #555;
+  cursor: pointer; transition: all 0.18s;
+  font-family: 'Mitr', 'Kanit', sans-serif;
+}
+.coPayMethodBtn:hover { border-color: #93b4f5; color: #5285E8; background: #f8f9ff; }
+.coPayMethodActive { border-color: #5285E8 !important; color: #5285E8 !important; background: #f0f6ff !important; }
+
+/* ── Card Form ── */
+.coCardForm {
+  border: 1.5px solid #e5e7eb; border-radius: 16px;
+  padding: 24px; background: #fff;
+}
+.coCardFormHeader {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.coCardFormTitle {
+  display: flex; align-items: center; gap: 8px;
+  flex: 1; min-width: 0;
+  font-size: 15px; font-weight: 600; color: #111827;
+  line-height: 1.35;
+}
+.coCardBrands { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+.coCardBrandChip {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 28px; border-radius: 6px;
+  border: 1.5px solid #e5e7eb; background: #fff;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+.coCardBrandChip.coCardBrandDim {
+  opacity: 0.25;
+  filter: grayscale(0.5);
+  border-color: #f0f0f0;
+}
+.coCardBrandChip.coCardBrandDetected {
+  border-color: #5285E8;
+  box-shadow: 0 0 0 2px rgba(82,133,232,0.18);
+  background: #f0f6ff;
+  transform: scale(1.08);
+}
+
+.coCardFormBody {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 20px;
+}
+.coCardField { display: flex; flex-direction: column; gap: 7px; }
+.coCardField.coSpan2 { grid-column: 1 / -1; }
+.coCardField label { font-size: 12px; font-weight: 600; color: #374151; letter-spacing: 0.02em; }
+
+.coCardField input {
+  height: 46px; padding: 0 14px; border-radius: 10px;
+  border: 1.5px solid #e5e7eb; font-size: 14px; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: 'Mitr', 'Kanit', sans-serif; background: #fafafa;
+  color: #111827;
+}
+.coCardField input::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+.coCardField input:focus {
+  border-color: #5285E8; background: #fff;
+  box-shadow: 0 0 0 3px rgba(82,133,232,0.1);
+}
+
+.coCardNumWrap { position: relative; }
+.coCardNumIcon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: #aaa; font-size: 20px; pointer-events: none;
+  z-index: 1;
+}
+.coCardNumWrap input { padding-left: 40px !important; padding-right: 52px !important; letter-spacing: 2px; }
+
+.coCardTestNote {
+  display: flex; align-items: flex-start; gap: 6px;
+  margin-top: 8px; padding: 10px 12px;
+  border-radius: 8px;
+  background: #fffbeb; border: 1px solid #fde68a;
+  font-size: 12px; color: #92400e; line-height: 1.55;
+}
+.coCardTestNote svg { flex-shrink: 0; font-size: 16px; margin-top: 1px; color: #d97706; }
+.coCardTestNote strong { color: #78350f; font-weight: 600; }
+
+/* brand badge ด้านขวาของ input */
+.coCardNumBrandBadge {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 24px; border-radius: 5px;
+  background: #fff; border: 1px solid #e5e7eb;
+  pointer-events: none; overflow: hidden;
+  animation: cardBrandIn 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+@keyframes cardBrandIn {
+  from { opacity: 0; transform: translateY(-50%) scale(0.85); }
+  to   { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+
+.coCardExpRow { display: flex; align-items: center; gap: 8px; }
+.coCardExpRow span { color: #aaa; font-size: 16px; flex-shrink: 0; }
+.coCardExpInput { flex: 1; text-align: center; }
+
+.coCardTotal {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #f8faff; border-radius: 10px;
+  padding: 12px 16px; margin-bottom: 16px;
+  font-size: 14px; color: #555;
+}
+.coCardTotalAmt { font-size: 18px; font-weight: 700; color: #5285E8; }
+
+.coCardPayBtn {
+  width: 100%; justify-content: center;
+  padding: 14px 24px !important; font-size: 16px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #FFBE1B, #f0a500) !important;
+  box-shadow: 0 4px 14px rgba(255,190,27,0.35) !important;
+  transition: all 0.2s !important;
+}
+.coCardPayBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255,190,27,0.45) !important;
+}
+
+.coCardSecureNote {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 12px; color: #888; margin-top: 14px;
+}
+
+/* ── PromptPay Section ── */
+.coPromptPaySection {
+  border: 1.5px solid #e5e7eb; border-radius: 16px;
+  padding: 24px; background: #fff; text-align: center;
+}
+.coPromptPayDesc {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; color: #555; margin-bottom: 20px;
+  background: #f0f6ff; padding: 12px 14px; border-radius: 10px;
+  text-align: left;
+}
+
+/* ── QR Block ── */
+.coQrBlock {
+  border: 1px solid #dbe8ff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  background: linear-gradient(180deg, #fbfdff 0%, #f6f9ff 100%);
+  text-align: center;
+  box-shadow: 0 14px 30px rgba(31, 78, 153, 0.08);
+}
+.coQrHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+.coQrHint {
+  margin: 0 auto 16px;
+  font-size: 12px;
+  color: #475569;
+  background: #ecf3ff;
+  border: 1px solid #cfe0ff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+}
+.coQrMockTag {
+  margin: 0 auto 14px;
+  font-size: 12px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 8px 10px;
+  max-width: 320px;
+}
+.coQrFrame {
+  width: 230px;
+  margin: 0 auto 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: inset 0 1px 0 #ffffff, 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+.coQrImage {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 10px;
+  display: block;
+}
+.coQrAmtLabel {
+  font-size: 12px;
+  color: #64748b;
+}
+.coQrAmt {
+  font-size: 26px;
+  font-weight: 800;
+  color: #2563eb;
+  margin-bottom: 8px;
+}
+.coQrNote {
+  font-size: 13px;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.coQrCheckBtn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 12px;
+  height: 46px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+.coQrCheckBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px rgba(37, 99, 235, 0.35);
+}
+.coQrCheckBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Seller block improvements ── */
+.coSellerBlock {
+  border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.coSellerHeader {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #f8faff, #f0f6ff);
+  border-bottom: 1px solid #e8eef8;
+}
+
+/* ── Donation Address Toggle (step 1) ── */
+.coDonationAddrToggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  background: #f3f4f6;
+  padding: 4px;
+  border-radius: 12px;
+}
+.coDonationAddrToggleBtn,
+.coDonationToggleBtn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 16px; border-radius: 10px;
+  border: 1.5px solid #e5e7eb; background: #fff;
+  font-size: 13px; font-weight: 500; color: #555;
+  cursor: pointer; transition: all 0.18s;
+  font-family: 'Mitr', 'Kanit', sans-serif;
+}
+.coDonationAddrToggleBtn.coDonationToggleActive,
+.coDonationToggleBtn.coDonationToggleActive {
+  border-color: #5285E8; color: #5285E8; background: #f0f6ff;
+}
+
+/* ── Donation Pay Note (step 3) ── */
+.coDonationPayNote {
+  display: flex; align-items: flex-start; gap: 8px;
+  background: #f0f6ff; border: 1px solid #bfdbfe;
+  border-radius: 10px; padding: 12px 14px;
+  font-size: 13px; color: #1e40af; margin-bottom: 16px;
+}
+
+/* ── Donation Thank You Modal ── */
+.coDonationThankModal { max-width: 440px; }
+.coDonationThankHeader {
+  text-align: center; padding: 28px 24px 0;
+}
+.coDonationThankIcon { font-size: 48px; margin-bottom: 12px; }
+.coDonationThankHeader h3 {
+  font-size: 18px; font-weight: 700; color: #111827; margin: 0 0 8px;
+}
+.coDonationThankHeader p {
+  font-size: 14px; color: #555; margin: 0; line-height: 1.6;
+}
+.coDonationThankNote {
+  display: flex; align-items: center; gap: 8px;
+  background: #f0fdf4; border: 1px solid #86efac;
+  border-radius: 8px; padding: 10px 12px;
+  font-size: 12px; color: #15803d; margin-top: 14px;
+}
+
+/* ── StepDesc ── */
+.coStepDesc {
+  font-size: 13px; color: #6b7280; margin: -8px 0 16px;
+}
+
+/* ── ShipEmpty ── */
+.coShipEmpty {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #aaa; padding: 12px 0;
+}
+
+/* ── Shipping Option Logo ─────────────────────────────────
+   เพิ่มต่อท้าย CheckoutPage.css
+   ─────────────────────────────────────────────────────── */
+
+/* container ของแต่ละตัวเลือกขนส่ง */
+.coShipOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  background: #fff;
+  margin-bottom: 8px;
+}
+
+.coShipOption:hover {
+  border-color: #93c5fd;
+  background: #f8faff;
+}
+
+.coShipOptionSel {
+  border-color: #3b82f6 !important;
+  background: #eff6ff !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+/* hide native radio */
+.coShipOption input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* logo wrapper */
+.coShipOptionLogo {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 12px;
+  border: 1.5px solid #e8edf5;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  transition: box-shadow 0.15s;
+}
+
+.coShipOptionSel .coShipOptionLogo {
+  border-color: #93b4f5;
+  box-shadow: 0 2px 8px rgba(82,133,232,0.15);
+}
+
+.coShipOptionLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+/* ชื่อและระยะเวลา */
+.coShipOptionInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.coShipOptionName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.coShipOptionDesc {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* ราคา */
+.coShipOptionPrice {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  white-space: nowrap;
+}
+
+.coShipOptionPrice.coFree {
+  color: #16a34a;
+}
+
+/* checkmark เมื่อเลือก */
+.coShipOptionSel .coShipOptionName::after {
+  content: " ✓";
+  color: #3b82f6;
+  font-size: 13px;
+}
+
+/* hint ส่งฟรี */
+.coShipFreeHint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  color: #15803d;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+/* loading / empty state */
+.coShipEmpty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #94a3b8;
+}

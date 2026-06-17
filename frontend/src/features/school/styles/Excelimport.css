@@ -1,0 +1,817 @@
+/* ═══════════════════════════════════════════════
+   Excel Import Modal — excelImport.css
+   ═══════════════════════════════════════════════ */
+
+/* ── Overlay & Modal ─────────────────────────── */
+.eiOverlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(15, 20, 35, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+
+.eiModal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+  width: 100%; max-width: 820px;
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────── */
+.eiHead {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+.eiTitle {
+  font-size: 15px; font-weight: 600; color: #1a1a2e;
+  display: flex; align-items: center; gap: 8px;
+}
+.eiClose {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: none; background: #f4f5f8; color: #666;
+  cursor: pointer; font-size: 13px; display: flex;
+  align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.eiClose:hover { background: #e8eaf0; }
+
+/* ── Body ───────────────────────────────────── */
+.eiBody {
+  flex: 1; overflow-y: auto; padding: 24px;
+}
+
+/* ── Idle state ─────────────────────────────── */
+.eiIdle {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px; padding: 32px 0;
+  text-align: center;
+}
+.eiIconWrap { opacity: 0.85; }
+.eiDesc { font-size: 14px; color: #666; max-width: 360px; line-height: 1.6; }
+.eiActions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.eiErr {
+  background: #fef2f2; border: 1px solid #fca5a5;
+  color: #b91c1c; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px;
+}
+
+/* ── Buttons ────────────────────────────────── */
+.eiBtnPrimary {
+  padding: 9px 20px; border-radius: 8px;
+  background: #2563eb; color: #fff;
+  border: none; font-size: 14px; font-weight: 500;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: background 0.15s, opacity 0.15s;
+  text-decoration: none;
+}
+.eiBtnPrimary:hover:not(:disabled) { background: #1d4ed8; }
+.eiBtnPrimary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.eiBtnGhost {
+  padding: 9px 20px; border-radius: 8px;
+  background: transparent; color: #555;
+  border: 1px solid #dde0e8; font-size: 14px; font-weight: 500;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.eiBtnGhost:hover { background: #f4f5f8; }
+
+/* ── Preview: Summary Bar ───────────────────── */
+.eiSummaryBar {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 14px;
+}
+.eiSumBadge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 999px;
+  font-size: 13px; font-weight: 500;
+}
+.eiSumBadgeNum { font-weight: 700; font-size: 14px; }
+
+.eiSumOk    { background: #dcfce7; color: #15803d; }
+.eiSumUpdate{ background: #dbeafe; color: #1d4ed8; }
+.eiSumSkip  { background: #f3f4f6; color: #4b5563; }
+.eiSumWarnDup { background: #fff7ed; color: #c2410c; }
+.eiSumErr   { background: #fef2f2; color: #b91c1c; }
+
+/* ── Error Panel ────────────────────────────── */
+.eiErrPanel {
+  border: 1.5px solid #fca5a5;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+.eiErrPanelHeader {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: none; cursor: pointer;
+  text-align: left;
+}
+
+.eiErrPanelIcon {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: #ef4444; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+  line-height: 1;
+  /* fallback for flex-inside-button */
+  display: inline-flex;
+}
+
+.eiErrPanelTitle {
+  flex: 1; font-size: 13.5px; font-weight: 600; color: #991b1b;
+}
+
+.eiErrPanelChevron {
+  font-size: 11px; color: #991b1b; flex-shrink: 0;
+}
+
+.eiErrPanelBody {
+  display: flex; flex-direction: column; gap: 0;
+  max-height: 280px; overflow-y: auto;
+}
+
+/* Individual error row */
+.eiErrItem {
+  padding: 10px 16px;
+  border-top: 1px solid #fee2e2;
+  transition: background 0.1s;
+}
+.eiErrItem:hover { background: #fff5f5; }
+
+.eiErrItemHeader {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 5px;
+}
+
+.eiErrRowBadge {
+  font-size: 11.5px; font-weight: 700;
+  background: #ef4444; color: #fff;
+  padding: 2px 8px; border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.eiErrRowName {
+  font-size: 13.5px; font-weight: 600; color: #1a1a2e;
+}
+
+.eiErrItemList {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 3px;
+}
+
+.eiErrItemMsg {
+  display: flex; align-items: flex-start; gap: 6px;
+  font-size: 12.5px; color: #6b7280;
+  line-height: 1.5;
+}
+
+.eiErrBullet {
+  color: #ef4444; font-weight: 700; flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Preview Table ──────────────────────────── */
+.eiPreviewTable {
+  overflow-x: auto;
+  border: 1px solid #e8eaf0;
+  border-radius: 10px;
+}
+.eiPreviewTable table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+.eiPreviewTable thead th {
+  background: #f8f9fc; padding: 10px 12px;
+  text-align: left; font-weight: 600; color: #555;
+  border-bottom: 1px solid #e8eaf0;
+  white-space: nowrap;
+}
+.eiPreviewTable tbody tr:hover { background: #fafbff; }
+.eiPreviewTable tbody td {
+  padding: 9px 12px;
+  border-bottom: 1px solid #f0f2f7;
+  vertical-align: middle;
+  color: #333;
+}
+.eiPreviewTable tbody tr:last-child td { border-bottom: none; }
+
+/* Row state colors */
+.eiRowErr  td { background: #fff5f5 !important; }
+.eiRowExact  td { background: #fafafa !important; opacity: 0.65; }
+.eiRowUpdate td { background: #eff6ff !important; }
+.eiRowDup  td { background: #fffbeb !important; }
+
+/* Cell helpers */
+.eiRowNum { font-weight: 600; color: #888; margin-right: 4px; }
+.eiExcelRowBadge {
+  display: inline-block;
+  min-width: 28px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-align: center;
+}
+.eiCellErr { color: #b91c1c; font-weight: 600; }
+.eiCellMissing { color: #ccc; }
+
+/* Row tags */
+.eiTag {
+  display: inline-block;
+  padding: 1px 6px; border-radius: 4px;
+  font-size: 10.5px; font-weight: 700;
+  margin-left: 4px; vertical-align: middle;
+}
+.eiTagErr    { background: #fee2e2; color: #b91c1c; }
+.eiTagExact  { background: #f0f0f0; color: #666; }
+.eiTagUpdate { background: #dbeafe; color: #1d4ed8; }
+.eiTagDup    { background: #fff7ed; color: #c2410c; }
+
+/* Urgency badges */
+.eiUrgBadge {
+  display: inline-block; padding: 2px 8px;
+  border-radius: 5px; font-size: 12px; font-weight: 500;
+}
+.eiUrg-very_urgent { background: #fef2f2; color: #b91c1c; }
+.eiUrg-urgent      { background: #fffbeb; color: #b45309; }
+.eiUrg-can_wait    { background: #e0f7ff; color: #0369a1; }
+
+/* Status column */
+.eiStatusOk     { color: #15803d; font-weight: 500; font-size: 12.5px; }
+.eiStatusUpdate { color: #1d4ed8; font-weight: 500; font-size: 12.5px; }
+.eiStatusSkip   { color: #9ca3af; font-weight: 500; font-size: 12.5px; }
+.eiStatusErr    { color: #b91c1c; font-weight: 500; font-size: 12.5px; }
+
+/* ── Loading ─────────────────────────────────── */
+.eiLoading {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px; padding: 48px 0;
+}
+.eiSpinner {
+  width: 36px; height: 36px;
+  border: 3px solid #e8eaf0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: eiSpin 0.7s linear infinite;
+}
+@keyframes eiSpin { to { transform: rotate(360deg); } }
+.eiLoading p { font-size: 14px; color: #666; }
+
+/* ── Done state ─────────────────────────────── */
+.eiDone {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px; padding: 24px 0;
+  text-align: center;
+}
+.eiDoneIcon { font-size: 40px; }
+.eiDoneStats {
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+}
+.eiDoneStat {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 14px 20px; border-radius: 12px;
+  min-width: 80px;
+}
+.eiDoneStat.ok     { background: #dcfce7; }
+.eiDoneStat.update { background: #dbeafe; }
+.eiDoneStat.warn   { background: #f3f4f6; }
+.eiDoneStat.err    { background: #fef2f2; }
+.eiDoneNum {
+  font-size: 26px; font-weight: 800; line-height: 1;
+}
+.eiDoneStat.ok     .eiDoneNum { color: #15803d; }
+.eiDoneStat.update .eiDoneNum { color: #1d4ed8; }
+.eiDoneStat.warn   .eiDoneNum { color: #6b7280; }
+.eiDoneStat.err    .eiDoneNum { color: #b91c1c; }
+.eiDoneLabel { font-size: 12px; color: #888; margin-top: 4px; font-weight: 500; }
+
+/* ── Footer ─────────────────────────────────── */
+.eiFoot {
+  padding: 14px 24px;
+  border-top: 1px solid #f0f0f0;
+  display: flex; justify-content: flex-end; gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ── Similar row highlight ──────────────────────────────── */
+.eiRowSimilar td { background: #fefce8 !important; }
+.eiTagSimilar    { background: #fef08a; color: #854d0e; }
+.eiStatusSimilar { color: #b45309; font-weight: 500; font-size: 12.5px; }
+
+.eiSimilarNote {
+  background: #fffbeb; border: 1px solid #fbbf24;
+  border-radius: 8px; padding: 10px 14px;
+  font-size: 13px; color: #92400e;
+  margin-bottom: 12px;
+}
+
+/* ── Conflict resolution modal ──────────────────────────── */
+.eiConflictBox {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.22);
+  width: min(520px, 94vw);
+  padding: 28px 28px 24px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.eiConflictHead {
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.eiConflictIcon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: #fef3c7; color: #d97706;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.eiConflictTitle {
+  font-size: 15px; font-weight: 700; color: #1a1a2e;
+  margin-bottom: 3px;
+}
+.eiConflictSub { font-size: 13px; color: #6b7280; }
+
+.eiConflictCards {
+  display: flex; align-items: center; gap: 12px;
+}
+.eiConflictCard {
+  flex: 1; border-radius: 10px; padding: 14px 16px;
+}
+.eiConflictNew   { background: #eff6ff; border: 1.5px solid #93c5fd; }
+.eiConflictExist { background: #f0fdf4; border: 1.5px solid #86efac; }
+
+.eiConflictCardLabel {
+  font-size: 11px; font-weight: 600; color: #6b7280;
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.eiConflictCardName {
+  font-size: 15px; font-weight: 700; color: #1a1a2e;
+  margin-bottom: 4px;
+}
+.eiConflictCardDetail { font-size: 12.5px; color: #6b7280; }
+
+.eiConflictVs {
+  font-size: 11px; font-weight: 700; color: #d1d5db;
+  flex-shrink: 0; letter-spacing: 0.05em;
+}
+
+.eiConflictActions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.eiConflictBtn {
+  flex: 1; min-width: 120px; padding: 10px 16px;
+  border-radius: 8px; font-size: 13.5px; font-weight: 600;
+  cursor: pointer; border: none; transition: opacity 0.15s;
+}
+.eiConflictBtn:hover { opacity: 0.85; }
+.eiConflictBtnNew    { background: #2563eb; color: #fff; }
+.eiConflictBtnUpdate { background: #0891b2; color: #fff; }
+.eiConflictBtnSkip   { background: #f4f5f8; color: #555; border: 1px solid #dde0e8; }
+/* ── Student Code Badge ── */
+.eiCodeBadge {
+  display: inline-block;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-family: monospace;
+  border: 1px solid #bae6fd;
+  letter-spacing: 0.03em;
+}
+
+/* ── Preview wrapper ─────────────────────────── */
+.eiPreview { display: flex; flex-direction: column; gap: 0; }
+
+/* ── Save button ────────────────────────────── */
+.eiBtnSave {
+  padding: 9px 20px; border-radius: 8px;
+  background: #16a34a; color: #fff;
+  border: none; font-size: 14px; font-weight: 500;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: background 0.15s;
+}
+.eiBtnSave:hover { background: #15803d; }
+
+/* ═══════════════════════════════════════════════
+   IssuePanel
+   ═══════════════════════════════════════════════ */
+.eiIssuePanel {
+  border: 1.5px solid #fca5a5;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+.eiIssuePanelHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  background: #fef2f2;
+}
+.eiIssuePanelLeft {
+  display: flex; align-items: center; gap: 8px;
+}
+.eiIssuePanelIcon {
+  font-size: 15px; color: #b91c1c;
+}
+.eiIssuePanelTitle {
+  font-size: 13.5px; font-weight: 600; color: #991b1b;
+}
+.eiIssuePanelCounts {
+  display: flex; gap: 6px;
+}
+.eiIssueCountPill {
+  font-size: 11.5px; font-weight: 600;
+  padding: 2px 9px; border-radius: 999px;
+}
+.eiIssueCountPill--hard { background: #fee2e2; color: #b91c1c; }
+.eiIssueCountPill--warn { background: #fff7ed; color: #c2410c; }
+
+.eiIssuePanelList {
+  display: flex; flex-direction: column;
+  max-height: 380px; overflow-y: auto;
+}
+
+/* Individual issue item */
+.eiIssueItem {
+  border-top: 1px solid #f0f0f0;
+  transition: background 0.1s;
+}
+.eiIssueItem--hard  { border-left: 3px solid #ef4444; }
+.eiIssueItem--soft  { border-left: 3px solid #f59e0b; }
+.eiIssueItem--dup   { border-left: 3px solid #fb923c; }
+.eiIssueItem--editing { background: #f0f9ff; }
+
+.eiIssueItemRow {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 10px 14px;
+  flex-wrap: wrap;
+}
+.eiIssueBadge {
+  flex-shrink: 0; font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 5px;
+}
+.eiIssueBadge--hard { background: #ef4444; color: #fff; }
+.eiIssueBadge--soft { background: #f59e0b; color: #fff; }
+.eiIssueBadge--dup  { background: #fb923c; color: #fff; }
+
+.eiIssueName {
+  font-size: 13px; font-weight: 600; color: #1a1a2e;
+  flex-shrink: 0;
+}
+.eiIssueMsgs {
+  flex: 1; font-size: 12.5px; color: #6b7280; line-height: 1.5;
+}
+.eiIssueDot { color: #d1d5db; margin: 0 2px; }
+
+.eiIssueAction { flex-shrink: 0; margin-left: auto; }
+.eiIssueBtn {
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  border: none; border-radius: 6px; padding: 4px 10px;
+  transition: opacity 0.15s;
+}
+.eiIssueBtn:hover { opacity: 0.8; }
+.eiIssueBtn--fix     { background: #2563eb; color: #fff; }
+.eiIssueBtn--open    { background: #6b7280; color: #fff; }
+.eiIssueBtn--compare { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+.eiIssueWarnTag {
+  font-size: 11.5px; color: #b45309; font-weight: 600;
+  background: #fffbeb; padding: 2px 8px; border-radius: 5px;
+}
+
+/* ═══════════════════════════════════════════════
+   RowEditDrawer
+   ═══════════════════════════════════════════════ */
+.eiEditDrawer {
+  background: #f8faff;
+  border-top: 1px solid #dbeafe;
+  padding: 16px 14px 14px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+.eiEditSection {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.eiEditSectionTitle {
+  font-size: 12px; font-weight: 700; color: #6b7280;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.eiEditGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+.eiEditField {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.eiEditField--wide {
+  grid-column: span 2;
+}
+.eiEditField label {
+  font-size: 11.5px; font-weight: 600; color: #374151;
+}
+.eiEditField input,
+.eiEditField select {
+  padding: 6px 10px; border-radius: 7px;
+  border: 1.5px solid #d1d5db; font-size: 13px;
+  outline: none; background: #fff;
+  transition: border-color 0.15s;
+}
+.eiEditField input:focus,
+.eiEditField select:focus { border-color: #2563eb; }
+.eiEditReq { color: #ef4444; }
+
+/* Uniform cards grid */
+.eiEditUniformGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.eiEditUniformCard {
+  border-radius: 10px; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.eiEditUniformCard--male   { background: #eff6ff; border: 1.5px solid #bfdbfe; }
+.eiEditUniformCard--female { background: #fdf2f8; border: 1.5px solid #f9a8d4; }
+
+.eiEditUniformLabel {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 600; color: #1a1a2e;
+}
+.eiEditUniformGenderDot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.eiEditUniformInputRow {
+  display: flex; gap: 8px;
+}
+.eiEditUniformInputGroup {
+  flex: 1; display: flex; flex-direction: column; gap: 3px;
+}
+.eiEditUniformInputGroup span {
+  font-size: 11px; color: #6b7280; font-weight: 500;
+}
+.eiEditUniformInputGroup input {
+  padding: 5px 8px; border-radius: 6px;
+  border: 1.5px solid #d1d5db; font-size: 13px;
+  outline: none; width: 100%; background: #fff;
+  transition: border-color 0.15s;
+}
+.eiEditUniformInputGroup input:focus { border-color: #2563eb; }
+
+/* Edit drawer footer */
+.eiEditActions {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════
+   IssuePanel v2 — Accordion style
+   ═══════════════════════════════════════════════ */
+.eiIssuePanel2 {
+  border: 1.5px solid #fca5a5;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+.eiIssuePanel2Header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 16px;
+  background: #fef2f2;
+}
+.eiIssuePanel2Icon { font-size: 14px; color: #b91c1c; }
+.eiIssuePanel2Title {
+  flex: 1; font-size: 13px; font-weight: 600; color: #991b1b;
+}
+.eiIssuePanel2Counts { display: flex; gap: 6px; }
+
+.eiIssuePanel2List {
+  display: flex; flex-direction: column;
+  max-height: 420px; overflow-y: auto;
+}
+
+/* ── Accordion card ─────────────────────────── */
+.eiAccordion {
+  border-top: 1px solid #f0f0f0;
+}
+.eiAccordion--open { background: #fafbff; }
+
+.eiAccordionHead {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: none; border: none; cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+.eiAccordionHead:hover { background: #fafbff; }
+
+.eiAccBadge {
+  flex-shrink: 0; font-size: 11px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+  white-space: nowrap;
+}
+.eiAccBadge--err  { background: #ef4444; color: #fff; }
+.eiAccBadge--warn { background: #f59e0b; color: #fff; }
+
+.eiAccHeadInfo {
+  flex: 1; display: flex; flex-direction: column;
+  gap: 3px; min-width: 0;
+}
+.eiAccName {
+  font-size: 13.5px; font-weight: 600; color: #1a1a2e;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.eiAccRowMeta {
+  width: fit-content;
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.eiAccDupTag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11.5px; color: #0369a1; font-weight: 500;
+  background: #e0f2fe; border: 1px solid #bae6fd;
+  padding: 1px 8px; border-radius: 6px;
+  width: fit-content;
+}
+
+.eiAccHeadRight {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+.eiIssueFieldCount {
+  font-size: 11.5px; font-weight: 600;
+  padding: 2px 9px; border-radius: 999px;
+}
+.eiIssueFieldCount--err  { background: #fee2e2; color: #b91c1c; }
+.eiIssueFieldCount--warn { background: #fef3c7; color: #92400e; }
+
+/* .eiAccChevron replaced by .eiAccChevronIcon */
+
+/* ── Accordion body ─────────────────────────── */
+.eiAccordionBody {
+  display: flex; flex-direction: column; gap: 0;
+  border-top: 1px solid #f0f0f0;
+}
+
+.eiAccSection {
+  padding: 12px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.eiAccSection--err  {
+  background: #fff5f5;
+  border-left: 3px solid #ef4444;
+}
+.eiAccSection--warn {
+  background: #fffbeb;
+  border-left: 3px solid #f59e0b;
+}
+.eiAccSection + .eiAccSection { border-top: 1px solid #f0f0f0; }
+
+.eiAccSectionTitle {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+}
+.eiAccSection--err  .eiAccSectionTitle { color: #b91c1c; }
+.eiAccSection--warn .eiAccSectionTitle { color: #92400e; }
+
+.eiAccSectionIcon { font-size: 13px; }
+.eiAccSectionIcon--err  { color: #ef4444; }
+.eiAccSectionIcon--warn { color: #f59e0b; }
+
+.eiAccSectionDesc {
+  font-size: 12.5px; color: #6b7280; line-height: 1.55;
+  padding-left: 19px;
+}
+
+/* ── Error item list ────────────────────────── */
+.eiAccErrList {
+  display: flex; flex-direction: column; gap: 5px;
+  padding-left: 22px;
+}
+.eiAccErrItem {
+  display: flex; align-items: baseline; gap: 6px;
+  flex-wrap: wrap;
+}
+.eiAccErrField {
+  font-size: 12px; font-weight: 600; color: #b91c1c;
+  background: #fef2f2; border: 1px solid #fca5a5;
+  padding: 2px 8px; border-radius: 6px;
+  white-space: nowrap;
+}
+.eiAccErrDetail {
+  font-size: 12px; color: #6b7280; line-height: 1.5;
+}
+
+/* ── Action buttons ─────────────────────────── */
+.eiAccActions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 10px 14px;
+  background: #f8f9fc;
+  border-top: 1px solid #eef0f6;
+}
+
+.eiAccActionBtn {
+  flex: 1; min-width: 150px;
+  padding: 8px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  border: 1.5px solid transparent;
+}
+
+/* Edit button — blue outlined */
+.eiAccActionBtn--edit {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+.eiAccActionBtn--edit:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}
+.eiAccActionBtn--edit-active {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+/* View button — neutral outlined */
+.eiAccActionBtn--view {
+  background: #fff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+.eiAccActionBtn--view:hover {
+  background: #f4f5f8;
+  border-color: #9ca3af;
+}
+.eiAccActionBtn--view-active {
+  background: #f0f9ff !important;
+  border-color: #7dd3fc !important;
+  color: #0369a1 !important;
+}
+
+/* ── Existing student view ──────────────────── */
+.eiExistingView {
+  background: #f0f9ff;
+  border-top: 1px solid #bae6fd;
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.eiExistingViewLabel {
+  font-size: 11px; font-weight: 700; color: #0369a1;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.eiExistingViewGrid {
+  display: flex; flex-wrap: wrap; gap: 6px 16px;
+}
+.eiExistingField {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12.5px;
+}
+.eiExistingFieldKey {
+  color: #64748b; font-weight: 500;
+}
+.eiExistingFieldKey::after { content: ":"; margin-right: 2px; }
+.eiExistingFieldVal {
+  color: #0f172a; font-weight: 600;
+}
+.eiExistingUniforms {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid #e0f2fe;
+}
+.eiExistingUniform {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 7px;
+  font-size: 12px;
+}
+.eiExistingUniform--male   { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+.eiExistingUniform--female { background: #fdf2f8; border: 1px solid #f9a8d4; color: #9d174d; }
+.eiExistingUniformDot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.eiExistingUniformName { font-weight: 600; }
+.eiExistingUniformDetail { color: inherit; opacity: 0.75; font-size: 11.5px; }
+
+/* Chevron icon */
+.eiAccChevronIcon {
+  color: #9ca3af; flex-shrink: 0;
+  transition: transform 0.2s;
+}

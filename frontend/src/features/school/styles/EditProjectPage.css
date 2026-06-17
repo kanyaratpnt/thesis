@@ -1,0 +1,1017 @@
+/* src/pages/school/styles/editProject.css */
+
+.epToast {
+  position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+  background: #fff; border: 1.5px solid #22c55e;
+  border-radius: 12px; padding: 12px 24px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 600; color: #15803d;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 9999;
+  animation: epToastIn 0.25s ease;
+}
+@keyframes epToastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ===== Edit Project Page ===== */
+.epPage{
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  min-height: calc(100vh - 80px);
+  background:#f6f7fb;
+}
+
+.epTopSection {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.epLeft, .epUniformSection{
+  background:#fff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
+}
+
+.epRight{
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  position: sticky;
+  top: 24px;
+}
+
+/* ===== Left: Form ===== */
+.epLeft h2{
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.epField{
+  display:flex;
+  flex-direction:column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.epField label{
+  font-size: 13px;
+  color:#334155;
+  font-weight: 700;
+}
+
+.epLeft input,
+.epLeft textarea,
+.epLeft select{
+  width:100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 12px;
+  font-size: 14px;
+  outline: none;
+  background:#fff;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.epLeft textarea{
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.epLeft input:focus,
+.epLeft textarea:focus,
+.epLeft select:focus{
+  border-color:#60a5fa;
+  box-shadow: 0 0 0 4px rgba(96,165,250,.18);
+}
+
+.epHint{
+  font-size: 12px;
+  color:#64748b;
+  margin-top: -2px;
+}
+
+.epError{
+  background:#fff1f2;
+  border:1px solid #fecdd3;
+  color:#9f1239;
+  padding: 12px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* ===== Buttons ===== */
+.epActions{
+  display:flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.epBtn{
+  border:0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  cursor:pointer;
+}
+
+.epBtnPrimary{
+  background:#2563eb;
+  color:#fff;
+  box-shadow: 0 10px 20px rgba(37,99,235,.22);
+}
+.epBtnPrimary:hover{
+  background:#f1f5f9;
+  color:#2563eb
+}
+.epBtnPrimary:disabled{
+  opacity:.75;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
+.epBtnGhost{
+  background:#f1f5f9;
+  color:#0f172a;
+}
+
+/* ===== Right: Preview ===== */
+.epRightHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 12px;
+}
+
+.epRightHead .ttl{
+  font-weight: 900;
+  color:#0f172a;
+}
+
+.epPreviewWrap{
+  display:flex;
+  justify-content:center;
+}
+
+/* Card preview */
+.projectCard{
+  width: min(420px, 100%);
+  border-radius: 18px;
+  overflow:hidden;
+  border: 1px solid #eef2f7;
+  box-shadow: 0 12px 30px rgba(15,23,42,.10);
+  background:#fff;
+}
+
+.projectCard .cover{
+  width:100%;
+  height: 230px;
+  background:#e2e8f0;
+  position: relative;
+}
+
+.projectCard .cover img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.coverPlaceholder{
+  width:100%;
+  height:100%;
+  background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
+}
+
+.projectCard .badgeRow{
+  position:absolute;
+  left: 14px;
+  bottom: 14px;
+  display:flex;
+  gap: 8px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  backdrop-filter: blur(6px);
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(226,232,240,.9);
+  color:#0f172a;
+}
+
+.badgeDot{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background:#94a3b8;
+}
+
+.dotGreen{ background:#16a34a; }
+.dotGray{ background:#94a3b8; }
+.dotYellow{ background:#f59e0b; }
+.dotBlue{ background:#4f46e5; }
+
+.cardBody{
+  padding: 16px;
+}
+
+.cardTitle{
+  font-weight: 600;
+  font-size: 16px;
+  color:#0f172a;
+  margin-bottom: 8px;
+}
+
+.cardDesc{
+  color:#475569;
+  font-size: 13px;
+  display:-webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow:hidden;
+  /* border-bottom: 1px solid#e9e9e9; */
+
+}
+
+.cardMeta{
+  margin-top: 12px;
+  color:#64748b;
+  font-size: 12px;
+  display:flex;
+  gap: 10px;
+  flex-wrap:wrap;
+}
+
+.cardSchool{
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 10px;
+  font-size: 1px;
+}
+
+.cardAddr{
+  color:#64748b;
+  font-size: 13px;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 980px){
+  .epPage{
+    grid-template-columns: 1fr;
+  }
+  .epPreviewWrap{
+    justify-content: flex-start;
+  }
+}
+/* ================================================================
+   เพิ่มต่อท้ายไฟล์ EditProjectPage.css
+   ================================================================ */
+
+/* ── Label หัวข้อรูปชุด ─────────────────────────────────────── */
+.epUniformLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 20px;
+  font-weight: 800;
+}
+.epUniformLabelSub {
+  font-size: 12px;
+  font-weight: 400;
+  color: #64748b;
+}
+
+/* ── Group (ชาย / หญิง / อื่นๆ) ────────────────────────────── */
+.epUniformGroup {
+  margin-top: 14px;
+}
+.epUniformGroupTitle {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+.epUniformGroupMale {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+.epUniformGroupFemale {
+  background: #FDF2F8;
+  color: #BE185D;
+}
+
+/* ── Grid ของ Cards ─────────────────────────────────────────── */
+.epUniformCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+/* ── แต่ละ Card ─────────────────────────────────────────────── */
+.epUniformCard {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.epUniformCard:hover {
+  box-shadow: 0 2px 12px rgba(41,182,232,0.12);
+  border-color: #29B6E8;
+}
+.epUniformCardUploading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ── รูปภาพ / placeholder ───────────────────────────────────── */
+.epUniformCardImg {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+.epUniformCardImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.epUniformCardPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* ── Spinner overlay ────────────────────────────────────────── */
+.epUniformCardOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.epUniformCardSpinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #29B6E8;
+  border-radius: 50%;
+  animation: epSpin 0.7s linear infinite;
+}
+@keyframes epSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── ชื่อประเภทชุด ──────────────────────────────────────────── */
+.epUniformCardName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ── Message ────────────────────────────────────────────────── */
+.epUniformCardMsg {
+  font-size: 11px;
+  text-align: center;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+.epUniformCardMsgOk   { background: #F0FDF4; color: #16A34A; }
+.epUniformCardMsgErr  { background: #FEF2F2; color: #DC2626; }
+.epUniformCardMsgInfo { background: #EFF6FF; color: #2563EB; }
+
+/* ── ปุ่ม ───────────────────────────────────────────────────── */
+.epUniformCardActions {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+.epUniformCardBtn {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+.epUniformCardBtnUpload {
+  background: #29B6E8;
+  color: #fff;
+}
+.epUniformCardBtnUpload:hover { opacity: 0.85; }
+.epUniformCardBtnDelete {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+.epUniformCardBtnDelete:hover { opacity: 0.85; }
+.epUniformCardBtnDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Preview section (Right panel) ─────────────────────────── */
+.epUniformPreviewSection {
+  margin-top: 20px;
+  padding: 14px;
+  background: #F8FAFC;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+.epUniformPreviewTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 10px;
+}
+.epUniformPreviewRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.epUniformPreviewItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.epUniformPreviewItem img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+.epUniformPreviewItem span {
+  font-size: 11px;
+  color: #64748b;
+  text-align: center;
+  max-width: 64px;
+}
+
+/* ================================================================
+   เพิ่มต่อท้าย EditProjectPage.css
+   ── Uniform Upload UI (Level-first) ──
+   ================================================================ */
+
+/* ── Step box ── */
+.epLevelStepBox,
+.epUniformStepBox {
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 10px;
+}
+.epLevelStepBox { margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: none; }
+.epUniformStepBox { border-top-left-radius: 0; border-top-right-radius: 0; }
+
+.epStepLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 12px;
+}
+.epStepBadge {
+  width: 22px; height: 22px;
+  background: #29B6E8; color: #fff;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+
+/* ── Level button group ── */
+.epLevelBtnGroup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.epLevelBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  border: 2px solid #E2E8F0;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.18s;
+  min-width: 100px;
+  position: relative;
+}
+.epLevelBtn:hover { border-color: #29B6E8; background: #F0FAFF; }
+.epLevelBtnActive { border-color: #29B6E8; background: #E0F5FF; }
+.epLevelBtnEmoji  { font-size: 22px; }
+.epLevelBtnLabel  { font-size: 11px; font-weight: 600; color: #334155; text-align: center; line-height: 1.3; }
+.epLevelBtnBadge  {
+  position: absolute;
+  top: -6px; right: -6px;
+  background: #16A34A; color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 6px; border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── Uniform type grid ── */
+.epUniformTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* ── Each card ── */
+.epUniCard {
+  border: 2px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.epUniCard:hover     { border-color: #29B6E8; box-shadow: 0 2px 10px rgba(41,182,232,0.1); }
+.epUniCardHasImg     { border-color: #86EFAC; }
+.epUniCardLoading    { opacity: 0.6; pointer-events: none; }
+
+/* รูป */
+.epUniCardImg {
+  position: relative;
+  width: 100%; aspect-ratio: 1/1;
+  border-radius: 8px; overflow: hidden; background: #F1F5F9;
+}
+.epUniCardImg img   { width: 100%; height: 100%; object-fit: cover; }
+.epUniCardEmpty {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 6px; color: #94A3B8; font-size: 10px;
+}
+
+/* Spinner */
+.epUniCardSpin {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.7);
+  display: flex; align-items: center; justify-content: center;
+}
+.epSpinner {
+  width: 22px; height: 22px;
+  border: 3px solid #E2E8F0; border-top-color: #29B6E8;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* done badge */
+.epUniCardDone {
+  position: absolute; top: 6px; right: 6px;
+  background: #16A34A; color: #fff;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+
+/* ชื่อ */
+.epUniCardName {
+  font-size: 11px; font-weight: 600; color: #1E293B;
+  text-align: center; line-height: 1.3;
+}
+
+/* message */
+.epUniCardMsg { font-size: 10px; text-align: center; padding: 2px 6px; border-radius: 20px; }
+.epUniCardMsg.ok   { background: #F0FDF4; color: #16A34A; }
+.epUniCardMsg.err  { background: #FEF2F2; color: #DC2626; }
+.epUniCardMsg.info { background: #EFF6FF; color: #2563EB; }
+
+/* ปุ่ม */
+.epUniCardActions { display: flex; gap: 4px; width: 100%; }
+.epUniBtn {
+  flex: 1; text-align: center; font-size: 11px; font-weight: 600;
+  padding: 5px 0; border-radius: 6px; cursor: pointer; border: none;
+  transition: opacity 0.15s;
+}
+.epUniBtnPrimary          { background: #29B6E8; color: #fff; }
+.epUniBtnPrimary:hover    { opacity: 0.85; }
+.epUniBtnDelete           { background: #FEE2E2; color: #DC2626; }
+.epUniBtnDelete:hover     { opacity: 0.85; }
+.epUniBtnDisabled         { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Summary section ── */
+.epUniformSummary { border-top: 1px solid #E2E8F0; padding-top: 14px; }
+.epUniformSummaryTitle {
+  font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 10px;
+}
+.epUniformSummaryLevel    { margin-bottom: 10px; }
+.epUniformSummaryLevelName {
+  font-size: 11px; font-weight: 600; color: #29B6E8; display: block; margin-bottom: 6px;
+}
+.epUniformSummaryImgs  { display: flex; flex-wrap: wrap; gap: 8px; }
+.epUniformSummaryThumb { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.epUniformSummaryThumb img {
+  width: 48px; height: 48px; object-fit: cover;
+  border-radius: 6px; border: 1px solid #E2E8F0;
+}
+.epUniformSummaryThumb span { font-size: 9px; color: #64748B; text-align: center; max-width: 48px; }
+.epUniformSummaryEmpty { font-size: 12px; color: #94A3B8; font-style: italic; }
+
+/* ================================================================
+   เพิ่มต่อท้าย EditProjectPage.css
+   ── กำกับประเภทชุด ──
+   ================================================================ */
+
+/* ── Gender section header ── */
+.epUniformGenderSection {
+  margin-bottom: 16px;
+}
+
+.epUniformGenderHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.epUniformGenderCount {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+/* ── ป้ายกำกับประเภทชุด (บนสุดของ card) ── */
+.epUniCardTypeBadge {
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 6px;
+  border-radius: 6px;
+  line-height: 1.3;
+}
+
+/* ── hint ใต้รูป ── */
+.epUniCardHint {
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  text-align: center;
+  line-height: 1.5;
+}
+
+
+/* ── เพิ่มใน EditProjectPage.css ── */
+
+/* Modal overlay */
+.epModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+.epModal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.epModalHead {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #F1F5F9;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.epModalTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1E293B;
+}
+
+.epModalSub {
+  font-size: 12px;
+  color: #94A3B8;
+  margin-top: 2px;
+}
+
+.epModalClose {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #F1F5F9;
+  color: #64748B;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.epModalBody {
+  padding: 20px 24px;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+/* default strip */
+.epModalDefaultStrip {
+  background: #F8FAFC;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.epModalDefaultIcon {
+  font-size: 28px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #E2E8F0;
+}
+
+.epModalDefaultInfo {
+  flex: 1;
+}
+
+.epModalDefaultTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.epModalDefaultSub {
+  font-size: 11px;
+  color: #94A3B8;
+  margin-top: 2px;
+}
+
+.epModalDefaultBadge {
+  padding: 3px 10px;
+  background: #E2E8F0;
+  border-radius: 6px;
+  font-size: 10px;
+  color: #64748B;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* Upload zone */
+.epModalUploadZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #CBD5E1;
+  border-radius: 14px;
+  min-height: 140px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  overflow: hidden;
+}
+
+.epModalUploadZone:hover {
+  border-color: #29B6E8;
+  background: #F0FBFF;
+}
+
+.epModalUploadEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #94A3B8;
+  padding: 20px;
+}
+
+.epModalUploadEmpty span {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.epModalUploadHint {
+  font-size: 11px !important;
+  color: #CBD5E1 !important;
+  font-weight: 400 !important;
+}
+
+.epModalPreviewImg {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+/* Fields */
+.epModalFieldLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.epModalFieldPill {
+  padding: 2px 8px;
+  background: #F1F5F9;
+  border-radius: 6px;
+  font-size: 10px;
+  color: #64748B;
+  font-weight: 400;
+}
+
+.epModalSelect,
+.epModalInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  font-family: "Kanit", sans-serif;
+  font-size: 13px;
+  color: #374151;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  margin-bottom: 10px;
+}
+
+.epModalSelect:focus,
+.epModalInput:focus {
+  border-color: #29B6E8;
+}
+
+.epModalOrDivider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #CBD5E1;
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+
+.epModalOrDivider::before,
+.epModalOrDivider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #E2E8F0;
+}
+
+.epModalNote {
+  font-size: 11px;
+  color: #94A3B8;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.epModalFoot {
+  padding: 14px 24px 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  border-top: 1px solid #F1F5F9;
+}
+
+/* Card custom state */
+.epUniCardCustom {
+  border-color: #29B6E8 !important;
+}
+
+.epUniCardBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.epUniCardTypeName {
+  padding: 8px 10px 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.epUniBtn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: "Kanit", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.epUniBtnPrimary {
+  background: #29B6E8;
+  color: #fff;
+  flex: 1;
+}
+
+.epUniBtnPrimary:hover:not(:disabled) {
+  background: #0EA5D4;
+}
+
+.epUniBtnPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.epUniBtnGhost {
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #E2E8F0;
+}
+
+.epUniBtnGhost:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+  border-color: #FCA5A5;
+}
+@media (max-width: 980px) {
+  .epTopSection { grid-template-columns: 1fr; }
+  .epRight { position: static; }
+  .epPreviewWrap { justify-content: flex-start; }
+}
+
+@media (max-width: 768px) {
+  .epPage { padding: 12px; gap: 14px; }
+  .epTopSection { grid-template-columns: 1fr; gap: 16px; }
+  .epLeft h2 { font-size: 16px; }
+  .epLeft input, .epLeft textarea, .epLeft select { font-size: 13px; padding: 10px; }
+  .epActions { flex-direction: column; }
+  .epBtn { width: 100%; text-align: center; }
+}

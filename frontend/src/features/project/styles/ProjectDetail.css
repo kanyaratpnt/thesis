@@ -1,0 +1,653 @@
+/* ===== PROJECT DETAIL PAGE ===== */
+
+.pdTopStrip {
+  background: #87C7EB;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  height: 20px;
+}
+
+.pdWrapper {
+  max-width: 1100px;
+  margin: 40px auto 60px;
+  padding: 0 20px;
+}
+
+/* ===== Hero Card ===== */
+.pdHeroCard {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.09);
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 40px;
+  padding: 32px;
+  margin-bottom: 40px;
+}
+
+.pdLeft { display:flex; flex-direction:column; gap:16px; }
+.pdImgWrap { width:100%; height:280px; border-radius:16px; overflow:hidden; background:#FAF0CA; }
+.pdImgWrap img { width:100%; height:100%; object-fit:cover; }
+.pdImgPlaceholder { width:100%; height:100%; background:linear-gradient(135deg,#e5e7eb,#f3f4f6); }
+
+.pdRight { display:flex; flex-direction:column; gap:12px; }
+.pdRight svg { align-items: center; display: inline-flex;}
+.pdBadge {
+  display:inline-flex; align-items:center;
+  background:#FFD7C2; color:#000;
+  border-radius:999px; padding:6px 16px;
+  font-size:14px; font-weight:500; width:fit-content;
+}
+.pdSchoolName { font-size:28px; font-weight:700; color:#5285E8; margin:0; line-height:1.3; }
+.pdTitle { font-size:18px; color:#374151; margin:0; font-weight:400; }
+.pdLocation { display:flex; align-items:center; gap:6px; color:#FFBE1B; font-size:15px; }
+.pdLocation span { color:#555; }
+.pdDateRow {
+  display:flex; align-items:center; gap:6px;
+  font-size:14px; color:#374151;
+  background:#FFF8E1; border:1px solid #FFD54F;
+  border-radius:10px; padding:8px 14px;
+  width:fit-content;
+}
+.pdDateLabel { font-weight:600; color:#F59E0B; white-space:nowrap; }
+.pdClosedState {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:12px; padding:40px 20px; text-align:center;
+}
+.pdClosedEmoji { font-size:72px; line-height:1; }
+.pdClosedTitle { font-size:22px; font-weight:700; color:#F59E0B; }
+.pdClosedSub { font-size:14px; color:#6B7280; }
+.pdQuote {
+  background:#FAF0CA; border-radius:20px; margin:4px 0;
+  padding:14px 18px; font-size:18px; color:#374151;
+  font-style:italic; line-height:1.7;
+}
+.pdProgressLabel { font-size:20px; font-weight:900; color:#5285E8; margin-top:4px; }
+.pdChannels { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; box-sizing: border-box; }
+.pdChannel {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 16px; border-radius:999px;
+  box-sizing: border-box;
+  border:1.5px solid #e5e7eb; background:#fff;
+  cursor:pointer; font-size:14px; color:#555;
+  font-family:'Kanit',sans-serif; transition:all 0.18s; user-select:none;
+}
+.pdChannel:hover { border-color:#87C7EB;  box-sizing: border-box;}
+.pdChannel.pdChannelActive { border-color:#5285E8; background:#f3f4f6; color:#5285E8; font-weight:600; box-sizing: border-box; }
+.pdChannel.pdChannelDisabled { opacity:0.4; cursor:not-allowed; pointer-events:none; }
+.pdDonateBtn {
+  margin-top:8px; width:100%; height:58px;
+  background:#FC8D1F; color:#fff; border:none;
+  border-radius:14px; font-size:24px; font-weight:600;
+  cursor:pointer; font-family:'Kanit',sans-serif; box-sizing: border-box;
+}
+.pdDonateBtn:hover { background:#ffa850; }
+.pdNote { text-align:center; font-size:13px; color:#888; margin:0; }
+
+/* Tabs */
+.pdTabs {
+   display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  background: #ffffff;
+  box-sizing: border-box;
+  width: 100%;
+  box-shadow: 0 1px 0 #e5e7eb; 
+}
+
+.pdTab {
+  border: none;
+  font-family: 'Kanit', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #888;
+  padding: 12px 28px 10px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+
+.pdTabActive {
+  color: #1d4ed8;
+  border-bottom-color: #1d4ed8;
+  border-radius: 0;
+}
+
+.pdTabLine {
+  width: 100%;
+  height: 1px;
+  background: #e5e7eb;
+  margin-bottom: 36px;
+}
+
+/* Detail Grid */
+.pdDetailGrid { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+.pdDetailSectionTitle { display:flex; align-items:center; gap:10px; font-size:20px; font-weight:600; color:#053F5C; margin-bottom:16px; }
+.pdStudentBox { background:#55ACEE; border-radius:14px; padding:18px 22px; color:#fff; margin-bottom:16px; }
+.pdStudentLabel { font-size:13px; font-weight:300; margin-bottom:6px; }
+.pdStudentVal { display:flex; align-items:center; gap:8px; font-size:26px; font-weight:700; }
+
+.pdUniformBox { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:18px; }
+.pdUniformTitle { font-size:15px; font-weight:700; color:#374151; margin-bottom:10px; }
+.pdUniformImg { width:80px; height:80px; object-fit:contain; background:#f9fafb; border-radius:10px; }
+.pdUniformImgLabel { font-size:12px; color:#29AEF1; text-align:center; }
+.pdUniformQty { background:#FFBE1B; color:#fff; border-radius:20px; padding:3px 14px; font-size:13px; font-weight:600; white-space:nowrap; }
+.pdUniformSize { display:inline-block; margin-left:6px; padding:2px 8px; background:#EBF6FC; color:#29B6E8; border-radius:20px; font-size:12px; font-weight:500; }
+
+/* Old tab (level) — keep for compat */
+.pdUniformTabs { display:flex; gap:8px; margin-bottom:16px; }
+.pdUniformTab { padding:6px 18px; border-radius:20px; border:1.5px solid #d1d5db; background:#fff; color:#6b7280; font-size:14px; cursor:pointer; transition:all 0.2s; }
+.pdUniformTab:hover { border-color:#29B6E8; color:#29B6E8; }
+.pdUniformTabActive { background:#29B6E8; border-color:#29B6E8; color:#fff; font-weight:600; }
+
+/* Right col */
+.pdDetailRight { display:flex; flex-direction:column; gap:20px; border-left:1px solid #e5e7eb; padding-left:36px; }
+.pdContactItem { display:flex; align-items:flex-start; gap:14px; }
+.pdContactTitle { font-size:20px; font-weight:600; color:#053F5C; margin-bottom:4px; margin-top: 10px; }
+.pdContactVal { font-size:16px; color:#053F5C; line-height:1.5; }
+.pdContactPerson { margin-top:8px; }
+.pdPersonRow { display:flex; align-items:center; gap:12px; margin-top:8px; }
+.pdAvatar { width:48px; height:48px; border-radius:50%; object-fit:cover; }
+.pdAvatarPlaceholder { width:48px; height:48px; border-radius:50%; background:#eef2ff; display:flex; align-items:center; justify-content:center; }
+.pdPersonSchool { font-size:14px; font-weight:600; color:#1a1a1a; }
+.pdPersonName { font-size:13px; color:#555; }
+
+/* Reviews / Progress tab */
+.pdReviews { display:flex; flex-direction:column; gap:24px; }
+.pdTestimonialsTitle { font-size:18px; font-weight:700; color:#374151; margin-top:8px; }
+
+/* Testimonial cards — horizontal layout */
+.pdReviewScroll { display:flex; flex-direction:column; gap:16px; }
+.pdReviewCard { background:#fff; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06); border:1.5px solid #e2e8f0; overflow:hidden; display:flex; flex-direction:row; gap:0; }
+.pdReviewImgWrap { width:240px; flex-shrink:0; cursor:pointer; position:relative; overflow:hidden; }
+.pdReviewImgWrap:hover .pdReviewImgOverlay { opacity:1; }
+.pdReviewImg { width:100%; height:100%; object-fit:cover; display:block; transition:transform .2s; }
+.pdReviewImgWrap:hover .pdReviewImg { transform:scale(1.04); }
+.pdReviewImgOverlay { position:absolute; inset:0; background:rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; }
+.pdReviewBody { padding:24px 28px; display:flex; flex-direction:column; justify-content:center; gap:8px; flex:1; }
+.pdReviewHeading { font-size:16px; font-weight:700; color:#1f2937; }
+.pdReviewText { font-size:15px; color:#374151; font-style:italic; line-height:1.7; margin:0; flex:1; }
+.pdReviewAuthor { font-size:13px; color:#5285E8; font-weight:600; }
+.pdReviewMeta { font-size:12px; color:#94a3b8; }
+
+/* Lightbox */
+.pdLightbox { position:fixed; inset:0; background:rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:9999; cursor:zoom-out; }
+.pdLightboxImg { max-width:90vw; max-height:90vh; border-radius:12px; object-fit:contain; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+.pdLightboxClose { position:absolute; top:20px; right:24px; color:#fff; background:none; border:none; font-size:32px; cursor:pointer; line-height:1; }
+
+/* Summary card for archived projects */
+.pdSummaryCard {
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  border: 1.5px solid #86efac;
+  border-radius: 16px;
+  padding: 28px 32px;
+}
+.pdSummaryTitle { font-size:20px; font-weight:700; color:#15803d; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+.pdSummaryStats { display:flex; gap:32px; margin-bottom:20px; }
+.pdSummaryStat { text-align:center; }
+.pdSummaryVal { font-size:32px; font-weight:800; color:#1f2937; line-height:1; }
+.pdSummaryLabel { font-size:13px; color:#6b7280; margin-top:4px; }
+.pdSummaryBar { height:10px; background:#d1fae5; border-radius:999px; overflow:hidden; margin-bottom:16px; }
+.pdSummaryBarFill { height:100%; background:linear-gradient(90deg,#34d399,#10b981); border-radius:999px; transition:width 0.6s ease; }
+.pdSummaryThanks { font-size:14px; color:#374151; text-align:center; }
+
+/* Responsive */
+@media (max-width:900px) {
+  .pdHeroCard { grid-template-columns:1fr; }
+  .pdDetailGrid { grid-template-columns:1fr; }
+  .pdDetailRight { border-left:none; padding-left:0; border-top:1px solid #e5e7eb; padding-top:24px; }
+}
+
+@media (max-width:640px) {
+  .pdWrapper { padding: 0 12px; margin: 20px auto 40px; }
+
+  .pdHeroCard { padding: 18px 16px; border-radius: 16px; gap: 20px; }
+
+  .pdSchoolName { font-size: 20px; }
+  .pdTitle { font-size: 15px; }
+
+  /* Channel buttons — full width */
+  .pdChannels { flex-direction: column; gap: 8px; }
+  .pdChannel { width: 100%; justify-content: flex-start; padding: 10px 16px; font-size: 15px; }
+
+  /* Gender tabs — stretch equally, capped at half-width so 1 button = same size as 2 */
+  .pdGenderTabs { gap: 8px; }
+  .pdGenderTab { flex: 1; max-width: calc(50% - 4px); justify-content: center; font-size: 13px; padding: 6px 10px; }
+
+  /* Level tabs — smaller text */
+  .pdLevelTab { font-size: 13px; padding: 6px 12px 8px; }
+
+  /* Donate button */
+  .pdDonateBtn { font-size: 18px; height: 50px; }
+
+  /* Summary / Progress card */
+  .pdSummaryCard { padding: 18px 16px; }
+  .pdSummaryTitle { font-size: 16px; margin-bottom: 14px; }
+  .pdSummaryStats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 8px;
+    margin-bottom: 14px;
+  }
+  .pdSummaryStat { text-align: center; }
+  .pdSummaryVal { font-size: 24px; }
+  .pdSummaryLabel { font-size: 11px; }
+
+  /* Tabs */
+  .pdTab { font-size: 15px; padding: 10px 16px 8px; }
+
+  /* Review card — vertical on mobile */
+  .pdReviewCard { flex-direction: column; }
+  .pdReviewImgWrap { width: 100%; height: 180px; }
+}
+
+
+/* ===== Progress Bar ===== */
+.pdProgressBlock { display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+.pdProgressTopRow { display:flex; justify-content:space-between; align-items:baseline; font-size:15px; color:#374151; }
+.pdProgressTopRow strong { font-size:18px; font-weight:700; color:#5285E8; }
+.pdProgressPct { font-size:20px; font-weight:600; color:#FFBE1B; }
+.pdProgressTrack { width:100%; height:14px; background:#E5E7EB; border-radius:999px; overflow:hidden; }
+.pdProgressFill { height:100%; border-radius:999px; background:#FC8D1F; transition:width 0.6s ease; min-width:4px; }
+.pdProgressRemaining { font-size:14px; color:#6B7280; line-height:1.5; }
+.pdProgressRemaining strong { color:#FFBE1B; font-size:24px; font-weight:700; }
+
+/* ===== Gender Tabs ===== */
+.pdGenderTabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.pdGenderTab:hover svg{
+  color: #d9d9d9;
+}
+.pdGenderTab {
+  display: inline-flex;
+  align-items: center;   /* ⭐ จัดให้อยู่กึ่งกลางแนวตั้ง */
+  gap: 6px;              /* ⭐ ระยะห่างระหว่าง icon กับ text */
+
+  padding: 6px 14px;
+  padding: 7px 20px;
+  border-radius: 999px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  font-size: 14px;
+  font-family: 'Kanit', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transform: none !important;
+}
+/* ชาย — น้ำเงิน */
+.pdGenderTabMale { color: #5285E8; border-color: #5285E8; }
+.pdGenderTabMale:hover { color: #d9d9d9; border-color: #d9d9d9; }
+.pdGenderTabMaleActive { background: #5285E8; color: #fff; border-color: #5285E8; }
+/* หญิง — ชมพู */
+.pdGenderTabFemale { color: #e879a0; border-color: #f0b8d0; }
+.pdGenderTabFemale:hover { color: #d9d9d9; border-color: #d9d9d9; }
+.pdGenderTabFemaleActive { background: #f472b6; color: #fff; border-color: #f472b6; }
+
+/* ===== Level Tabs (underline style) ===== */
+.pdLevelTabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+  border-bottom: 1.5px solid #e5e7eb;
+}
+.pdLevelTab {
+  padding: 6px 18px 8px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-family: 'Kanit', sans-serif;
+  font-weight: 500;
+  color: #9CA3AF;
+  cursor: pointer;
+  /* border-bottom: 2px solid transparent; */
+  margin-bottom: -1.5px;
+  transition: all 0.18s;
+  box-sizing: border-box;
+}
+.pdLevelTab {
+  transform: none !important;
+}
+.pdLevelTab:hover { color: #374151; transform: none !important; }
+.pdLevelTabActive { color: #5285E8; border-bottom-color: none; font-weight: 600; }
+
+/* ===== Type Tabs (pill) ===== */
+.pdTypeTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.pdTypeTab {
+  padding: 5px 16px;
+  font-weight: 500;
+  border-radius: 20px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  color: #6b7280;
+  font-size: 13px;
+  font-family: 'Kanit', sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transform: none !important;
+}
+.pdTypeTab:hover { border-color: #FFBE1B; color: #FFBE1B; }
+.pdTypeTabActive { background: #FFBE1B; border-color: #FFBE1B; color: #fff;  font-weight: 500; }
+
+/* ===== Uniform Images ===== */
+.pdUniformImgs {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.pdUniformImgWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.pdUniformImgBtn {
+  cursor: pointer;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  box-shadow: 0 0 0 1px #e5e7eb; /* ← ต้องมีบรรทัดนี้ด้วย */
+  overflow: hidden;
+  padding: 4px;
+}
+.pdUniformImgBtn:hover {
+  border-color: #FFBE1B;
+  box-shadow: none;
+}
+.pdUniformImgBtnActive {
+  border-color: #FFBE1B;
+  box-shadow: none;
+}
+
+/* ===== Uniform List + Stepper ===== */
+.pdUniformList { display:flex; flex-direction:column; gap:0; }
+
+.pdUniformRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #374151;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 8px;
+}
+.pdUniformRow:last-child { border-bottom: none; }
+
+.pdUniformName { display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
+
+.pdUniformRowRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Stepper */
+.pdQtyStepper {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+}
+.pdQtyBtn {
+  width: 28px; height: 28px;
+  border: none; background: none;
+  color: #5285E8; font-size: 16px; font-weight: 700;
+  cursor: pointer; display:flex; align-items:center; justify-content:center;
+  transition: background 0.15s;
+  transform: none !important;
+}
+.pdQtyBtn:hover:not(:disabled) { background: #f3f4f6; transform: none !important; }
+.pdQtyBtn:disabled { color: #d1d5db; cursor: not-allowed; }
+.pdQtyInput {
+  width: 36px; height: 28px;
+  border: none;
+  text-align: center; font-size:13px; font-weight:700;
+  color:#053F5C; background:#fff; outline:none;
+  font-family:'Kanit',sans-serif;
+  -moz-appearance:textfield;
+}
+.pdQtyInput::-webkit-outer-spin-button,
+.pdQtyInput::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+
+/* Summary */
+.pdQtySummary {
+  margin-top:10px; padding:8px 14px;
+  background:#EEF5FF; border-radius:8px;
+  font-size:14px; color:#374151; text-align:center;
+}
+.pdQtySummary strong { color:#5285E8; font-weight:700; }
+
+/* badge "ค่าเริ่มต้น" บนรูป default */
+.epUniCardDefaultBadge {
+  position: absolute;
+  bottom: 6px; left: 6px;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+
+/* input กรอกชื่อ subtype */
+.epUniCardSubtypeInput {
+  width: 100%;
+  font-size: 11px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px dashed #CBD5E1;
+  background: #F8FAFC;
+  color: #334155;
+}
+.epUniCardSubtypeInput:focus { outline: none; border-color: #29B6E8; border-style: solid; }
+
+/* label แสดงชื่อ subtype หลังอัปแล้ว */
+.epUniCardSubtypeLabel {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1E293B;
+}
+.epUniCardSubtypeEdit {
+  background: none; border: none;
+  color: #94A3B8; cursor: pointer; font-size: 13px;
+}
+/* ================================================================
+   Uniform Image Zoom Overlay
+   ================================================================ */
+.pdUniformImgBtn {
+  position: relative;
+}
+.pdUniformImgZoomOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  opacity: 0;
+  transition: background 0.18s, opacity 0.18s;
+  pointer-events: none;
+}
+.pdUniformImgBtn:hover .pdUniformImgZoomOverlay {
+  background: rgba(0, 0, 0, 0.42);
+  opacity: 1;
+}
+
+/* ================================================================
+   Uniform Lightbox
+   ================================================================ */
+.pdUniLb {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 18, 36, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+  animation: pdUniLbIn 0.2s ease;
+}
+@keyframes pdUniLbIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.pdUniLbBox {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.36);
+  display: flex;
+  flex-direction: column;
+  animation: pdUniLbBoxIn 0.22s ease;
+}
+@keyframes pdUniLbBoxIn {
+  from { transform: scale(0.93) translateY(12px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.pdUniLbClose {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  backdrop-filter: blur(4px);
+  transition: background 0.15s;
+  z-index: 10000;
+}
+.pdUniLbClose:hover { background: rgba(255,255,255,0.32); }
+
+/* Image area with arrows */
+.pdUniLbImgArea {
+  position: relative;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  max-height: 56vh;
+  overflow: hidden;
+}
+
+.pdUniLbImg {
+  display: block;
+  max-width: 100%;
+  max-height: 56vh;
+  object-fit: contain;
+  padding: 16px;
+}
+
+/* Arrows */
+.pdUniLbArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.9);
+  color: #334155;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  transition: background 0.15s, transform 0.15s;
+  z-index: 2;
+}
+.pdUniLbArrow:hover:not(:disabled) {
+  background: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+.pdUniLbArrow:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+.pdUniLbArrowLeft  { left: 10px; }
+.pdUniLbArrowRight { right: 10px; }
+
+/* Caption */
+.pdUniLbCaption {
+  padding: 16px 20px 12px;
+  text-align: center;
+  border-top: 1px solid #f1f5f9;
+}
+.pdUniLbCaptionName {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.pdUniLbCaptionTags {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Tags */
+.pdUniLbTag {
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.pdUniLbTagCat    { background: #EFF6FF; color: #1D4ED8; }
+.pdUniLbTagMale   { background: #DBEAFE; color: #1D4ED8; }
+.pdUniLbTagFemale { background: #FCE7F3; color: #BE185D; }
+.pdUniLbTagLevel  { background: #F0FDF4; color: #15803D; }
+
+/* Dots */
+.pdUniLbDots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px 16px;
+}
+.pdUniLbDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #d1d5db;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s, transform 0.15s;
+}
+.pdUniLbDot:hover { background: #94a3b8; }
+.pdUniLbDotActive {
+  background: #29B6E8;
+  transform: scale(1.3);
+}

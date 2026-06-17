@@ -1,0 +1,559 @@
+/* ProductDetailPage.css */
+
+.pdPage { min-height: 100vh; background: #f7f9fc; font-family: 'Mitr', 'Kanit', sans-serif; }
+
+.pdContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ── Breadcrumb ── */
+.pdBreadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 24px;
+}
+.pdBreadcrumb a { color: #5285E8; text-decoration: none; }
+.pdBreadcrumb a:hover { text-decoration: underline; }
+.pdBreadcrumb span { color: #444; }
+
+/* ── Loading / Error ── */
+.pdLoading, .pdError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 80px 20px;
+  color: #888;
+  font-size: 16px;
+}
+.pdError button {
+  margin-top: 8px;
+  padding: 8px 24px;
+  border-radius: 999px;
+  border: 1.5px solid #5285E8;
+  background: #fff;
+  color: #5285E8;
+  cursor: pointer;
+  font-size: 14px;
+}
+.pdSpinner { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Main Layout ── */
+.pdMain {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 28px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 28px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  margin-bottom: 28px;
+}
+
+/* ── Images ── */
+.pdImages { display: flex; flex-direction: column; gap: 10px; }
+
+.pdMainImg {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-height: 340px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+.pdMainImg img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.pdImgPlaceholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  color: #ccc; font-size: 80px;
+}
+.pdStockBadge {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(0,0,0,0.55); color: #fff;
+  font-size: 12px; padding: 4px 10px;
+  border-radius: 20px; z-index: 2;
+}
+
+.pdThumbs {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.pdThumb {
+  width: 64px; height: 64px;
+  border-radius: 8px; overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer; opacity: 0.65;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+.pdThumb img { width: 100%; height: 100%; object-fit: cover; }
+.pdThumbActive { border-color: #5285E8; opacity: 1; }
+
+/* ── Info ── */
+.pdInfo { display: flex; flex-direction: column; gap: 12px; }
+
+.pdTitle {
+  font-size: 20px; font-weight: 600;
+  color: #111827; line-height: 1.4; margin: 0;
+}
+
+.pdSchool {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 14px; color: #666;
+}
+/* icon ใน pdSchool ใหญ่กว่าตัวอักษรนิดนึง */
+.pdSchool svg, .pdSchool [class*="iconify"] { font-size: 17px; }
+
+.pdPrice {
+  font-size: 30px; font-weight: 600; color: #5285E8;
+}
+.pdPrice span { font-size: 15px; font-weight: 400; color: #888; }
+
+/* ── Details ── */
+.pdDetails {
+  display: flex; flex-direction: column; gap: 8px;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+}
+.pdDetailRow {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px;
+}
+/* icon ใน detail row ใหญ่กว่า text เล็กน้อย */
+.pdDetailRow svg, .pdDetailRow [class*="iconify"] { font-size: 17px; }
+.pdDetailLabel {
+  color: #888; min-width: 80px; flex-shrink: 0;
+}
+.pdDetailVal { color: #111827; }
+.pdNoData { color: #bbb; }
+
+.pdBadgeLevel {
+  font-size: 12px; padding: 3px 10px;
+  border-radius: 20px; background: #E6F1FB; color: #0C447C;
+}
+.pdBadgeCond {
+  font-size: 12px; padding: 3px 10px;
+  border-radius: 20px; background: #FAEEDA; color: #633806;
+}
+
+/* ── Description ── */
+.pdDesc { font-size: 14px; color: #555; }
+.pdDescLabel { font-weight: 500; color: #333; margin-bottom: 6px; }
+.pdDesc p { margin: 0; line-height: 1.7; white-space: pre-wrap; }
+
+/* ── Seller ── */
+.pdSeller {
+  display: flex; align-items: center; gap: 12px;
+  background: #f7f9fc; border-radius: 12px;
+  padding: 10px 14px;
+}
+.pdSellerAvatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #E6F1FB; color: #185FA5;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 600; flex-shrink: 0;
+}
+.pdSellerInfo { flex: 1; }
+.pdSellerName { font-size: 15px; font-weight: 500; color: #111827; }
+.pdSellerLabel { font-size: 12px; color: #888; }
+.pdSellerPhone {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 13px; color: #5285E8;
+  text-decoration: none; white-space: nowrap;
+}
+.pdSellerPhone:hover { text-decoration: underline; }
+
+/* ── Actions ── */
+.pdActions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.pdCartBtn {
+  flex: 1; height: 52px; border-radius: 999px;
+  border: none; background: #FFBE1B; color: #fff;
+  font-size: 16px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer; transition: background 0.18s;
+  font-family: 'Mitr', sans-serif;
+  min-width: 160px;
+}
+.pdCartBtn:hover:not(:disabled) { background: #f0ad00; }
+.pdCartBtn:disabled { background: #ccc; cursor: not-allowed; }
+.pdBuyBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #f97316;      /* สีส้ม — แยกจากปุ่มตะกร้า */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pdBuyBtn:hover:not(:disabled) {
+  background: #ea6c0a;
+}
+
+.pdBuyBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pdBackBtn {
+  height: 52px; padding: 0 24px; border-radius: 999px;
+  border: 1.5px solid #e5e7eb; background: #fff;
+  color: #555; font-size: 15px; text-decoration: none;
+  display: flex; align-items: center; gap: 6px;
+  transition: border-color 0.18s;
+}
+.pdBackBtn:hover { border-color: #5285E8; color: #5285E8; }
+
+.pdCartMsg {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 10px;
+  font-size: 14px;
+}
+.pdCartMsgOk  { background: #ecfdf5; color: #065f46; }
+.pdCartMsgErr { background: #fef2f2; color: #991b1b; }
+
+/* ── Related ── */
+.pdRelated { margin-top: 8px; }
+.pdRelatedTitle {
+  font-size: 22px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 10px;
+}
+.pdRelatedTitleAlt {
+  color: #374151;
+}
+/* icon ใน title ใหญ่กว่า text นิดนึง */
+.pdRelatedTitleIcon {
+  font-size: 28px;
+  display: flex; align-items: center;
+  flex-shrink: 0;
+}
+.pdProjSub {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: #64748b;
+}
+.pdRelGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.pdProjGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* ── Project Card (new design with cover image) ── */
+.pdProjCard {
+  background: #fff;
+  border: 1px solid #e5edf7;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+.pdProjCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.12);
+  border-color: #bfdbfe;
+}
+.pdProjCardSelected {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 8px 20px rgba(37, 99, 235, 0.12);
+}
+.pdProjCardSelected:hover {
+  border-color: #3b82f6;
+}
+
+/* Cover image */
+.pdProjCover {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  overflow: hidden;
+}
+.pdProjCover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.pdProjCard:hover .pdProjCover img {
+  transform: scale(1.04);
+}
+.pdProjCoverPh {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #93c5fd;
+  font-size: 56px;
+}
+
+/* Badge on cover */
+.pdProjBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.pdProjBadge svg { font-size: 13px; }
+.pdProjBadgeUrgent {
+  background: rgba(254, 226, 226, 0.95);
+  color: #b91c1c;
+}
+.pdProjBadgeMost {
+  background: rgba(255, 237, 213, 0.95);
+  color: #c2410c;
+}
+
+/* Selected check-mark overlay */
+.pdProjSelectedMark {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 3px 8px rgba(34, 197, 94, 0.4);
+  animation: pdProjPop 0.25s ease-out;
+}
+@keyframes pdProjPop {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Body */
+.pdProjBody {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+.pdProjTitle {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+.pdProjSchool,
+.pdProjAddr,
+.pdProjMeta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #475569;
+  line-height: 1.4;
+}
+.pdProjSchool svg,
+.pdProjAddr svg,
+.pdProjMeta svg {
+  flex-shrink: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+.pdProjSchool span,
+.pdProjAddr span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pdProjMeta {
+  background: #eff6ff;
+  color: #1e40af;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+.pdProjMeta svg { color: #2563eb; font-size: 13px; }
+.pdProjMeta b { color: #1d4ed8; font-weight: 700; }
+
+/* Progress bar inside card */
+.pdProjProgress {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pdProjProgressTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #475569;
+}
+.pdProjProgressTop b { color: #0f172a; font-weight: 700; }
+.pdProjProgressPct {
+  font-weight: 700;
+  color: #2563eb;
+  font-size: 13px;
+}
+.pdProjProgressTrack {
+  height: 7px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.pdProjProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* Actions */
+.pdProjActions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.pdProjDetailBtn,
+.pdProjSelectBtn {
+  flex: 1;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  font-family: 'Mitr', 'Kanit', sans-serif;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.pdProjDetailBtn {
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  background: #fff;
+}
+.pdProjDetailBtn:hover {
+  border-color: #5285E8;
+  color: #5285E8;
+  background: #f8fafc;
+}
+.pdProjSelectBtn {
+  border: none;
+  cursor: pointer;
+  background: #2563eb;
+  color: #fff;
+}
+.pdProjSelectBtn:hover { background: #1d4ed8; }
+.pdProjSelectBtnOn { background: #16a34a; }
+.pdProjSelectBtnOn:hover { background: #15803d; }
+
+.pdRelCard {
+  background: #fff; border-radius: 14px;
+  border: 0.5px solid #f0f4f8;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  cursor: pointer; overflow: hidden;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.pdRelCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(82,133,232,0.12);
+}
+.pdRelThumb {
+  position: relative; aspect-ratio: 1/1;
+  background: #f1f5f9; overflow: hidden;
+}
+.pdRelThumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pdRelPlaceholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  color: #ccc; font-size: 40px;
+}
+.pdRelBadge {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(0,0,0,0.5); color: #fff;
+  font-size: 11px; padding: 2px 8px; border-radius: 20px;
+}
+.pdRelBody { padding: 12px 14px 14px; }
+.pdRelTitle {
+  font-size: 13px; font-weight: 500; color: #111827;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  margin-bottom: 4px;
+}
+.pdRelSchool {
+  font-size: 11px; color: #888;
+  display: flex; align-items: center; gap: 3px;
+  margin-bottom: 6px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.pdRelPrice {
+  font-size: 15px; font-weight: 500; color: #5285E8;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .pdProjGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 768px) {
+  .pdMain { grid-template-columns: 1fr; gap: 24px; padding: 20px; }
+  .pdRelGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pdProjGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+  .pdRelGrid { grid-template-columns: 1fr; }
+  .pdProjGrid { grid-template-columns: 1fr; }
+  .pdTitle { font-size: 18px; }
+  .pdPrice { font-size: 28px; }
+}
+
+/* PostProductPage.css */
+.ppShipOptions { display: flex; flex-direction: column; gap: 8px; }
+
+.ppShipOption {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.ppShipOption:hover   { border-color: #93c5fd; }
+.ppShipOptionActive   { border-color: #3b82f6; background: #eff6ff; }
+.ppShipName           { font-weight: 600; font-size: 0.95rem; }
