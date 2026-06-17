@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react";
 import Navbar from "../../../pages/Navbar.jsx";
 import { QRLabelPage } from "../../project/pages/Donatepage.jsx";
 import "../../../pages/styles/Homepage.css";
-import "../../project/styles/Donatepage.css";
+import "../../project/styles/DonatePage.css";
 import "../styles/DonationHistoryPage.css";
 
 const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
