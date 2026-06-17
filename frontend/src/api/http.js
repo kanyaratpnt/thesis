@@ -33,7 +33,7 @@ export async function request(path, options = {}) {
 
   if (!res.ok) {
     // Auto-logout when token is invalid or expired
-    if (res.status === 401) {
+    if (res.status === 401 && auth) {
       ["token", "role", "userName", "userEmail"].forEach((k) =>
         localStorage.removeItem(k)
       );

@@ -35,6 +35,25 @@ async function verifyGoogleToken(idToken) {
   return payload;
 }
 
+function getGoogleTokenErrorCode(err) {
+  if (err?.code === "ERR_JWT_EXPIRED") return "GOOGLE_TOKEN_EXPIRED";
+  if (err?.code === "ERR_JWT_CLAIM_VALIDATION_FAILED") {
+    if (err?.claim === "aud") return "GOOGLE_AUDIENCE_MISMATCH";
+    if (err?.claim === "iss") return "GOOGLE_ISSUER_INVALID";
+  }
+  return "GOOGLE_TOKEN_INVALID";
+}
+
+function getGoogleTokenErrorMessage(code) {
+  if (code === "GOOGLE_AUDIENCE_MISMATCH") {
+    return "Google Client ID ของ frontend/backend ไม่ตรงกัน";
+  }
+  if (code === "GOOGLE_TOKEN_EXPIRED") {
+    return "Google token หมดอายุ กรุณาลองเข้าสู่ระบบใหม่";
+  }
+  return "Google token ไม่ถูกต้อง";
+}
+
 /* ─────────────────────── helpers ─────────────────────── */
 
 function normalizeThaiPhone(input) {
@@ -465,9 +484,13 @@ export async function googleLogin({ idToken }) {
   try {
     payload = await verifyGoogleToken(idToken);
   } catch (err) {
-    console.error("❌ verifyGoogleToken failed:", err.message);
+    const code = getGoogleTokenErrorCode(err);
+    console.error("❌ verifyGoogleToken failed:", code, err.message);
     if (err?.status === 500) throw err;
-    throw Object.assign(new Error("Google token ไม่ถูกต้อง"), { status: 401 });
+    throw Object.assign(new Error(getGoogleTokenErrorMessage(code)), {
+      status: 401,
+      code,
+    });
   }
 
   const { sub: google_id, email, name, picture } = payload;

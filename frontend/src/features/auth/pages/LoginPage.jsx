@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from "react"; // ✅ ครบแล้ว
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import { login as loginService, googleLogin } from "../services/auth.service.js";
-import { GoogleLogin } from "@react-oauth/google";
+import GoogleAuthButton from "../components/GoogleAuthButton.jsx";
 import "../styles/auth.css";
 
 export default function LoginPage() {
@@ -11,22 +11,6 @@ export default function LoginPage() {
   const [err, setErr] = useState("");
   const [unverified, setUnverified] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  // ✅ แก้ไข: ใช้ ref วัดขนาด container จริง แทนการใช้ "100%"
-  const googleWrapperRef = useRef(null);
-  const [googleWidth, setGoogleWidth] = useState(400);
-
-  useEffect(() => {
-    const updateWidth = () => {
-      if (googleWrapperRef.current) {
-        const w = googleWrapperRef.current.offsetWidth;
-        setGoogleWidth(Math.min(Math.max(w, 140), 400));
-      }
-    };
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
 
   const nav = useNavigate();
   const { login } = useAuth();
@@ -68,6 +52,8 @@ export default function LoginPage() {
     } catch (e2) {
       if (e2?.data?.code === "EMAIL_EXISTS") {
         setErr("อีเมลนี้ถูกใช้งานแล้ว กรุณา login ด้วยรหัสผ่าน");
+      } else if (e2?.data?.code === "GOOGLE_AUDIENCE_MISMATCH") {
+        setErr("ตั้งค่า Google Client ID ของ frontend/backend ไม่ตรงกัน");
       } else {
         setErr(e2?.data?.message || e2?.message || "Google login ไม่สำเร็จ");
       }
@@ -205,16 +191,11 @@ export default function LoginPage() {
             <span>หรือ</span>
           </div>
 
-          {/* ✅ แก้ไข: ใช้ ref วัดขนาดจริง แทน width="100%" */}
-          <div className="lgGoogleWrapper" ref={googleWrapperRef}>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setErr("Google login ไม่สำเร็จ")}
-              width={googleWidth}
-              text="signin_with"
-              locale="th"
-            />
-          </div>
+          <GoogleAuthButton
+            onSuccess={handleGoogleSuccess}
+            onError={() => setErr("Google login ไม่สำเร็จ")}
+            text="signin_with"
+          />
 
           <div className="lgFooter">
             ยังไม่มีบัญชี? |

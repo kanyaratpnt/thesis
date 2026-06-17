@@ -9,7 +9,7 @@ export default defineConfig({
     allowedHosts: ["draven-achronychous-hazel.ngrok-free.dev"],
     // ✅ เพิ่มตรงนี้
     headers: {
-      "Cross-Origin-Opener-Policy": "unsafe-none",
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
       "Cross-Origin-Embedder-Policy": "unsafe-none",
     },
     // SPA fallback — ทุก path ที่ไม่ใช่ API ให้ serve index.html

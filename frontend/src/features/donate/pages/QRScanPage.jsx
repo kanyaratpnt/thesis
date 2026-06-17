@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import { login as loginService, googleLogin } from "../../auth/services/auth.service.js";
 import { Icon } from "@iconify/react";
-import { GoogleLogin } from "@react-oauth/google";
+import GoogleAuthButton from "../../auth/components/GoogleAuthButton.jsx";
 import "../../auth/styles/auth.css";
 
 const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
@@ -24,10 +24,8 @@ function parseItems(snapshot) {
   catch { return []; }
 }
 
-function buildThankMsg(donation, items, itemConditions, itemReasons) {
+function buildThankMsg(donation, items, itemConditions) {
   const n = donation?.donor_name || "ผู้บริจาค";
-
-  const cleanName = (raw) => String(raw || "").replace(/\s*\(.*?\)\s*/g, "").trim();
 
   const resolveItemCond = (uid) => {
     const c = itemConditions[uid];
@@ -90,21 +88,7 @@ function QRLoginPanel({ onLoginSuccess }) {
   const [showPw, setShowPw]     = useState(false);
   const [err, setErr]           = useState("");
   const [loading, setLoading]   = useState(false);
-  const googleWrapperRef        = useRef(null);
-  const [googleWidth, setGoogleWidth] = useState(400);
   const { login } = useAuth();
-
-  useEffect(() => {
-    const update = () => {
-      if (googleWrapperRef.current) {
-        const w = googleWrapperRef.current.offsetWidth;
-        setGoogleWidth(Math.min(Math.max(w, 140), 400));
-      }
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
 
   const handleSuccess = (res) => {
     if (res.role !== "school_admin") {
@@ -135,7 +119,11 @@ function QRLoginPanel({ onLoginSuccess }) {
       const res = await googleLogin({ idToken: credentialResponse.credential });
       handleSuccess(res);
     } catch (e) {
-      setErr(e?.data?.message || e?.message || "Google login ไม่สำเร็จ");
+      if (e?.data?.code === "GOOGLE_AUDIENCE_MISMATCH") {
+        setErr("ตั้งค่า Google Client ID ของ frontend/backend ไม่ตรงกัน");
+      } else {
+        setErr(e?.data?.message || e?.message || "Google login ไม่สำเร็จ");
+      }
     }
   };
 
@@ -226,15 +214,11 @@ function QRLoginPanel({ onLoginSuccess }) {
 
           <div className="lgDivider"><span>หรือ</span></div>
 
-          <div className="lgGoogleWrapper" ref={googleWrapperRef}>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setErr("Google login ไม่สำเร็จ")}
-              width={googleWidth}
-              text="signin_with"
-              locale="th"
-            />
-          </div>
+          <GoogleAuthButton
+            onSuccess={handleGoogleSuccess}
+            onError={() => setErr("Google login ไม่สำเร็จ")}
+            text="signin_with"
+          />
         </div>
 
       </div>
@@ -303,7 +287,7 @@ function DonationDetailPanel({ donationId, token }) {
   // auto-fill thank message
   useEffect(() => {
     if (!donation) return;
-    setThankMsg(buildThankMsg(donation, items, itemConditions, itemReasons));
+    setThankMsg(buildThankMsg(donation, items, itemConditions));
   }, [derivedCondition, itemConditions, itemReasons]); // eslint-disable-line
 
   const handleConfirm = async () => {
@@ -662,9 +646,9 @@ function MetaRow({ label, value, mono = false }) {
 // ── Main Page ────────────────────────────────────────────────────
 export default function QRScanPage() {
   const { donationId } = useParams();
-  const { token, role } = useAuth();
+  const { token } = useAuth();
 
-  const [authToken, setAuthToken] = useState(null);
+  const [authToken, setAuthToken] = useState(token || null);
 
   if (!authToken) {
     return <QRLoginPanel onLoginSuccess={(tk) => setAuthToken(tk)} />;

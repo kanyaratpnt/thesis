@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import * as svc from "../services/auth.service.js";
-import { GoogleLogin } from "@react-oauth/google";
+import GoogleAuthButton from "../components/GoogleAuthButton.jsx";
 import "../styles/auth.css";
 import { useAuth } from "../../../context/AuthContext.jsx";
 
@@ -65,6 +65,8 @@ export default function RegisterGeneralPage() {
     } catch (e2) {
       if (e2?.data?.code === "EMAIL_EXISTS") {
         setErr("อีเมลนี้ถูกใช้งานแล้ว กรุณา login ด้วยรหัสผ่าน");
+      } else if (e2?.data?.code === "GOOGLE_AUDIENCE_MISMATCH") {
+        setErr("ตั้งค่า Google Client ID ของ frontend/backend ไม่ตรงกัน");
       } else {
         setErr(e2?.data?.message || e2?.message || "Google สมัครสมาชิกไม่สำเร็จ");
       }
@@ -192,9 +194,11 @@ return (
 
         <div className="lgDivider"><span>หรือ</span></div>
 
-        <div className="lgGoogleWrapper">
-          <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => setErr("Google สมัครสมาชิกไม่สำเร็จ")} width="100%" text="signup_with" locale="th" />
-        </div>
+        <GoogleAuthButton
+          onSuccess={handleGoogleSuccess}
+          onError={() => setErr("Google สมัครสมาชิกไม่สำเร็จ")}
+          text="signup_with"
+        />
 
         <div className="lgFooter">
           มีบัญชีแล้ว? |
