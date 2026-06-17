@@ -8,16 +8,21 @@ import * as jose from "jose";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-async function verifyGoogleToken(idToken) {
-  const googleClientIds = String(
-    process.env.GOOGLE_CLIENT_IDS ||
-      process.env.GOOGLE_CLIENT_ID ||
-      process.env.VITE_GOOGLE_CLIENT_ID ||
-      ""
-  )
-    .split(",")
+function getGoogleClientIds() {
+  return [
+    process.env.GOOGLE_CLIENT_IDS,
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.VITE_GOOGLE_CLIENT_ID,
+  ]
+    .filter(Boolean)
+    .flatMap((ids) => String(ids).split(","))
     .map((id) => id.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter((id, index, all) => all.indexOf(id) === index);
+}
+
+async function verifyGoogleToken(idToken) {
+  const googleClientIds = getGoogleClientIds();
 
   if (!googleClientIds.length) {
     throw Object.assign(new Error("ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID บน backend"), {
