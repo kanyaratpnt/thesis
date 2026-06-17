@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "node src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "create-admin": "node src/scripts/createAdmin.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

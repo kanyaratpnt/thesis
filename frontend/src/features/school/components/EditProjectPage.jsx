@@ -5,7 +5,7 @@ import { useAuth } from "../../../context/AuthContext.jsx";
 import { getJson, request } from "../../../api/http.js";
 import "../styles/EditProjectPage.css";
 
-const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
 
 const LEVEL_ICONS = {
   "อนุบาล": (

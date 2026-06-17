@@ -29,7 +29,8 @@ const C = {
 };
 
 const COURIERS = ["ไปรษณีย์ไทย", "Flash Express", "J&T Express", "Kerry Express"];
-const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
+const APP_ORIGIN = typeof window !== "undefined" ? window.location.origin : "http://localhost:5173";
 
 const TH_MONTHS_SHORT = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
 const TH_MONTHS_FULL = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
@@ -1286,7 +1287,7 @@ export function QRLabelPage({
   donorPhone,
   selectedItems = [],
   totalQty = 0,
-  baseUrl = "http://localhost:5173",
+  baseUrl = APP_ORIGIN,
   donationStatus = "",
   conditionStatus = "",
   onUpdateTracking = async () => {},
@@ -1719,7 +1720,7 @@ export function DonationNotificationItem({
   isRead = false,
   isExpanded = false,
   onToggle = () => { },
-  baseUrl = "http://localhost:5173/login",
+  baseUrl = `${APP_ORIGIN}/login`,
 }) {
   const qrUrl = `${baseUrl}/confirm/${donationId}`;
   const qrRef = useQRCanvas(isExpanded ? qrUrl : null, 90);
@@ -1828,7 +1829,7 @@ export function DonationFlowDemo() {
       {screen === "qr" && (
         <QRLabelPage
           {...sharedProps}
-          baseUrl="http://localhost:5173"
+          baseUrl={APP_ORIGIN}
           // baseUrl="https://unieed.com"
           onViewProject={() => setScreen("school")}
         />
@@ -1862,7 +1863,7 @@ export function DonationFlowDemo() {
             isRead={false}
             isExpanded={notifExpanded}
             onToggle={() => setNotifExpanded(p => !p)}
-            baseUrl="http://localhost:5173/login"
+            baseUrl={`${APP_ORIGIN}/login`}
           />
           <div style={{ padding: "12px 20px", textAlign: "center" }}>
             <a href="#" style={{ fontSize: 13, color: C.navy }}>ดูประวัติการบริจาคทั้งหมด →</a>

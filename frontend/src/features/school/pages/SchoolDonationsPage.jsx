@@ -12,7 +12,7 @@ import { useAuth } from "../../../context/AuthContext.jsx";
 import { Icon } from "@iconify/react";
 import "../styles/Schooldonationpage.css";
  
-const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
  
 const TRACKING_URLS = {
   "ไปรษณีย์ไทย": (no) => `https://track.thailandpost.co.th/?trackNumber=${no}`,

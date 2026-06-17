@@ -5,7 +5,7 @@ import { useAuth } from "../../../context/AuthContext.jsx";
 import { Icon } from "@iconify/react";
 import "../styles/SchoolAppointmentPage.css";
 
-const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
 
 const TH_MONTHS_FULL  = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
   "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];

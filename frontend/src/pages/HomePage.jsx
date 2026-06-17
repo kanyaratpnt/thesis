@@ -232,7 +232,7 @@ export default function HomePage() {
   const matchedFetchedRef = useRef(false);
 
   // ===== Meilisearch inline search =====
-  const MEILI_BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+  const MEILI_BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
   const [searchHitIds, setSearchHitIds] = useState(null); // null = ไม่ได้ค้นหา
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchTotal, setSearchTotal] = useState(0);

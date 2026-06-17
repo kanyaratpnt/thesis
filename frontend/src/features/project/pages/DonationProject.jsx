@@ -478,7 +478,7 @@ useEffect(() => {
   }, [selType, selGender, selLevel, selSize, selCond, selProvince]);
 
   // ===== Meilisearch: debounced full-text search =====
-  const MEILI_BASE = (import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000");
+  const MEILI_BASE = (import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000"));
 
   const runMeiliSearch = useCallback(async (q, province) => {
     if (!q.trim()) { setMeiliHits(null); return; }

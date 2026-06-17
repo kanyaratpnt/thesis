@@ -9,11 +9,27 @@ import * as jose from "jose";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function verifyGoogleToken(idToken) {
+  const googleClientIds = String(
+    process.env.GOOGLE_CLIENT_IDS ||
+      process.env.GOOGLE_CLIENT_ID ||
+      process.env.VITE_GOOGLE_CLIENT_ID ||
+      ""
+  )
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
+
+  if (!googleClientIds.length) {
+    throw Object.assign(new Error("ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID บน backend"), {
+      status: 500,
+    });
+  }
+
   const JWKS = jose.createRemoteJWKSet(
     new URL("https://www.googleapis.com/oauth2/v3/certs")
   );
   const { payload } = await jose.jwtVerify(idToken, JWKS, {
-    audience: process.env.GOOGLE_CLIENT_ID,
+    audience: googleClientIds,
     issuer: ["https://accounts.google.com", "accounts.google.com"],
   });
   return payload;
@@ -450,6 +466,7 @@ export async function googleLogin({ idToken }) {
     payload = await verifyGoogleToken(idToken);
   } catch (err) {
     console.error("❌ verifyGoogleToken failed:", err.message);
+    if (err?.status === 500) throw err;
     throw Object.assign(new Error("Google token ไม่ถูกต้อง"), { status: 401 });
   }
 

@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import { GoogleLogin } from "@react-oauth/google";
 import "../../auth/styles/auth.css";
 
-const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
 
 const TH_MONTHS = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 

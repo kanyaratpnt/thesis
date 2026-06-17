@@ -47,7 +47,7 @@ export default function SchoolRequestCreatePage() {
     if (!imageFile) return null;
     const formData = new FormData();
     formData.append("file", imageFile);
-    const res = await fetch("http://localhost:3000/upload/image?type=project", {
+    const res = await fetch("/upload/image?type=project", {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

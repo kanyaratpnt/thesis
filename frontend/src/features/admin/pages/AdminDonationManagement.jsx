@@ -6,7 +6,7 @@ import ProfileDropdown from "../../auth/pages/ProfileDropdown.jsx";
 import NotificationBell from "../../../pages/NotificationBell.jsx";
 import "../styles/adminPages.css";
 
-const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
 
 const TRACKING_URLS = {
   "ไปรษณีย์ไทย":    (no) => `https://track.thailandpost.co.th/?trackNumber=${no}`,

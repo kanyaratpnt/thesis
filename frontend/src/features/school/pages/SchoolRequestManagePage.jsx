@@ -223,7 +223,7 @@ export default function SchoolRequestManagePage() {
   const handleCloseProject = async () => {
     try {
       setClosing(true);
-      const res = await fetch(`http://localhost:3000/school/projects/${requestId}/close`, {
+      const res = await fetch(`/school/projects/${requestId}/close`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });

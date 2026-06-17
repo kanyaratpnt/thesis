@@ -5,7 +5,7 @@ import { useAuth } from "../../../context/AuthContext.jsx";
 import { formatOrderNo } from "../../../utils/orderNo.js";
 import "../styles/PaymentSuccessPage.css";
  
-const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
  
 export default function PaymentSuccessPage() {
   const { user, token } = useAuth();

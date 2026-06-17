@@ -4,7 +4,7 @@ import { useAuth } from "../../../context/AuthContext.jsx";
 import { Icon } from "@iconify/react";
 import "../styles/Schooltestimonialpage.css";
 
-const BASE = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
+const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
 
 const STATUS_LABEL = { open: "กำลังดำเนินการ", closed: "ปิดรับบริจาคแล้ว", archived: "ปิดโครงการ" };
 const STATUS_CLASS = { open: "stBadgeOpen", closed: "stBadgeClosed", archived: "stBadgeArchived" };
