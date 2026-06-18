@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { useAuth } from "../../../context/AuthContext.jsx";
-import { getJson } from "../../../api/http.js";
+import { BASE_URL, getJson } from "../../../api/http.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faFilter } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../../../pages/Navbar.jsx";
@@ -289,17 +289,21 @@ export default function MarketPage() {
   const [typedKeyword,  setTypedKeyword]  = useState("");
   const [meiliHits,     setMeiliHits]     = useState(null); // null = offline/empty
   const [meiliLoading,  setMeiliLoading]  = useState(false);
+  const searchRequestRef = useRef(0);
 
-  // ── Meilisearch product search ─────────────────────────────────────────────
+  // The backend selects Meilisearch locally and ranked SQL in production.
   const runMeiliSearch = useCallback(async (q, filter, lvl) => {
     if (!q.trim()) { setMeiliHits(null); return; }
+    const requestId = ++searchRequestRef.current;
     setMeiliLoading(true);
     try {
       const params = new URLSearchParams({ q: q.trim(), limit: 60 });
-      if (filter?.category_id) params.set("uniform_type_id", filter.category_id);
+      if (filter?.category_id) params.set("category_id", filter.category_id);
       if (filter?.gender)      params.set("gender", filter.gender);
-      const res  = await fetch(`/api/search/products?${params}`);
+      const res  = await fetch(`${BASE_URL}/api/search/products?${params}`);
+      if (!res.ok) throw new Error("search unavailable");
       const data = await res.json();
+      if (requestId !== searchRequestRef.current) return;
       const hits = (data.hits || []).map(h => h.product_id);
       setMeiliHits(hits);
       // Fetch those exact products from /api/market by ID (preserves images etc.)
@@ -312,9 +316,15 @@ export default function MarketPage() {
         setTotalPages(1);
       }
     } catch {
-      setMeiliHits(null); // offline — fallback to MySQL search already running
+      if (requestId !== searchRequestRef.current) return;
+      setMeiliHits(null);
+      await fetchProductsRef.current(1, {
+        activeFilter: filter,
+        level: lvl,
+        search: q,
+      });
     } finally {
-      setMeiliLoading(false);
+      if (requestId === searchRequestRef.current) setMeiliLoading(false);
     }
   }, []);
 
@@ -346,8 +356,8 @@ export default function MarketPage() {
   const newDisplay = buildDisplayText(newFilter, level, typedKeyword);
   setDisplaySearch(newDisplay);
 
-  fetchProducts(1, { activeFilter: newFilter });
   if (typedKeyword.trim()) runMeiliSearch(typedKeyword, newFilter, level);
+  else fetchProducts(1, { activeFilter: newFilter });
 };
 
 const handleLevelChange = (e) => {
@@ -357,8 +367,8 @@ const handleLevelChange = (e) => {
   const newDisplay = buildDisplayText(activeFilter, newLevel, typedKeyword);
   setDisplaySearch(newDisplay);
 
-  fetchProducts(1, { level: newLevel });
   if (typedKeyword.trim()) runMeiliSearch(typedKeyword, activeFilter, newLevel);
+  else fetchProducts(1, { level: newLevel });
 };
 const handleSearchInput = (e) => {
   const val = e.target.value;
@@ -367,6 +377,7 @@ const handleSearchInput = (e) => {
   setSearch(val);
 
   if (!val.trim()) {
+    searchRequestRef.current += 1;
     setMeiliHits(null);
     fetchProducts(1, { search: "" }); // reset to full list
     return;
@@ -374,10 +385,7 @@ const handleSearchInput = (e) => {
 
   clearTimeout(debounceRef.current);
   debounceRef.current = setTimeout(() => {
-    // runMeiliSearch will call fetchProducts(ids=...) internally if online
-    // fetchProducts(search=val) runs as fallback if meili is offline
     runMeiliSearch(val, activeFilter, level);
-    fetchProducts(1, { search: val }); // MySQL fallback (overridden if meili responds)
   }, 300);
 };
 
@@ -420,7 +428,7 @@ fetchProductsRef.current = async (p = 1, overrides = {}) => {
 
     console.log('URL:', `/api/market?${params.toString()}`);
 
-    const res  = await fetch(`/api/market?${params}`);
+    const res  = await fetch(`${BASE_URL}/api/market?${params}`);
     const data = await res.json();
     
     setProducts(p === 1 ? (data.products || []) : prev => [...prev, ...(data.products || [])]);
@@ -483,6 +491,7 @@ const fuzzyMatch = (text, query) => {
   setSearch("");
   setDisplaySearch("");
   setTypedKeyword("");
+  searchRequestRef.current += 1;
   setMeiliHits(null);
   fetchProducts(1, {
     activeFilter: null,

@@ -1,4 +1,5 @@
 // src/config/meilisearch.js — Meilisearch client (local Docker)
+import "dotenv/config";
 import { Meilisearch } from "meilisearch";
 
 export const meili = new Meilisearch({

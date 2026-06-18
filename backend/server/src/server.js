@@ -3,6 +3,7 @@ import app from "./app.js";
 import { runMigrations } from "./config/migrate.js";
 import { initSocket } from "./config/socket.js";
 import { seedIndexes } from "./modules/search/search.service.js";
+import { searchProvider } from "./config/search.js";
 
 async function start() {
   await runMigrations();
@@ -15,9 +16,10 @@ async function start() {
 
   httpServer.listen(PORT, () => {
     console.log(`API + Socket.io running on :${PORT}`);
+    console.log(`[search] provider=${searchProvider}`);
   });
 
-  // Seed Meilisearch in background (won't crash server if Docker isn't running)
+  // Local development indexes Meilisearch; hosted deployments use SQL.
   seedIndexes().catch(err =>
     console.warn("[meilisearch] seed skipped (is Docker running?):", err.message)
   );

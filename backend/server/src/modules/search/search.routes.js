@@ -17,28 +17,28 @@ r.get("/projects", async (req, res, next) => {
     });
     res.json(result);
   } catch (err) {
-    // If Meilisearch is not running, return empty gracefully
-    console.warn("[search] Meilisearch unavailable:", err.message);
-    res.json({ hits: [], estimatedTotalHits: 0 });
+    console.error("[search] project search failed:", err.message);
+    next(err);
   }
 });
 
 /**
- * GET /api/search/products?q=...&gender=...&uniform_type_id=...&limit=40
+ * GET /api/search/products?q=...&gender=...&category_id=...&uniform_type_id=...&limit=40
  */
 r.get("/products", async (req, res, next) => {
   try {
-    const { q = "", gender, uniform_type_id, school_id, limit } = req.query;
+    const { q = "", gender, uniform_type_id, category_id, school_id, limit } = req.query;
     const result = await searchProducts(q, {
       gender,
       uniform_type_id: uniform_type_id ? Number(uniform_type_id) : undefined,
+      category_id:     category_id     ? Number(category_id)     : undefined,
       school_id:       school_id       ? Number(school_id)       : undefined,
       limit:           Math.min(Number(limit) || 40, 200),
     });
     res.json(result);
   } catch (err) {
-    console.warn("[search] Meilisearch unavailable:", err.message);
-    res.json({ hits: [], estimatedTotalHits: 0 });
+    console.error("[search] product search failed:", err.message);
+    next(err);
   }
 });
 
