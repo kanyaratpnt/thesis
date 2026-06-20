@@ -155,7 +155,7 @@ export default function SellerProductsPage() {
 
   return (
     <>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
+      <div className="slPageHeader">
         <div>
           <div className="slBreadcrumb">จัดการร้านค้า</div>
           <h1 className="slPageTitle" style={{ marginBottom:0 }}>รายการสินค้า</h1>
@@ -255,7 +255,7 @@ export default function SellerProductsPage() {
               )}
 
               {!loading && data?.rows?.length > 0 && (
-                <table className="slTable">
+                <div className="slTableScroll"><table className="slTable">
                   <thead>
                     <tr>
                       <th style={{ width: 40 }}>
@@ -332,7 +332,7 @@ export default function SellerProductsPage() {
                       );
                     })}
                   </tbody>
-                </table>
+                </table></div>
               )}
 
               {/* Pagination */}
@@ -415,8 +415,8 @@ export default function SellerProductsPage() {
 function ProductDetailModal({ product, onClose }) {
   if (!product) return null;
   return (
-    <div style={overlayStyle} onClick={onClose}>
-      <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+    <div style={overlayStyle} className="slModalOverlay" onClick={onClose}>
+      <div style={modalStyle} className="slModal" onClick={(e) => e.stopPropagation()}>
         <h3 style={{ marginTop: 0 }}>{product.product_title}</h3>
         <div style={{ display: "grid", gap: 8, fontSize: 14 }}>
           <div>ราคา: {fmtBaht(product.price)}</div>
@@ -616,8 +616,8 @@ function EditProductModal({ product, onClose, onSave }) {
 
   if (loadErr) {
     return (
-      <div style={overlayStyle} onClick={onClose}>
-        <div style={modalBoxStyle} onClick={(e) => e.stopPropagation()}>
+      <div style={overlayStyle} className="slModalOverlay" onClick={onClose}>
+        <div style={modalBoxStyle} className="slModal" onClick={(e) => e.stopPropagation()}>
           <p style={{ color: "#b91c1c", marginTop: 0 }}>{loadErr}</p>
           <button type="button" className="slBtnPrimary slBtn" style={{ marginTop: 12 }} onClick={onClose}>
             ปิด
@@ -629,8 +629,8 @@ function EditProductModal({ product, onClose, onSave }) {
 
   if (!form) {
     return (
-      <div style={overlayStyle} onClick={onClose}>
-        <div style={modalBoxStyle} onClick={(e) => e.stopPropagation()}>
+      <div style={overlayStyle} className="slModalOverlay" onClick={onClose}>
+        <div style={modalBoxStyle} className="slModal" onClick={(e) => e.stopPropagation()}>
           <p style={{ margin: 0 }}>กำลังโหลดข้อมูลสินค้า...</p>
         </div>
       </div>
@@ -681,8 +681,8 @@ function EditProductModal({ product, onClose, onSave }) {
   };
 
   return (
-    <div style={overlayStyle} onClick={onClose}>
-      <div style={modalBoxStyle} className="editProductModal" onClick={(e) => e.stopPropagation()}>
+    <div style={overlayStyle} className="slModalOverlay" onClick={onClose}>
+      <div style={modalBoxStyle} className="editProductModal slModal" onClick={(e) => e.stopPropagation()}>
         <h3 style={{ marginTop: 0 }}>แก้ไขสินค้า</h3>
 
         <div className="ppSection">

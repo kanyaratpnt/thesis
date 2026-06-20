@@ -362,8 +362,8 @@ function BankModal({ initial, onClose, onSaved }) {
   const selectedBank = BANK_LIST.find(b => b.code === form.bank_code);
 
   return (
-    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:50 }}>
-      <div className="slCard" style={{ width:420 }}>
+    <div className="slModalOverlay" style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:50 }}>
+      <div className="slCard slModal" style={{ width:420 }}>
         <h3 style={{ marginTop:0 }}>แก้ไขบัญชีรับเงิน</h3>
 
         <label style={{ fontSize:13 }}>ธนาคาร</label>

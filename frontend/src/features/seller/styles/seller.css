@@ -40,6 +40,16 @@
   display:flex; flex-direction:column;
   padding: 16px 12px; position:sticky; top:0; height:100vh;
 }
+.slMobileMenuBtn,
+.slSideClose,
+.slSideOverlay { display:none; }
+.slPageHeader {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  margin-bottom:14px;
+}
 .slBrand { display:flex; gap:10px; padding: 10px 8px 14px; align-items:center; border-bottom: 1px solid #f1f5f9; margin-bottom: 6px; }
 .slBrandTitle { font-weight:700; line-height:1.1; }
 .slBrandSub { font-size:11px; color:#94a3b8; }
@@ -1048,6 +1058,173 @@ table.slTable { width:100%; border-collapse: collapse; }
   .slTimeFilter__range input { flex:1; }
   .slTxnExpand__meta,
   .slStatGrid--dashboard { grid-template-columns:1fr; }
+}
+
+/* ─── Seller mobile layout ──────────────────────────────── */
+@media (max-width: 820px) {
+  .slShell { display:block; min-height:100dvh; }
+  .slMain {
+    width:100%;
+    min-width:0;
+    padding:68px 14px 24px;
+    overflow-x:hidden;
+  }
+  .slMobileMenuBtn {
+    position:fixed;
+    top:12px;
+    left:14px;
+    z-index:32;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:42px;
+    height:42px;
+    border:1px solid #dbeafe;
+    border-radius:12px;
+    background:#fff;
+    color:#1d4ed8;
+    font-size:25px;
+    box-shadow:0 8px 24px -12px rgba(15,23,42,.45);
+    cursor:pointer;
+  }
+  .slSideOverlay {
+    position:fixed;
+    inset:0;
+    z-index:39;
+    display:block;
+    background:rgba(15,23,42,.48);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  .slSideOverlay.open { opacity:1; pointer-events:auto; }
+  .slSide {
+    position:fixed;
+    inset:0 auto 0 0;
+    z-index:40;
+    width:min(82vw, 290px);
+    height:100dvh;
+    padding:16px 12px;
+    transform:translateX(-105%);
+    transition:transform .22s ease;
+    box-shadow:18px 0 40px -24px rgba(15,23,42,.55);
+    overflow-y:auto;
+  }
+  .slSide.open { transform:translateX(0); }
+  .slSideClose {
+    position:absolute;
+    top:12px;
+    right:10px;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:36px;
+    height:36px;
+    border:0;
+    border-radius:10px;
+    background:#f1f5f9;
+    color:#475569;
+    font-size:22px;
+    cursor:pointer;
+  }
+  .slLogoTop { padding-right:42px; }
+  .slPageHeader { align-items:flex-end; }
+  .slPageTitle { font-size:20px; margin-bottom:14px; }
+  .slBreadcrumb { font-size:12px; }
+  .slCard { border-radius:12px; padding:14px; }
+  .slStatGrid,
+  .slIncomeGrid,
+  .slProdGrid { grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; }
+  .slStatValue,
+  .slProdValue { font-size:22px; }
+  .slIncomeCard__value { font-size:19px; overflow-wrap:anywhere; }
+  .slDashboardHero { padding:18px; border-radius:15px; }
+  .slDashboardHero__title { font-size:21px; }
+  .slDashboardHero__right { width:100%; }
+  .slDashboardHero__right > * { flex:1; justify-content:center; }
+  .slTimeFilter { position:static; padding:10px; }
+  .slTimeFilter__chips,
+  .slPayoutsTimeFilter__chips { flex-wrap:nowrap; width:100%; overflow-x:auto; padding-bottom:3px; }
+  .slTimeFilter__chips button,
+  .slPayoutsTimeFilter__chips button { flex:0 0 auto; }
+  .slTimeFilter__label { width:100%; }
+  .slRevenueShot { min-height:160px; padding:16px; }
+  .slRevenueShot strong { font-size:27px; }
+  .slIncomeChartFrame { height:260px; }
+  .slTabs {
+    gap:18px;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:none;
+  }
+  .slTabs::-webkit-scrollbar { display:none; }
+  .slTab { flex:0 0 auto; white-space:nowrap; }
+  .slToolbar { align-items:stretch; }
+  .slSearch { flex-basis:100%; min-width:0; }
+  .slSelect { flex:1; min-width:0; }
+  .slTableScroll {
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .slTableScroll > table,
+  table.slTable { min-width:680px; }
+  .slOrderCard { padding:14px; }
+  .slOrderHead,
+  .slOrderFoot { align-items:flex-start; gap:10px; }
+  .slOrderHead > div { min-width:0; }
+  .slOrderDate { display:block; margin:4px 0 0; }
+  .slOrderBadge { flex-shrink:0; }
+  .slOrderBody { gap:14px; }
+  .slOrderItem { align-items:flex-start; }
+  .slOrderItem > span:nth-child(2) { min-width:0; overflow-wrap:anywhere; }
+  .slOrderItem__price { flex-shrink:0; }
+  .slOrderFoot { flex-direction:column; }
+  .slOrderActions { width:100%; }
+  .slOrderActions .slBtn { flex:1; }
+  .slIncomeColumns { gap:12px; }
+  .slBankCard__row { min-width:0; }
+  .slBankCard__row > div:last-child { min-width:0; overflow-wrap:anywhere; }
+  .slHistoryFilter { align-items:stretch; }
+  .slHistoryFilter label { width:100%; justify-content:space-between; }
+  .slHistoryFilter input { flex:1; min-width:0; }
+  .slFeeTable__row { gap:10px; }
+  .slFeeTable__row > :first-child { min-width:0; }
+  .slFeeTable__row > :last-child { flex-shrink:0; }
+  .slPaging { gap:12px; flex-wrap:wrap; }
+  .slModalOverlay { padding:14px; align-items:center !important; }
+  .slModal {
+    width:100% !important;
+    max-width:100% !important;
+    max-height:calc(100dvh - 28px) !important;
+    overflow-y:auto;
+    padding:16px !important;
+  }
+  .editProductModal .ppCatTabs,
+  .editProductModal .ppChipGroup { overflow-x:auto; flex-wrap:nowrap; padding-bottom:3px; }
+  .editProductModal .ppCatTab,
+  .editProductModal .ppChip { flex:0 0 auto; }
+}
+
+@media (max-width: 480px) {
+  .slMain { padding-left:10px; padding-right:10px; }
+  .slPageHeader { align-items:flex-start; }
+  .slPageHeader .slBtn { white-space:nowrap; padding:8px 11px; }
+  .slStatGrid,
+  .slIncomeGrid,
+  .slProdGrid { grid-template-columns:1fr; }
+  .slRevenueShotGrid { gap:10px; }
+  .slSectionHead,
+  .slDetailHeader { align-items:flex-start; }
+  .slDetailTabs { width:100%; overflow-x:auto; white-space:nowrap; }
+  .slPayoutsTimeFilter__range,
+  .slPayoutsTimeFilter__range label { width:100%; }
+  .slPayoutsTimeFilter__range input { flex:1; min-width:0; }
+  .slBankCard__row { padding:12px; }
+  .slOrderActions { flex-direction:column; }
+  .slOrderActions .slBtn { width:100%; }
+  .slEmpty { padding:44px 10px; }
 }
 
 /* ─── History filter (SellerPayoutsPage) ─────────────────── */

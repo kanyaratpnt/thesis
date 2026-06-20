@@ -332,8 +332,8 @@ function SellerOrderDetailModal({ row, onClose }) {
   const net           = Number(row.seller_payout_amount || 0);
 
   return (
-    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,.45)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:60 }} onClick={onClose}>
-      <div className="slCard" style={{ width:"100%", maxWidth:700, maxHeight:"90vh", overflowY:"auto" }} onClick={(e) => e.stopPropagation()}>
+    <div className="slModalOverlay" style={{ position:"fixed", inset:0, background:"rgba(15,23,42,.45)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:60 }} onClick={onClose}>
+      <div className="slCard slModal" style={{ width:"100%", maxWidth:700, maxHeight:"90vh", overflowY:"auto" }} onClick={(e) => e.stopPropagation()}>
 
         {/* Header */}
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
@@ -367,7 +367,7 @@ function SellerOrderDetailModal({ row, onClose }) {
         </div>
 
         {/* Items table */}
-        <div style={{ border:"1px solid #e2e8f0", borderRadius:10, overflow:"hidden", marginBottom:14 }}>
+        <div className="slTableScroll" style={{ border:"1px solid #e2e8f0", borderRadius:10, marginBottom:14 }}>
           <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
             <thead>
               <tr style={{ background:"#f1f5f9" }}>

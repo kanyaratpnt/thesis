@@ -8,6 +8,7 @@ import "../styles/seller.css";
 export default function SellerLayout() {
   const { userName, logout } = useAuth();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [productsBadge, setProductsBadge]  = useState(0);
   const [ordersBadge,   setOrdersBadge]    = useState(0);
 
@@ -34,9 +35,27 @@ export default function SellerLayout() {
 
   const handleLogout = () => { logout?.(); navigate("/login"); };
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   return (
     <div className="slShell">
-      <aside className="slSide">
+      <button
+        type="button"
+        className="slMobileMenuBtn"
+        aria-label="เปิดเมนูร้านค้า"
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen(true)}
+      >
+        <Icon icon="mdi:menu" />
+      </button>
+      <div className={`slSideOverlay ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(false)} />
+      <aside className={`slSide ${menuOpen ? "open" : ""}`}>
+        <button type="button" className="slSideClose" aria-label="ปิดเมนู" onClick={() => setMenuOpen(false)}>
+          <Icon icon="mdi:close" />
+        </button>
         {/* Platform logo at the very top */}
         <div className="slLogoTop">
           <img src="/unieed_pic/logo2.png" alt="Unieed" className="slLogoImg" />
@@ -56,25 +75,25 @@ export default function SellerLayout() {
         </div>
 
         <div className="slSection">ภาพรวม</div>
-        <NavLink to="/seller" end className={({isActive}) => isActive ? "slItem active" : "slItem"}>
+        <NavLink to="/seller" end onClick={() => setMenuOpen(false)} className={({isActive}) => isActive ? "slItem active" : "slItem"}>
           <Icon icon="mdi:view-dashboard-outline" /> Dashboard
         </NavLink>
 
         <div className="slSection">จัดการร้านค้า</div>
-        <NavLink to="/seller/products" className={({isActive}) => isActive ? "slItem active" : "slItem"}>
+        <NavLink to="/seller/products" onClick={() => setMenuOpen(false)} className={({isActive}) => isActive ? "slItem active" : "slItem"}>
           <Icon icon="mdi:package-variant-closed" /> รายการสินค้า
           {productsBadge > 0 && <span className="slBadge">{productsBadge}</span>}
         </NavLink>
-        <NavLink to="/seller/orders" className={({isActive}) => isActive ? "slItem active" : "slItem"}>
+        <NavLink to="/seller/orders" onClick={() => setMenuOpen(false)} className={({isActive}) => isActive ? "slItem active" : "slItem"}>
           <Icon icon="mdi:receipt-text-outline" /> คำสั่งซื้อ
           {ordersBadge > 0 && <span className="slBadge">{ordersBadge}</span>}
         </NavLink>
-        <NavLink to="/seller/orders?tab=shipped" className={({isActive}) => isActive ? "slItem active" : "slItem"}>
+        <NavLink to="/seller/orders?tab=shipped" onClick={() => setMenuOpen(false)} className={({isActive}) => isActive ? "slItem active" : "slItem"}>
           <Icon icon="mdi:truck-fast-outline" /> การจัดส่ง
         </NavLink>
 
         <div className="slSection">การเงิน</div>
-        <NavLink to="/seller/payouts" className={({isActive}) => isActive ? "slItem active" : "slItem"}>
+        <NavLink to="/seller/payouts" onClick={() => setMenuOpen(false)} className={({isActive}) => isActive ? "slItem active" : "slItem"}>
           <Icon icon="mdi:cash-multiple" /> รายได้และการโอนเงิน
         </NavLink>
 
