@@ -27,8 +27,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="lgPage">
-      <div className="lgCardForgot">
+    <div className="lgPage lgForgotPage">
+      <div className="lgCardForgot lgCardForgotResponsive">
 
         {/* ===== LEFT PANEL ===== */}
         <div className="lgLeftPanel">
@@ -87,6 +87,8 @@ export default function ForgotPasswordPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@email.com"
+                      inputMode="email"
+                      autoComplete="email"
                       required
                     />
                   </div>
