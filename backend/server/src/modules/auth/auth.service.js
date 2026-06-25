@@ -5,6 +5,7 @@ import validator from "validator";
 import crypto from "crypto";
 import { Resend } from "resend";
 import * as jose from "jose";
+import { isValidAsciiEmail } from "../../utils/emailValidation.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -199,7 +200,7 @@ export async function registerSchoolOneStep(payload) {
 
   const cleanUserName = String(user_name).trim();
   const email = cleanEmail(user_email);
-  if (!validator.isEmail(email)) {
+  if (!isValidAsciiEmail(email)) {
     throw Object.assign(new Error("รูปแบบอีเมลไม่ถูกต้อง"), { status: 400 });
   }
 

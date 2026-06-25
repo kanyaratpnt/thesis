@@ -13,7 +13,13 @@ function normalizeThaiPhone(input) {
 }
 
 function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const value = String(email || "").trim();
+  if (![...value].every((char) => char.charCodeAt(0) <= 127)) return false;
+  if (!/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/.test(value)) return false;
+
+  const [localPart, domain] = value.split("@");
+  if (localPart.startsWith(".") || localPart.endsWith(".") || localPart.includes("..")) return false;
+  return domain.split(".").every((label) => label && !label.startsWith("-") && !label.endsWith("-"));
 }
 
 function StepBar({ step, total = 3 }) {

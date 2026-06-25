@@ -1,5 +1,6 @@
 import * as svc from "./auth.service.js";
 import validator from "validator";
+import { isValidAsciiEmail } from "../../utils/emailValidation.js";
 
 function cleanEmail(raw) {
   return (raw || "").trim().toLowerCase();
@@ -19,7 +20,7 @@ export async function registerGeneral(req, res, next) {
 export async function registerSchoolOneStep(req, res, next) {
   try {
     const user_email = cleanEmail(req.body?.user_email);
-    if (!validator.isEmail(user_email)) {
+    if (!isValidAsciiEmail(user_email)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
     const result = await svc.registerSchoolOneStep({ ...req.body, user_email });
