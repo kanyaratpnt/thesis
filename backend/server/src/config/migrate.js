@@ -78,6 +78,15 @@ export async function runMigrations() {
     // ── students (รหัสนักเรียน) ───────────────────────────
     await addColumnIfMissing("students", "student_code", "VARCHAR(50) NULL DEFAULT NULL");
 
+    // จุดเริ่มของระยะเวลารับต่อเนื่อง (ต้องคงเดิมเมื่อย้ายไปโครงการใหม่)
+    await addColumnIfMissing("student_need", "recurring_started_at", "DATETIME NULL DEFAULT NULL");
+    await db.query(`
+      UPDATE student_need
+      SET recurring_started_at = created_at
+      WHERE support_mode = 'recurring'
+        AND recurring_started_at IS NULL
+    `);
+
     // Backfill student_code สำหรับนักเรียนที่มีอยู่แล้ว (student_code = NULL)
     try {
       const [noCodeStudents] = await db.query(

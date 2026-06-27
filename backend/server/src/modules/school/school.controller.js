@@ -449,6 +449,7 @@ export async function listProjectStudents(req, res, next) {
               sn.status,
               sn.support_mode,
               sn.support_years,
+              sn.recurring_started_at,
               sn.created_at,
               sn.updated_at
        FROM student_need sn
@@ -674,14 +675,15 @@ export async function createStudentWithNeeds(req, res) {
         `INSERT INTO student_need
            (school_id, student_id, uniform_type_id, size,
             quantity_needed, quantity_received,
-            status, support_mode, support_years, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+            status, support_mode, support_years, recurring_started_at, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
         [
           school_id, student_id,
           n.uniform_type_id, n.size,
           needQty, recvQty, status,
           n.support_mode || "one_time",
           n.support_mode === "recurring" ? Number(n.support_years || 1) : null,
+          n.support_mode === "recurring" ? new Date() : null,
         ]
       );
     }
@@ -758,7 +760,7 @@ export async function updateStudentWithNeeds(req, res) {
       const [existingNeeds] = await conn.query(
         `SELECT student_need_id, uniform_type_id, size,
                 quantity_needed, quantity_received, status,
-                support_mode, support_years
+                support_mode, support_years, recurring_started_at
          FROM student_need
          WHERE student_id = ? AND school_id = ?`,
         [student_id, school_id]
@@ -781,7 +783,7 @@ export async function updateStudentWithNeeds(req, res) {
           await conn.query(
             `UPDATE student_need
              SET quantity_needed = ?, quantity_received = ?, status = ?,
-                 support_mode = ?, support_years = ?, updated_at = NOW()
+                 support_mode = ?, support_years = ?, recurring_started_at = ?, updated_at = NOW()
              WHERE student_need_id = ? AND school_id = ?`,
             [
               need,
@@ -790,6 +792,9 @@ export async function updateStudentWithNeeds(req, res) {
               n.support_mode || match.support_mode || "one_time",
               (n.support_mode || match.support_mode) === "recurring"
                 ? Number(n.support_years || match.support_years || 1)
+                : null,
+              (n.support_mode || match.support_mode) === "recurring"
+                ? (match.recurring_started_at || new Date())
                 : null,
               match.student_need_id,
               school_id,
@@ -802,8 +807,8 @@ export async function updateStudentWithNeeds(req, res) {
             `INSERT INTO student_need
                (school_id, student_id, uniform_type_id, size,
                 quantity_needed, quantity_received,
-                status, support_mode, support_years, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+                status, support_mode, support_years, recurring_started_at, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
             [
               school_id,
               student_id,
@@ -814,6 +819,7 @@ export async function updateStudentWithNeeds(req, res) {
               status,
               n.support_mode || "one_time",
               n.support_mode === "recurring" ? Number(n.support_years || 1) : null,
+              n.support_mode === "recurring" ? new Date() : null,
             ]
           );
           byKey.set(key, {
@@ -827,6 +833,20 @@ export async function updateStudentWithNeeds(req, res) {
       }
     } else {
       // แก้ไขจากฟอร์ม: แทนที่รายการชุดทั้งหมดตามที่ส่งมา
+      // รักษาจุดเริ่มเดิมไว้ เพื่อไม่ให้การแก้ไขรีเซ็ตอายุการรับต่อเนื่อง
+      const [previousNeeds] = await conn.query(
+        `SELECT uniform_type_id, size, recurring_started_at
+         FROM student_need
+         WHERE student_id = ? AND school_id = ?`,
+        [student_id, school_id]
+      );
+      const recurringStartByKey = new Map(
+        previousNeeds.map((need) => [
+          needMatchKey(need.uniform_type_id, need.size),
+          need.recurring_started_at,
+        ])
+      );
+
       await conn.query(
         `DELETE FROM student_need WHERE student_id=? AND school_id=?`,
         [student_id, school_id]
@@ -842,8 +862,8 @@ export async function updateStudentWithNeeds(req, res) {
           `INSERT INTO student_need
              (school_id, student_id, uniform_type_id, size,
               quantity_needed, quantity_received,
-              status, support_mode, support_years, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+              status, support_mode, support_years, recurring_started_at, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
           [
             school_id,
             student_id,
@@ -854,6 +874,9 @@ export async function updateStudentWithNeeds(req, res) {
             status,
             n.support_mode || "one_time",
             n.support_mode === "recurring" ? Number(n.support_years || 1) : null,
+            n.support_mode === "recurring"
+              ? (recurringStartByKey.get(needMatchKey(n.uniform_type_id, n.size)) || new Date())
+              : null,
           ]
         );
       }
@@ -901,75 +924,84 @@ export async function deleteStudent(req, res) {
 }
  
 export async function createProject(req, res, next) {
+  const school_id = req.user?.school_id;
+  if (!school_id) return res.status(401).json({ message: "Unauthorized" });
+
+  const {
+    request_title,
+    request_description,
+    request_image_url,
+    request_image_public_id,
+    start_date,
+    end_date,
+  } = req.body;
+
+  if (!request_title?.trim()) {
+    return res.status(400).json({ message: "กรุณากรอกชื่อโครงการ" });
+  }
+  if (!start_date || isNaN(Date.parse(start_date))) {
+    return res.status(400).json({ message: "กรุณาเลือกวันเริ่มต้นโครงการ" });
+  }
+  if (!end_date || isNaN(Date.parse(end_date))) {
+    return res.status(400).json({ message: "กรุณาเลือกวันสิ้นสุดโครงการ" });
+  }
+  if (new Date(end_date) <= new Date(start_date)) {
+    return res.status(400).json({ message: "วันสิ้นสุดต้องอยู่หลังวันเริ่มต้น" });
+  }
+
+  const diffMs = new Date(end_date) - new Date(start_date);
+  const durationMonths = Math.max(1, Math.round(diffMs / (1000 * 60 * 60 * 24 * 30)));
+  const conn = await db.getConnection();
+
   try {
-    const school_id = req.user?.school_id;
-    if (!school_id) return res.status(401).json({ message: "Unauthorized" });
-
-    const {
-      request_title,
-      request_description,
-      request_image_url,
-      request_image_public_id,
-      start_date,
-      end_date,
-    } = req.body;
-
-    if (!request_title?.trim()) {
-      return res.status(400).json({ message: "กรุณากรอกชื่อโครงการ" });
-    }
-    if (!start_date || isNaN(Date.parse(start_date))) {
-      return res.status(400).json({ message: "กรุณาเลือกวันเริ่มต้นโครงการ" });
-    }
-    if (!end_date || isNaN(Date.parse(end_date))) {
-      return res.status(400).json({ message: "กรุณาเลือกวันสิ้นสุดโครงการ" });
-    }
-    if (new Date(end_date) <= new Date(start_date)) {
-      return res.status(400).json({ message: "วันสิ้นสุดต้องอยู่หลังวันเริ่มต้น" });
-    }
-
-    // เช็คโครงการ active ล่าสุดเท่านั้น ป้องกัน MySQL หยิบโครงการเก่าแบบไม่แน่นอน
-    const [existing] = await db.query(
+    await conn.beginTransaction();
+    // หยิบโครงการล่าสุดแม้จะ archive แล้ว เพราะรายการรับต่อเนื่องยังต้องถูกย้ายมา
+    const [existing] = await conn.query(
       `SELECT request_id, status, end_date FROM donation_request
-       WHERE school_id = ? AND status IN ('open','closed')
+       WHERE school_id = ? AND status IN ('open','closed','archived')
        ORDER BY request_id DESC
-       LIMIT 1`,
+       LIMIT 1
+       FOR UPDATE`,
       [school_id]
     );
+    let previousRequestId = null;
+
     if (existing[0]) {
       if (existing[0].status === 'open') {
+        await conn.rollback();
         return res.status(400).json({ message: "มีโครงการที่ยังเปิดอยู่ กรุณาปิดโครงการก่อนสร้างใหม่" });
       }
 
-      // status === 'closed' → เช็ค pending และวันที่ผ่านไป
-      const [pendingRows] = await db.query(
-        `SELECT COUNT(*) as cnt FROM donation_record WHERE request_id = ? AND status = 'pending'`,
-        [existing[0].request_id]
-      );
-      const pendingCount = Number(pendingRows[0].cnt);
-      const endDate = new Date(existing[0].end_date);
-      const daysSinceClosed = Math.floor((Date.now() - endDate.getTime()) / (1000 * 60 * 60 * 24));
-      const daysRemaining = Math.max(0, 14 - daysSinceClosed);
+      previousRequestId = existing[0].request_id;
+      if (existing[0].status === 'closed') {
+        // status === 'closed' → เช็ค pending และวันที่ผ่านไป
+        const [pendingRows] = await conn.query(
+          `SELECT COUNT(*) as cnt FROM donation_record WHERE request_id = ? AND status = 'pending'`,
+          [previousRequestId]
+        );
+        const pendingCount = Number(pendingRows[0].cnt);
+        const endDate = new Date(existing[0].end_date);
+        const daysSinceClosed = Math.floor((Date.now() - endDate.getTime()) / (1000 * 60 * 60 * 24));
+        const daysRemaining = Math.max(0, 14 - daysSinceClosed);
 
-      if (pendingCount > 0 && daysRemaining > 0) {
-        return res.status(400).json({
-          message: "ยังมีรายการบริจาคค้างอยู่",
-          pending_count: pendingCount,
-          days_remaining: daysRemaining,
-        });
+        if (pendingCount > 0 && daysRemaining > 0) {
+          await conn.rollback();
+          return res.status(400).json({
+            message: "ยังมีรายการบริจาคค้างอยู่",
+            pending_count: pendingCount,
+            days_remaining: daysRemaining,
+          });
+        }
+
+        // เคลียร์แล้ว หรือ 14 วันผ่านแล้ว → archive โครงการเก่า
+        await conn.query(
+          `UPDATE donation_request SET status='archived' WHERE request_id=?`,
+          [previousRequestId]
+        );
       }
-
-      // เคลียร์แล้ว หรือ 14 วันผ่านแล้ว → archive โครงการเก่าแล้วสร้างใหม่ได้
-      await db.query(
-        `UPDATE donation_request SET status='archived' WHERE request_id=?`,
-        [existing[0].request_id]
-      );
     }
 
-    // คำนวณ duration_months จาก start → end (round เป็นเดือน)
-    const diffMs = new Date(end_date) - new Date(start_date);
-    const durationMonths = Math.max(1, Math.round(diffMs / (1000 * 60 * 60 * 24 * 30)));
-
-    const [result] = await db.query(
+    const [result] = await conn.query(
       `INSERT INTO donation_request
         (school_id, request_title, request_description, request_image_url, request_image_public_id, status, duration_months, start_date, end_date, created_at)
        VALUES (?, ?, ?, ?, ?, 'open', ?, ?, ?, NOW())`,
@@ -985,9 +1017,101 @@ export async function createProject(req, res, next) {
       ]
     );
 
-    return res.json({ request_id: result.insertId });
+    let carriedStudents = 0;
+    let carriedNeeds = 0;
+
+    if (previousRequestId) {
+      // คัดลอกเฉพาะความต้องการแบบต่อเนื่องที่ยังอยู่ในช่วงเวลาของวันเริ่มโครงการใหม่
+      const [recurringNeeds] = await conn.query(
+        `SELECT st.student_id, st.student_name, st.education_level,
+                st.education_level_group, st.gender, st.urgency,
+                sn.uniform_type_id, sn.size, sn.quantity_needed,
+                sn.support_years,
+                COALESCE(sn.recurring_started_at, sn.created_at) AS recurring_started_at
+         FROM students st
+         JOIN student_need sn ON sn.student_id = st.student_id AND sn.school_id = st.school_id
+         WHERE st.school_id = ?
+           AND st.request_id = ?
+           AND sn.support_mode = 'recurring'
+           AND sn.support_years > 0
+           AND DATE_ADD(
+                 COALESCE(sn.recurring_started_at, sn.created_at),
+                 INTERVAL sn.support_years YEAR
+               ) > DATE(?)
+         ORDER BY st.student_id, sn.student_need_id`,
+        [school_id, previousRequestId, start_date]
+      );
+
+      const needsByStudent = new Map();
+      for (const row of recurringNeeds) {
+        if (!needsByStudent.has(row.student_id)) needsByStudent.set(row.student_id, []);
+        needsByStudent.get(row.student_id).push(row);
+      }
+
+      const [[{ max_num }]] = await conn.query(
+        `SELECT MAX(CAST(student_code AS UNSIGNED)) AS max_num
+         FROM students
+         WHERE school_id = ? AND student_code IS NOT NULL
+         FOR UPDATE`,
+        [school_id]
+      );
+      let nextStudentCode = Number(max_num) || 0;
+
+      for (const studentNeeds of needsByStudent.values()) {
+        const student = studentNeeds[0];
+        nextStudentCode += 1;
+        const studentCode = String(nextStudentCode).padStart(5, "0");
+        const [studentResult] = await conn.query(
+          `INSERT INTO students
+             (school_id, request_id, student_name, education_level,
+              education_level_group, gender, urgency, student_code, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+          [
+            school_id,
+            result.insertId,
+            student.student_name,
+            student.education_level,
+            student.education_level_group || resolveGroup(student.education_level),
+            student.gender,
+            student.urgency,
+            studentCode,
+          ]
+        );
+
+        for (const need of studentNeeds) {
+          await conn.query(
+            `INSERT INTO student_need
+               (school_id, student_id, uniform_type_id, size,
+                quantity_needed, quantity_received, status,
+                support_mode, support_years, recurring_started_at, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, 0, 'pending', 'recurring', ?, ?, NOW(), NOW())`,
+            [
+              school_id,
+              studentResult.insertId,
+              need.uniform_type_id,
+              need.size,
+              need.quantity_needed,
+              need.support_years,
+              need.recurring_started_at,
+            ]
+          );
+          carriedNeeds += 1;
+        }
+        carriedStudents += 1;
+      }
+    }
+
+    await conn.commit();
+    return res.json({
+      request_id: result.insertId,
+      carried_students: carriedStudents,
+      carried_needs: carriedNeeds,
+    });
   } catch (err) {
+    await conn.rollback();
     next(err);
+  } finally {
+    conn.release();
   }
 }
  
