@@ -927,10 +927,12 @@ export async function createProject(req, res, next) {
       return res.status(400).json({ message: "วันสิ้นสุดต้องอยู่หลังวันเริ่มต้น" });
     }
 
-    // เช็คว่ามีโครงการที่ยัง open หรือ closed อยู่มั้ย
+    // เช็คโครงการ active ล่าสุดเท่านั้น ป้องกัน MySQL หยิบโครงการเก่าแบบไม่แน่นอน
     const [existing] = await db.query(
       `SELECT request_id, status, end_date FROM donation_request
-       WHERE school_id = ? AND status IN ('open','closed') LIMIT 1`,
+       WHERE school_id = ? AND status IN ('open','closed')
+       ORDER BY request_id DESC
+       LIMIT 1`,
       [school_id]
     );
     if (existing[0]) {
@@ -997,7 +999,7 @@ export async function listSchoolProjects(req, res, next) {
       `SELECT request_id, request_title, request_image_url, status, created_at, start_date, duration_months, end_date
        FROM donation_request
        WHERE school_id = ?
-       ORDER BY created_at DESC`,
+       ORDER BY created_at DESC, request_id DESC`,
       [school_id]
     );
 
