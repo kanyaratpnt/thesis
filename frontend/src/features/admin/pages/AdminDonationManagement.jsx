@@ -570,8 +570,8 @@ export default function AdminDonationManagement() {
                   <ProjectStatusBadge status={proj.project_status} />
                   <span style={{ fontSize:12, color:"#94a3b8" }}>{proj.donations.length} รายการ</span>
                 </div>
-                <div style={{ overflowX:"auto" }}>
-                  <table style={{ width:"100%", borderCollapse:"collapse", minWidth:900 }}>
+                <div className="admDonationTableWrap" style={{ overflowX:"auto" }}>
+                  <table className="admDonationTable" style={{ width:"100%", borderCollapse:"collapse", minWidth:900 }}>
                     <thead>
                       <tr style={{ background:"#f8fafc" }}>
                         {["วันที่บริจาค","ผู้บริจาค","ข้อมูลการจัดส่ง","หลักฐาน","รายการบริจาค","สถานะ","จัดการ"].map(h => (

@@ -569,7 +569,7 @@ export default function AdminWrongItemPage() {
       {/* ── Search + Filter (one row) ────────────────────────────────────────── */}
       {mainView === "list" && <>
       <div className="admWrongItemFilters" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 9, padding: "7px 12px", flex: "1 1 0" }}>
+        <div className="admWrongItemSearch" style={{ display: "flex", alignItems: "center", gap: 8, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 9, padding: "7px 12px", flex: "1 1 0" }}>
           <Icon icon="mdi:magnify" width={16} color="#94a3b8" />
           <input
             value={search}
@@ -579,15 +579,17 @@ export default function AdminWrongItemPage() {
             style={{ border: "none", outline: "none", background: "transparent", fontSize: 13, width: "100%", color: "#1e293b" }}
           />
         </div>
-        <div style={{ width: 1, height: 24, background: "#e2e8f0", flexShrink: 0 }} />
-        {[
-          { key: "all",   label: "ทั้งหมด",      count: tabCounts.all   },
-          { key: "three", label: "คำเตือน 3/3",  count: tabCounts.three },
-          { key: "two",   label: "คำเตือน 2/3",  count: tabCounts.two   },
-          { key: "one",   label: "คำเตือน 1/3",  count: tabCounts.one   },
-        ].map(t => (
-          <FilterTab key={t.key} label={t.label} count={t.count} active={filterTab === t.key} onClick={() => setFilterTab(t.key)} />
-        ))}
+        <div className="admWrongItemFilterDivider" style={{ width: 1, height: 24, background: "#e2e8f0", flexShrink: 0 }} />
+        <div className="admWrongItemFilterTabs">
+          {[
+            { key: "all",   label: "ทั้งหมด",      count: tabCounts.all   },
+            { key: "three", label: "คำเตือน 3/3",  count: tabCounts.three },
+            { key: "two",   label: "คำเตือน 2/3",  count: tabCounts.two   },
+            { key: "one",   label: "คำเตือน 1/3",  count: tabCounts.one   },
+          ].map(t => (
+            <FilterTab key={t.key} label={t.label} count={t.count} active={filterTab === t.key} onClick={() => setFilterTab(t.key)} />
+          ))}
+        </div>
       </div>
 
       {/* ── List ────────────────────────────────────────────────────────────── */}
@@ -742,7 +744,7 @@ export default function AdminWrongItemPage() {
                       const usableItems = snapItems.filter((_, idx) => _ic[idx] === "usable");
 
                       return (
-                        <div key={c.donation_id} style={{ padding: "14px 20px 14px 72px", borderBottom: i < cases.length - 1 ? "1px solid #e2e8f0" : "none" }}>
+                        <div className="admWrongItemCase" key={c.donation_id} style={{ padding: "14px 20px 14px 72px", borderBottom: i < cases.length - 1 ? "1px solid #e2e8f0" : "none" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2, flexWrap: "wrap" }}>
                             <div style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>
                               {c.school_name}

@@ -548,7 +548,7 @@ export default function AdminBackofficePage() {
             </div>
 
             {/* ── Province + Donut + Completed — 2-col layout ── */}
-            <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 16, marginBottom: 8 }}>
+            <div className="boInsightGrid" style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 16, marginBottom: 8 }}>
 
               {/* LEFT — Province demand */}
               <div className="boDonutCard boProvinceDemand" style={{ margin: 0 }}>
@@ -880,7 +880,7 @@ function AdminTimeFilter({ period, showPicker, startDate, endDate, onSelectPerio
     : PERIOD_LABEL_MAP[period] || "เดือนนี้";
 
   return (
-    <div style={{
+    <div className="boTimeFilter" style={{
       background: "#fff",
       border: "1px solid #e2e8f0",
       borderRadius: 16,
@@ -909,7 +909,7 @@ function AdminTimeFilter({ period, showPicker, startDate, endDate, onSelectPerio
       </div>
 
       {/* filter chips */}
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>
+      <div className="boTimeFilter__chips" style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>
         {TIME_FILTERS.map((t) => {
           const isActive = period === t.v && !showPicker;
           return (
@@ -957,7 +957,7 @@ function AdminTimeFilter({ period, showPicker, startDate, endDate, onSelectPerio
 
       {/* Custom date range picker */}
       {showPicker && (
-        <div style={{
+        <div className="boTimeFilter__custom" style={{
           marginTop: 12, padding: "12px 16px",
           background: "linear-gradient(135deg,#eff6ff,#f0f9ff)",
           borderRadius: 12, border: "1px solid #bfdbfe",
