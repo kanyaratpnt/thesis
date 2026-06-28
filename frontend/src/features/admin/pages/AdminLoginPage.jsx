@@ -4,9 +4,21 @@ import { request } from "../../../api/http.js";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import "../styles/admin.css"; // ถ้ามีไฟล์ css ของ admin login
 
+const DEMO_ADMIN_EMAIL = "admin01@unieed.com";
+const DEMO_ADMIN_PASSWORD = "admin1234";
+
+function maskEmail(email) {
+  const [localPart, domain = ""] = email.split("@");
+  const visibleStart = localPart.slice(0, 2);
+  const visibleEnd = localPart.slice(-1);
+  const hiddenLength = Math.max(localPart.length - 3, 1);
+
+  return `${visibleStart}${"*".repeat(hiddenLength)}${visibleEnd}@${domain}`;
+}
+
 export default function AdminLoginPage() {
-  const [user_email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [user_email] = useState(DEMO_ADMIN_EMAIL);
+  const [password] = useState(DEMO_ADMIN_PASSWORD);
   const [err, setErr] = useState(""); // ✅ เพิ่ม err
 
   const navigate = useNavigate();
@@ -52,9 +64,11 @@ export default function AdminLoginPage() {
         <label className="adLgLabel">อีเมล</label>
         <input
           className="adLgInput"
-          value={user_email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="admin@email.com"
+          value={maskEmail(user_email)}
+          type="text"
+          readOnly
+          aria-label="อีเมลผู้ดูแลระบบ (ปิดบังบางส่วน)"
+          autoComplete="off"
         />
       </div>
 
@@ -63,9 +77,11 @@ export default function AdminLoginPage() {
         <input
           className="adLgInput"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
           type="password"
+          readOnly
+          aria-label="รหัสผ่านผู้ดูแลระบบ"
+          autoComplete="off"
         />
       </div>
 

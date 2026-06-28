@@ -348,7 +348,7 @@ function SellerOrderDetailModal({ row, onClose }) {
         </div>
 
         {/* Shipping info */}
-        <div style={{ background:"#f8fafc", borderRadius:10, padding:"12px 14px", marginBottom:14, fontSize:13 }}>
+        <div className="slOrderDetailInfo" style={{ background:"#f8fafc", borderRadius:10, padding:"12px 14px", marginBottom:14, fontSize:13 }}>
           <div style={{ fontWeight:700, color:"#334155", marginBottom:8 }}>ข้อมูลการจัดส่ง</div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px 16px" }}>
             <div><span style={{ color:"#94a3b8" }}>ผู้รับ: </span><b>{row.recipient_name || "-"}</b></div>
@@ -368,7 +368,7 @@ function SellerOrderDetailModal({ row, onClose }) {
 
         {/* Items table */}
         <div className="slTableScroll" style={{ border:"1px solid #e2e8f0", borderRadius:10, marginBottom:14 }}>
-          <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
+          <table className="slOrderItemsTable" style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
             <thead>
               <tr style={{ background:"#f1f5f9" }}>
                 <th style={{ padding:"8px 12px", textAlign:"left", fontWeight:600, color:"#64748b" }}>สินค้า</th>

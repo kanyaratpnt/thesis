@@ -586,16 +586,20 @@
 /* No match note */
 .dmNoMatchNote {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   font-size: 13px;
+  line-height: 1.55;
   color: #92400e;
   background: #fef3c7;
   border: 1px solid #fde68a;
   border-radius: 8px;
   padding: 8px 14px;
   margin-top: 8px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
+.dmNoMatchNote .iconify { flex: 0 0 auto; margin-top: 2px; }
 
 /* Error */
 .dmErrorWrap {
@@ -635,4 +639,39 @@
   .dmFilterTabs { gap: 6px; }
   .dmFilterTab { padding: 6px 12px; font-size: 0.8rem; }
   .dmImageCard { aspect-ratio: 4 / 3; }
+  .dmMain { padding-top: 24px; }
+  .dmMain .mkListHeader { align-items: stretch; flex-direction: column; margin-bottom: 16px; }
+  .dmMain .mkListTitle { width: 100%; font-size: 17px; line-height: 1.45; white-space: normal; }
+  .dmNoMatchNote { width: 100%; margin-top: 0; padding: 8px 10px; font-size: 12px; }
+  .dmMatchBadge { min-height: 29px; padding: 4px 8px; font-size: 10px; line-height: 1.35; }
+  .dmMatchBadge .iconify { flex: 0 0 auto; }
+  .dmMatchCard .mkCardBody { padding: 9px 9px 10px; }
+  .dmMatchCard .mkCardTitle {
+    min-height: 2.9em;
+    font-size: 12px;
+    line-height: 1.45;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .dmMatchCard .mkCardSchool,
+  .dmMatchCard .mkCardSeller { min-width: 0; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dmMatchCard .mkMeta { gap: 4px; margin-bottom: 7px; }
+  .dmMatchCard .mkMetaRow { align-items: flex-start; gap: 4px; font-size: 10px; line-height: 1.45; }
+  .dmMatchCard .mkMetaLabel { min-width: 30px; }
+  .dmMatchCard .mkMetaVal { min-width: 0; overflow-wrap: anywhere; }
+  .dmMatchCard .mkBadgeLevel,
+  .dmMatchCard .mkBadgeCond { font-size: 9.5px; line-height: 1.4; white-space: normal; }
+  .dmNeedCountBadge { align-items: flex-start; padding: 5px 7px; font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
+  .dmNeedCountBadge .iconify { flex: 0 0 auto; margin-top: 1px; }
+  .dmMatchCard .mkCardBottom { gap: 5px; }
+  .dmMatchCard .mkCardPrice { min-width: 0; font-size: 15px; white-space: nowrap; }
+  .dmMatchCard .mkCardPrice span { font-size: 10px; }
+  .dmBuyBtnInline { flex: 0 0 auto; gap: 3px; padding: 7px 8px; font-size: 10px; }
+}
+
+@media (min-width: 601px) and (max-width: 960px) {
+  .dmMain .mkListHeader { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .dmNoMatchNote { margin-top: 0; }
 }

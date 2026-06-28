@@ -280,8 +280,6 @@ export default function MarketPage() {
   const [filterOpen,    setFilterOpen]    = useState(false);
   const [products,      setProducts]      = useState([]);
   const [loading,       setLoading]       = useState(false);
-  const [page,          setPage]          = useState(1);
-  const [totalPages,    setTotalPages]    = useState(1);
   const [totalCount,    setTotalCount]    = useState(0);
   const [donationNeededLabels, setDonationNeededLabels] = useState(new Set());
 
@@ -311,9 +309,9 @@ export default function MarketPage() {
         fetchProductsRef.current(1, { ids: hits, search: "" });
       } else {
         // Meili returned no hits — show empty
+        productRequestRef.current += 1;
         setProducts([]);
         setTotalCount(0);
-        setTotalPages(1);
       }
     } catch {
       if (requestId !== searchRequestRef.current) return;
@@ -389,7 +387,8 @@ const handleSearchInput = (e) => {
   }, 300);
 };
 
-  const LIMIT = 10;
+  const LIMIT = 100;
+  const productRequestRef = useRef(0);
 
   useEffect(() => {
     if (toast) {
@@ -402,7 +401,10 @@ const handleSearchInput = (e) => {
 const fetchProductsRef = useRef(null);
 
 fetchProductsRef.current = async (p = 1, overrides = {}) => {
+  void p;
+  const requestId = ++productRequestRef.current;
   setLoading(true);
+  setProducts([]);
   try {
     const currentFilter   = overrides.activeFilter !== undefined ? overrides.activeFilter : activeFilter;
     const currentLevel    = overrides.level    !== undefined ? overrides.level    : level;
@@ -412,33 +414,41 @@ fetchProductsRef.current = async (p = 1, overrides = {}) => {
     const currentSort     = overrides.sort     !== undefined ? overrides.sort     : sort;
     const currentIds      = overrides.ids; // product_id[] from Meilisearch
 
-    const params = new URLSearchParams({
-      page: p,
-      limit: currentIds?.length ? Math.min(currentIds.length, 60) : LIMIT,
+    const makeParams = (pageNumber) => new URLSearchParams({
+      page: pageNumber,
+      limit: currentIds?.length ? Math.min(currentIds.length, 100) : LIMIT,
       sort: currentSort,
       ...(currentIds?.length
-        ? { ids: currentIds.join(',') }                  // meili mode: filter by IDs
-        : currentSearch && { search: currentSearch }),   // fallback: MySQL LIKE
+        ? { ids: currentIds.join(',') }
+        : currentSearch && { search: currentSearch }),
       ...(currentFilter?.category_id && { category_id: currentFilter.category_id }),
       ...(currentFilter && currentFilter.gender !== null && { gender: currentFilter.gender }),
-      ...(currentLevel    && { level:     currentLevel }),
+      ...(currentLevel    && { level: currentLevel }),
       ...(currentMinPrice && { min_price: currentMinPrice }),
       ...(currentMaxPrice && { max_price: currentMaxPrice }),
     });
 
-    console.log('URL:', `/api/market?${params.toString()}`);
+    const fetchPage = async (pageNumber) => {
+      const res = await fetch(`${BASE_URL}/api/market?${makeParams(pageNumber)}`);
+      if (!res.ok) throw new Error("โหลดสินค้าไม่สำเร็จ");
+      return res.json();
+    };
 
-    const res  = await fetch(`${BASE_URL}/api/market?${params}`);
-    const data = await res.json();
-    
-    setProducts(p === 1 ? (data.products || []) : prev => [...prev, ...(data.products || [])]);
-    setTotalPages(data.pagination?.pages || 1);
-    setTotalCount(data.pagination?.total || 0);
-    setPage(p);
+    const firstPage = await fetchPage(1);
+    const pages = Math.max(1, Number(firstPage.pagination?.pages || 1));
+    const remainingPages = pages > 1
+      ? await Promise.all(Array.from({ length: pages - 1 }, (_, index) => fetchPage(index + 2)))
+      : [];
+
+    if (requestId !== productRequestRef.current) return;
+
+    const allProducts = [firstPage, ...remainingPages].flatMap(data => data.products || []);
+    setProducts(allProducts);
+    setTotalCount(Number(firstPage.pagination?.total ?? allProducts.length));
   } catch (e) {
     console.error("Fetch Error:", e);
   } finally {
-    setLoading(false);
+    if (requestId === productRequestRef.current) setLoading(false);
   }
 };
 
@@ -698,16 +708,6 @@ const displayedProducts = useMemo(() => {
           </div>
         )}
 
-        {!loading && page < totalPages && (
-          <div className="mkLoadMoreWrap">
-            <button className="mkLoadMoreBtn" onClick={() => fetchProducts(page + 1)}>โหลดเพิ่มเติม</button>
-          </div>
-        )}
-        {loading && products.length > 0 && (
-          <div className="mkLoadingMore">
-            <Icon icon="mdi:loading" className="mkSpinner" /> กำลังโหลด...
-          </div>
-        )}
       </main>
         {/* ===== Footer ===== */}
       <footer id="about" className="footer">

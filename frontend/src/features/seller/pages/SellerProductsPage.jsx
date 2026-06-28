@@ -255,7 +255,7 @@ export default function SellerProductsPage() {
               )}
 
               {!loading && data?.rows?.length > 0 && (
-                <div className="slTableScroll"><table className="slTable">
+                <div className="slTableScroll"><table className="slTable slProductsTable">
                   <thead>
                     <tr>
                       <th style={{ width: 40 }}>
