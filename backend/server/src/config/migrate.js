@@ -24,6 +24,23 @@ async function addColumnIfMissing(table, column, definition) {
   }
 }
 
+async function ensureTextColumn(table, column) {
+  const [rows] = await db.query(
+    `SELECT DATA_TYPE
+     FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE()
+       AND TABLE_NAME   = ?
+       AND COLUMN_NAME  = ?
+     LIMIT 1`,
+    [table, column]
+  );
+
+  if (rows.length > 0 && !["text", "mediumtext", "longtext"].includes(rows[0].DATA_TYPE)) {
+    await db.query(`ALTER TABLE \`${table}\` MODIFY COLUMN \`${column}\` TEXT NULL DEFAULT NULL`);
+    console.log(`[migrate] Widened ${table}.${column} to TEXT`);
+  }
+}
+
 export async function runMigrations() {
   try {
     // ── orders ────────────────────────────────────────────
@@ -41,6 +58,7 @@ export async function runMigrations() {
     // ── users (bank account + suspend) ───────────────────
     await addColumnIfMissing("users", "bank_code",             "VARCHAR(20) NULL DEFAULT NULL");
     await addColumnIfMissing("users", "bank_account_number",   "TEXT NULL DEFAULT NULL");
+    await ensureTextColumn("users", "bank_account_number");
     await addColumnIfMissing("users", "bank_account_name",     "VARCHAR(200) NULL DEFAULT NULL");
     await addColumnIfMissing("users", "strike_count",          "INT NOT NULL DEFAULT 0");
     await addColumnIfMissing("users", "suspended_until",       "DATETIME NULL DEFAULT NULL");
