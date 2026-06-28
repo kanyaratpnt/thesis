@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/admin.css";
 import { Icon } from "@iconify/react";
 
@@ -13,19 +13,61 @@ export default function AdminLayout() {
     location.pathname.includes("/admin/wrong-items");
   const [tradeOpen,    setTradeOpen]    = useState(tradeActive);
   const [donationOpen, setDonationOpen] = useState(donationActive);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
 
   return (
-    <div className="boShell">
-      <aside className="boSide">
+    <div className={`boShell${menuOpen ? " boShell--menuOpen" : ""}`}>
+      <button
+        type="button"
+        className="boMobileMenuBtn"
+        onClick={() => setMenuOpen(true)}
+        aria-label="เปิดเมนูผู้ดูแลระบบ"
+        aria-controls="admin-navigation"
+        aria-expanded={menuOpen}
+      >
+        <Icon icon="mdi:menu" />
+      </button>
+
+      <button
+        type="button"
+        className="boSideBackdrop"
+        onClick={() => setMenuOpen(false)}
+        aria-label="ปิดเมนูผู้ดูแลระบบ"
+        tabIndex={menuOpen ? 0 : -1}
+      />
+
+      <aside className="boSide" id="admin-navigation">
         <div className="boBrand">
           <div className="boBrandName">
             <img src="/unieed_pic/logo.png" alt="Unieed Logo" />
           </div>
+          <button
+            type="button"
+            className="boSideClose"
+            onClick={() => setMenuOpen(false)}
+            aria-label="ปิดเมนู"
+          >
+            <Icon icon="mdi:close" />
+          </button>
         </div>
 
         <div className="boSideLine" />
 
-        <nav className="boMenu">
+        <nav
+          className="boMenu"
+          onClick={(event) => {
+            if (event.target.closest("a")) setMenuOpen(false);
+          }}
+        >
           <NavLink
             to="/admin/backoffice"
             className={({ isActive }) => (isActive ? "boItem active" : "boItem")}

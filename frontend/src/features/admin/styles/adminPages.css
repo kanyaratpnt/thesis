@@ -2537,3 +2537,220 @@
     justify-content: center;
   }
 }
+
+/* ===== Shared tablet / mobile page rules ===== */
+@media (max-width: 1180px) {
+  .boStatGrid5 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .boChartRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admPayoutTableWrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admPayoutTable,
+  .admPayoutTable--history {
+    min-width: 980px;
+  }
+}
+
+@media (max-width: 800px) {
+  .boPageInner {
+    padding: 16px 4px;
+  }
+
+  .boStatGrid5,
+  .boRevGrid3,
+  .admPayoutStatGrid3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .boStatColorCard__value {
+    font-size: 36px;
+  }
+
+  .boRevCard__value,
+  .admPayoutStatCard__value {
+    font-size: 26px;
+  }
+
+  .boDonutCard__inner {
+    flex-wrap: wrap;
+  }
+
+  .admStatusTabs,
+  .admPayoutPeriodTabs,
+  .boPeriodTabs {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admStatusTab,
+  .boPeriodTab {
+    flex: 0 0 auto;
+  }
+
+  .admPayoutPanel__head {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  .boStatGrid5,
+  .boRevGrid3,
+  .admPayoutStatGrid3 {
+    grid-template-columns: 1fr;
+  }
+
+  .boStatColorCard {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "icon label"
+      "icon value"
+      "change change";
+    align-items: center;
+    text-align: left;
+    padding: 14px 16px;
+  }
+
+  .boStatColorCard__iconWrap { grid-area: icon; margin: 0; }
+  .boStatColorCard__label { grid-area: label; }
+  .boStatColorCard__value { grid-area: value; font-size: 32px; }
+  .boStatColorCard__change { grid-area: change; }
+
+  .boChartCard,
+  .boPendingCard,
+  .boDonutCard,
+  .boRevCard {
+    padding: 16px 14px;
+  }
+
+  .boChartCard .recharts-wrapper {
+    font-size: 11px;
+  }
+
+  .admCardHeader,
+  .admCardControls,
+  .admSearch--order,
+  .admPayAllBtn {
+    width: 100%;
+    max-width: none;
+  }
+
+  .admPager {
+    gap: 10px;
+    margin-inline: 4px;
+  }
+
+  .admPagerNums {
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
+  }
+
+  .admPagerBtns {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .admPagerBtn {
+    flex: 1;
+    min-width: 0;
+    padding-inline: 10px;
+  }
+
+  .admModalOverlay {
+    padding: 14px;
+  }
+
+  .admModal,
+  .admOrderModal {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 28px);
+    padding: 18px 16px;
+    overflow-y: auto;
+  }
+
+  .admModalActions {
+    flex-wrap: wrap;
+  }
+
+  .admModalActions > button {
+    flex: 1;
+  }
+}
+
+/* Pages that still contain a few intentionally inline visual styles. */
+@media (max-width: 800px) {
+  .admDonationPage,
+  .admWrongItemPage {
+    padding: 0 !important;
+  }
+
+  .admDonationStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admDonationDetailToolbar {
+    align-items: flex-start !important;
+    gap: 12px;
+    flex-direction: column;
+  }
+
+  .admWrongItemMainTabs,
+  .admWrongItemFilters {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    padding-bottom: 5px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admWrongItemMainTabs > *,
+  .admWrongItemFilters > * {
+    flex-shrink: 0;
+  }
+
+  .admWrongItemDonorRow {
+    flex-wrap: wrap;
+  }
+
+  .admWrongItemActions {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .admWrongItemProfileStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .admDonationStats {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .admDonationSchoolCard {
+    align-items: flex-start;
+  }
+
+  .admWrongItemStats > div {
+    flex-basis: 100% !important;
+  }
+
+  .admWrongItemActions > button {
+    flex: 1;
+    min-width: 42px;
+    justify-content: center;
+  }
+}
