@@ -288,13 +288,13 @@ export default function AdminOrderPage() {
               <table className="admTable" style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: "#3b82f6" }}>
-                    <th style={{ ...thSt, color: "#fff", fontWeight: 700 }}>รหัสออเดอร์</th>
-                    <th style={{ ...thSt, color: "#fff", fontWeight: 700 }}>สินค้า</th>
-                    <th style={{ ...thSt, color: "#fff", fontWeight: 700 }}>ผู้ซื้อ / ผู้ขาย</th>
-                    <th style={{ ...thSt, textAlign: "right", color: "#fff", fontWeight: 700 }}>ยอดรวม</th>
-                    <th style={{ ...thSt, textAlign: "center", color: "#fff", fontWeight: 700 }}>ชำระเงิน</th>
-                    <th style={{ ...thSt, textAlign: "center", color: "#fff", fontWeight: 700 }}>สถานะ</th>
-                    <th style={{ ...thSt, textAlign: "left", color: "#fff", fontWeight: 700 }}>จัดการ</th>
+                    <th style={{ ...thSt, color: "#5285e8", fontWeight: 700 }}>รหัสออเดอร์</th>
+                    <th style={{ ...thSt, color: "#5285e8", fontWeight: 700 }}>สินค้า</th>
+                    <th style={{ ...thSt, color: "#5285e8", fontWeight: 700 }}>ผู้ซื้อ / ผู้ขาย</th>
+                    <th style={{ ...thSt, textAlign: "right", color: "#5285e8", fontWeight: 700 }}>ยอดรวม</th>
+                    <th style={{ ...thSt, textAlign: "center", color: "#5285e8", fontWeight: 700 }}>ชำระเงิน</th>
+                    <th style={{ ...thSt, textAlign: "center", color: "#5285e8", fontWeight: 700 }}>สถานะ</th>
+                    <th style={{ ...thSt, textAlign: "left", color: "#5285e8", fontWeight: 700 }}>จัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
