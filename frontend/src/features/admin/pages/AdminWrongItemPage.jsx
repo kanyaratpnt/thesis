@@ -580,7 +580,7 @@ export default function AdminWrongItemPage() {
           />
         </div>
         <div className="admWrongItemFilterDivider" style={{ width: 1, height: 24, background: "#e2e8f0", flexShrink: 0 }} />
-        <div className="admWrongItemFilterTabs">
+        <div className="admWrongItemFilterTabs" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {[
             { key: "all",   label: "ทั้งหมด",      count: tabCounts.all   },
             { key: "three", label: "คำเตือน 3/3",  count: tabCounts.three },
