@@ -179,8 +179,10 @@ function DonationRow({ donation, token, doneStatus, onDone }) {
   const [expanded,    setExpanded]    = useState(false);
   const [approving,   setApproving]   = useState(false);
   const [rejecting,   setRejecting]   = useState(false);
-  const done     = !!doneStatus;
-  const doneType = doneStatus?.type ?? doneStatus;
+  // ถ้า backend บอกว่า approved/rejected แล้ว ให้ถือว่า done เลย
+  const backendDone = donation.status === "approved" || donation.status === "rejected";
+  const done     = !!doneStatus || backendDone;
+  const doneType = doneStatus?.type ?? doneStatus ?? donation.status;
 
   const authHeaders = { "Content-Type":"application/json", ...(token ? { Authorization:`Bearer ${token}` } : {}) };
   const items = parseItems(donation.items_snapshot);
@@ -416,7 +418,9 @@ export default function AdminDonationManagement() {
 
   // donations ที่ยังรอดำเนินการ (pending) ของแต่ละ school สำหรับ stats ใน card
   const getPendingDonations = useCallback((school) =>
-    school.projects.flatMap(p => p.donations.filter(d => !doneMap[d.donation_id])),
+  school.projects.flatMap(p => p.donations.filter(d =>
+    !doneMap[d.donation_id] && d.status !== "approved" && d.status !== "rejected"
+  )),
   [doneMap]);
 
   const getSchoolDonations = useCallback((school) =>
@@ -497,9 +501,8 @@ export default function AdminDonationManagement() {
     if (!selectedSchool) return [];
     return selectedSchool.projects.map(proj => ({
       ...proj,
-      donations: proj.donations.filter(d =>
-        filterMethod === "all" || d.delivery_method === filterMethod
-      ),
+      donations: proj.donations
+  .filter(d => filterMethod === "all" || d.delivery_method === filterMethod),
     })).filter(proj => proj.donations.length > 0);
   }, [selectedSchool, filterMethod]);
 
