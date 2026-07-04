@@ -591,3 +591,82 @@ width:100%;
   border-color: #3b82f6;
 }
 
+/* ===== School and order tables on tablet/mobile ===== */
+@media (max-width: 1024px) {
+  .admPage {
+    display: block;
+    width: 100%;
+  }
+
+  .admPage > .boMain {
+    width: 100%;
+    padding: 0;
+  }
+
+  .admTableWrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admTable {
+    min-width: 940px;
+  }
+
+  .admOrderCard .admTable {
+    min-width: 1080px;
+  }
+
+  .admStats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .admStats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .admStatCard {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 2px 12px;
+    padding: 14px 16px;
+  }
+
+  .admStatNum {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    font-size: 38px;
+    margin-top: 0;
+  }
+
+  .admStatSub {
+    text-align: left;
+  }
+
+  .admFilters,
+  .admFilterRow,
+  .admSearch,
+  .admSelect {
+    width: 100%;
+    max-width: none;
+  }
+
+  .admFilters {
+    gap: 10px;
+    margin: 18px 0 14px;
+  }
+
+  .admFilterRow {
+    flex-direction: column;
+  }
+
+  .admToast {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    max-width: none;
+  }
+}

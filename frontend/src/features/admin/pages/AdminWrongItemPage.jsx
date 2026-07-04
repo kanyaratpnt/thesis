@@ -361,7 +361,7 @@ export default function AdminWrongItemPage() {
   const pagedWI = filtered.slice((wiPage - 1) * WI_PAGE_SIZE, wiPage * WI_PAGE_SIZE);
 
   return (
-    <div style={{ padding: "28px 32px" }}>
+    <div className="admWrongItemPage" style={{ padding: "28px 32px" }}>
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="boTop" style={{ marginBottom: 24 }}>
@@ -378,7 +378,7 @@ export default function AdminWrongItemPage() {
       </div>
 
       {/* ── Main Tab ─────────────────────────────────────────────────────── */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+      <div className="admWrongItemMainTabs" style={{ display: "flex", gap: 8, marginBottom: 20 }}>
         {[
           { key: "list",    label: "ตรวจสอบของไม่ตรง",      icon: "mdi:swap-horizontal-circle-outline" },
           { key: "history", label: "ประวัติการระงับบัญชี", icon: "mdi:history" },
@@ -392,7 +392,7 @@ export default function AdminWrongItemPage() {
       </div>
 
       {/* ── Stat Cards ─────────────────────────────────────────────────────── */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+      <div className="admWrongItemStats" style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
         {[
           { icon: "mdi:account-alert-outline",          label: "ผู้บริจาคที่มีคำเตือน",  value: totalDonors,    color: "#dc2626", bg: "#fff5f5", border: "#fecaca" },
           { icon: "mdi:swap-horizontal-circle-outline", label: "รายการทั้งหมด",           value: totalCases,     color: "#d97706", bg: "#fffbeb", border: "#fde68a" },
@@ -568,8 +568,8 @@ export default function AdminWrongItemPage() {
 
       {/* ── Search + Filter (one row) ────────────────────────────────────────── */}
       {mainView === "list" && <>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 9, padding: "7px 12px", flex: "1 1 0" }}>
+      <div className="admWrongItemFilters" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+        <div className="admWrongItemSearch" style={{ display: "flex", alignItems: "center", gap: 8, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 9, padding: "7px 12px", flex: "1 1 0" }}>
           <Icon icon="mdi:magnify" width={16} color="#94a3b8" />
           <input
             value={search}
@@ -579,15 +579,17 @@ export default function AdminWrongItemPage() {
             style={{ border: "none", outline: "none", background: "transparent", fontSize: 13, width: "100%", color: "#1e293b" }}
           />
         </div>
-        <div style={{ width: 1, height: 24, background: "#e2e8f0", flexShrink: 0 }} />
-        {[
-          { key: "all",   label: "ทั้งหมด",      count: tabCounts.all   },
-          { key: "three", label: "คำเตือน 3/3",  count: tabCounts.three },
-          { key: "two",   label: "คำเตือน 2/3",  count: tabCounts.two   },
-          { key: "one",   label: "คำเตือน 1/3",  count: tabCounts.one   },
-        ].map(t => (
-          <FilterTab key={t.key} label={t.label} count={t.count} active={filterTab === t.key} onClick={() => setFilterTab(t.key)} />
-        ))}
+        <div className="admWrongItemFilterDivider" style={{ width: 1, height: 24, background: "#e2e8f0", flexShrink: 0 }} />
+        <div className="admWrongItemFilterTabs">
+          {[
+            { key: "all",   label: "ทั้งหมด",      count: tabCounts.all   },
+            { key: "three", label: "คำเตือน 3/3",  count: tabCounts.three },
+            { key: "two",   label: "คำเตือน 2/3",  count: tabCounts.two   },
+            { key: "one",   label: "คำเตือน 1/3",  count: tabCounts.one   },
+          ].map(t => (
+            <FilterTab key={t.key} label={t.label} count={t.count} active={filterTab === t.key} onClick={() => setFilterTab(t.key)} />
+          ))}
+        </div>
       </div>
 
       {/* ── List ────────────────────────────────────────────────────────────── */}
@@ -617,7 +619,7 @@ export default function AdminWrongItemPage() {
               <div key={user.donor_id} style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
 
                 {/* ── Donor row — single horizontal line ─────────────────── */}
-                <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px" }}>
+                <div className="admWrongItemDonorRow" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px" }}>
 
                   {/* Avatar */}
                   <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#3b82f6,#6366f1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -659,7 +661,7 @@ export default function AdminWrongItemPage() {
                   </div>
 
                   {/* Actions — right-aligned */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                  <div className="admWrongItemActions" style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
                     {/* Profile overview */}
                     <button
                       onClick={() => openDonorProfile(user)}
@@ -742,7 +744,7 @@ export default function AdminWrongItemPage() {
                       const usableItems = snapItems.filter((_, idx) => _ic[idx] === "usable");
 
                       return (
-                        <div key={c.donation_id} style={{ padding: "14px 20px 14px 72px", borderBottom: i < cases.length - 1 ? "1px solid #e2e8f0" : "none" }}>
+                        <div className="admWrongItemCase" key={c.donation_id} style={{ padding: "14px 20px 14px 72px", borderBottom: i < cases.length - 1 ? "1px solid #e2e8f0" : "none" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2, flexWrap: "wrap" }}>
                             <div style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>
                               {c.school_name}
@@ -1033,7 +1035,7 @@ export default function AdminWrongItemPage() {
               <div style={{ padding: "20px" }}>
 
                 {/* Stats */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20 }}>
+                <div className="admWrongItemProfileStats" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20 }}>
                   {[
                     { label: "บริจาคทั้งหมด", value: donorProfile.stats?.total || 0, color: "#2563eb", bg: "#eff6ff" },
                     { label: "สำเร็จ", value: donorProfile.stats?.approved || 0, color: "#16a34a", bg: "#f0fdf4" },

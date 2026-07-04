@@ -151,7 +151,7 @@ export default function AdminOrderPage() {
     try {
       const d = await request(`/admin/orders/${orderId}`, { method: "GET", auth: true });
       setDetail(d);
-    } catch (e) { showToast("โหลดรายละเอียดไม่สำเร็จ", "error"); }
+    } catch { showToast("โหลดรายละเอียดไม่สำเร็จ", "error"); }
   };
 
   const statCards = [
@@ -179,7 +179,7 @@ export default function AdminOrderPage() {
         </div>
 
         {/* ── Time filter ── */}
-        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: "14px 18px", marginBottom: 16, boxShadow: "0 2px 8px rgba(15,23,42,0.05)" }}>
+        <div className="boTimeFilter" style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: "14px 18px", marginBottom: 16, boxShadow: "0 2px 8px rgba(15,23,42,0.05)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#1d4ed8,#3b82f6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -197,7 +197,7 @@ export default function AdminOrderPage() {
               </span>
             </div>
           </div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>
+          <div className="boTimeFilter__chips" style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>
             {ORDER_TIME_FILTERS.map((t) => {
               const isActive = period === t.v && !showPicker;
               return (
@@ -215,7 +215,7 @@ export default function AdminOrderPage() {
             </button>
           </div>
           {showPicker && (
-            <div style={{ marginTop: 12, padding: "12px 16px", background: "linear-gradient(135deg,#eff6ff,#f0f9ff)", borderRadius: 12, border: "1px solid #bfdbfe", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            <div className="boTimeFilter__custom" style={{ marginTop: 12, padding: "12px 16px", background: "linear-gradient(135deg,#eff6ff,#f0f9ff)", borderRadius: 12, border: "1px solid #bfdbfe", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <Icon icon="mdi:calendar-start" style={{ color: "#fff", fontSize: 14 }} />
@@ -240,7 +240,7 @@ export default function AdminOrderPage() {
         </div>
 
         {/* ── Stat cards ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 12, marginBottom: 20 }}>
+        <div className="admStatGrid5 admStatGrid5--order" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 12, marginBottom: 20 }}>
           {statCards.map(c => (
             <div key={c.key}
               style={{ background: c.bg, borderRadius: 14, padding: "16px 18px", border: `1px solid ${c.color}28` }}
@@ -255,7 +255,7 @@ export default function AdminOrderPage() {
         </div>
 
         {/* ── Table card ── */}
-        <div className="admCard" style={{ borderRadius: 16, overflow: "hidden" }}>
+        <div className="admCard admOrderCard" style={{ borderRadius: 16, overflow: "hidden" }}>
           {/* toolbar */}
           <div style={{ padding: "16px 20px", borderBottom: "1px solid #f1f5f9", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
             <div className="admCardTitle">รายการออเดอร์</div>
@@ -284,8 +284,8 @@ export default function AdminOrderPage() {
           {err && <div className="boError" style={{ margin: "16px 20px" }}>{err}</div>}
 
           {!loading && !err && (
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <div className="admTableWrap">
+              <table className="admTable" style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: "#3b82f6" }}>
                     <th style={{ ...thSt, color: "#fff", fontWeight: 700 }}>รหัสออเดอร์</th>

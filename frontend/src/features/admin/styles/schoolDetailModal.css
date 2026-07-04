@@ -282,3 +282,50 @@
   color: #c62828;
   font-size: 13px;
 }
+
+@media (max-width: 640px) {
+  .sdOverlay {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .sdModal {
+    max-height: calc(100dvh - 20px);
+    border-radius: 16px 16px 10px 10px;
+  }
+
+  .sdHead,
+  .sdBody,
+  .sdFooter {
+    padding: 16px;
+  }
+
+  .sdHead {
+    gap: 10px;
+  }
+
+  .sdTitle {
+    font-size: 18px;
+  }
+
+  .sdInfoCard,
+  .sdLogoCard {
+    padding: 16px;
+  }
+
+  .sdInfoRow {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .sdFooterRight {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .sdFooterRight .sdBtn {
+    flex: 1;
+  }
+}

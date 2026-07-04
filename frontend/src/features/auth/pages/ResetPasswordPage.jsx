@@ -66,8 +66,8 @@ export default function ResetPasswordPage() {
   /* ── ลิงก์ไม่ถูกต้อง ── */
   if (!token) {
     return (
-      <div className="lgPage">
-        <div className="lgCardForgot">
+      <div className="lgPage lgResetPage">
+        <div className="lgCardForgot lgCardReset">
           <LeftPanel />
           <div className="lgRightPanel">
             <div className="lgHeader">
@@ -87,8 +87,8 @@ export default function ResetPasswordPage() {
   /* ── สำเร็จ ── */
   if (done) {
     return (
-      <div className="lgPage">
-        <div className="lgCardForgot">
+      <div className="lgPage lgResetPage">
+        <div className="lgCardForgot lgCardReset">
           <LeftPanel />
           <div className="lgRightPanel">
             <div className="lgHeader">
@@ -109,8 +109,8 @@ export default function ResetPasswordPage() {
 
   /* ── ฟอร์มหลัก ── */
   return (
-    <div className="lgPage">
-      <div className="lgCardForgot">
+    <div className="lgPage lgResetPage">
+      <div className="lgCardForgot lgCardReset">
         <LeftPanel />
 
         <div className="lgRightPanel">
@@ -138,14 +138,16 @@ export default function ResetPasswordPage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="อย่างน้อย 6 ตัวอักษร"
+                  autoComplete="new-password"
                   style={{ paddingRight: "44px" }}
                   required
                 />
-                <button type="button" onClick={() => setShowNew(!showNew)} style={{
-                  position: "absolute", right: "14px", top: "50%",
-                  transform: "translateY(-50%)", background: "none", border: "none",
-                  cursor: "pointer", padding: 0, color: "#9ca3af", display: "flex", alignItems: "center",
-                }}>
+                <button
+                  type="button"
+                  className="lgPasswordToggle"
+                  onClick={() => setShowNew(!showNew)}
+                  aria-label={showNew ? "ซ่อนรหัสผ่านใหม่" : "แสดงรหัสผ่านใหม่"}
+                >
                   {showNew ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
               </div>
@@ -167,14 +169,16 @@ export default function ResetPasswordPage() {
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   placeholder="••••••••"
+                  autoComplete="new-password"
                   style={{ paddingRight: "44px" }}
                   required
                 />
-                <button type="button" onClick={() => setShowConfirm(!showConfirm)} style={{
-                  position: "absolute", right: "14px", top: "50%",
-                  transform: "translateY(-50%)", background: "none", border: "none",
-                  cursor: "pointer", padding: 0, color: "#9ca3af", display: "flex", alignItems: "center",
-                }}>
+                <button
+                  type="button"
+                  className="lgPasswordToggle"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  aria-label={showConfirm ? "ซ่อนการยืนยันรหัสผ่าน" : "แสดงการยืนยันรหัสผ่าน"}
+                >
                   {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
               </div>

@@ -507,7 +507,7 @@ export default function AdminDonationManagement() {
   }, [selectedSchool, filterMethod]);
 
   return (
-    <div style={{ padding:"28px 32px", maxWidth:1200, margin:"0 auto" }}>
+    <div className="admDonationPage" style={{ padding:"28px 32px", maxWidth:1200, margin:"0 auto" }}>
 
       <div className="boTop" style={{ marginBottom:24 }}>
         <div>
@@ -520,7 +520,7 @@ export default function AdminDonationManagement() {
         </div>
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:28 }}>
+      <div className="admDonationStats" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:28 }}>
         {[
           { label:"โรงเรียนที่รอดำเนินการ",    value:stats.schools, icon:"teenyicons:school-outline",  color:"#2563eb", bg:"#eff6ff" },
           { label:"รายการทั้งหมดที่เกิน 7 วัน", value:stats.total,   icon:"mdi:package-variant-closed", color:"#d97706", bg:"#fef3c7" },
@@ -540,7 +540,7 @@ export default function AdminDonationManagement() {
 
       {selectedSchool ? (
         <div>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
+          <div className="admDonationDetailToolbar" style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
             <button onClick={() => { setSelectedSchool(null); setFilterMethod("all"); }}
               style={{ display:"flex", alignItems:"center", gap:6, background:"none", border:"none", color:"#2563eb", fontSize:13, fontWeight:600, cursor:"pointer", padding:0, transform:"none" }}
               onMouseEnter={e => e.currentTarget.style.color = "#1d4ed8"}
@@ -573,8 +573,8 @@ export default function AdminDonationManagement() {
                   <ProjectStatusBadge status={proj.project_status} />
                   <span style={{ fontSize:12, color:"#94a3b8" }}>{proj.donations.length} รายการ</span>
                 </div>
-                <div style={{ overflowX:"auto" }}>
-                  <table style={{ width:"100%", borderCollapse:"collapse", minWidth:900 }}>
+                <div className="admDonationTableWrap" style={{ overflowX:"auto" }}>
+                  <table className="admDonationTable" style={{ width:"100%", borderCollapse:"collapse", minWidth:900 }}>
                     <thead>
                       <tr style={{ background:"#f8fafc" }}>
                         {["วันที่บริจาค","ผู้บริจาค","ข้อมูลการจัดส่ง","หลักฐาน","รายการบริจาค","สถานะ","จัดการ"].map(h => (

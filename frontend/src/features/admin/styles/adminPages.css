@@ -2537,3 +2537,583 @@
     justify-content: center;
   }
 }
+
+/* ===== Shared tablet / mobile page rules ===== */
+@media (max-width: 1180px) {
+  .boStatGrid5 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .boChartRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .boInsightGrid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admPayoutTableWrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admPayoutTable,
+  .admPayoutTable--history {
+    min-width: 980px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .admStatGrid5--order {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .boPageInner {
+    padding: 16px 4px;
+  }
+
+  .boStatGrid5,
+  .boRevGrid3,
+  .admPayoutStatGrid3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .boStatColorCard__value {
+    font-size: 36px;
+  }
+
+  .boRevCard__value,
+  .admPayoutStatCard__value {
+    font-size: 26px;
+  }
+
+  .boDonutCard__inner {
+    flex-wrap: wrap;
+  }
+
+  .admStatusTabs,
+  .admPayoutPeriodTabs,
+  .boPeriodTabs {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admStatusTab,
+  .boPeriodTab {
+    flex: 0 0 auto;
+  }
+
+  .admPayoutPanel__head {
+    padding: 14px;
+  }
+
+  .admStatGrid5--order {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .boTimeFilter {
+    padding: 14px !important;
+  }
+
+  .boTimeFilter__chips {
+    flex-wrap: nowrap !important;
+    width: 100%;
+    overflow-x: auto;
+    padding: 2px 0 7px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .boTimeFilter__chips > button {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .boTimeFilter__custom {
+    align-items: stretch !important;
+    flex-direction: column;
+  }
+
+  .boTimeFilter__custom > div {
+    width: 100%;
+  }
+
+  .boTimeFilter__custom input {
+    width: 100%;
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 560px) {
+  .boStatGrid5,
+  .admPayoutStatGrid3,
+  .admStatGrid5--order {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .boRevGrid3 {
+    grid-template-columns: 1fr;
+  }
+
+  .boStatGrid5 > :last-child,
+  .admPayoutStatGrid3 > :last-child,
+  .admStatGrid5--order > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .boStatColorCard {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "icon label"
+      "icon value"
+      "change change";
+    align-items: center;
+    text-align: left;
+    padding: 14px 16px;
+  }
+
+  .boStatColorCard__iconWrap { grid-area: icon; margin: 0; }
+  .boStatColorCard__label { grid-area: label; }
+  .boStatColorCard__value { grid-area: value; font-size: 32px; }
+  .boStatColorCard__change { grid-area: change; }
+
+  .boChartCard,
+  .boPendingCard,
+  .boDonutCard,
+  .boRevCard {
+    padding: 16px 14px;
+  }
+
+  .boChartCard .recharts-wrapper {
+    font-size: 11px;
+  }
+
+  .admCardHeader,
+  .admCardControls,
+  .admSearch--order,
+  .admPayAllBtn {
+    width: 100%;
+    max-width: none;
+  }
+
+  .admPager {
+    gap: 10px;
+    margin-inline: 4px;
+  }
+
+  .admPagerNums {
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
+  }
+
+  .admPagerBtns {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .admPagerBtn {
+    flex: 1;
+    min-width: 0;
+    padding-inline: 10px;
+  }
+
+  .admModalOverlay {
+    padding: 14px;
+  }
+
+  .admModal,
+  .admOrderModal {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 28px);
+    padding: 18px 16px;
+    overflow-y: auto;
+  }
+
+  .admModalActions {
+    flex-wrap: wrap;
+  }
+
+  .admModalActions > button {
+    flex: 1;
+  }
+
+}
+
+/* Pages that still contain a few intentionally inline visual styles. */
+@media (max-width: 800px) {
+  .admDonationPage,
+  .admWrongItemPage {
+    padding: 0 !important;
+  }
+
+  .admDonationStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admDonationDetailToolbar {
+    align-items: flex-start !important;
+    gap: 12px;
+    flex-direction: column;
+  }
+
+  .admWrongItemMainTabs {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    padding-bottom: 5px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admWrongItemMainTabs > * {
+    flex-shrink: 0;
+  }
+
+  .admWrongItemFilters {
+    display: block !important;
+    overflow: visible;
+  }
+
+  .admWrongItemSearch {
+    width: 100%;
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .admWrongItemFilterDivider {
+    display: none;
+  }
+
+  .admWrongItemFilterTabs {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admWrongItemFilterTabs > button {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .admWrongItemDonorRow {
+    flex-wrap: wrap;
+  }
+
+  .admWrongItemActions {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .admWrongItemProfileStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .admDonationStats {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .admDonationSchoolCard {
+    align-items: flex-start;
+  }
+
+  .admWrongItemStats {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px !important;
+  }
+
+  .admWrongItemStats > div {
+    display: block !important;
+    min-width: 0;
+    padding: 12px 7px !important;
+    text-align: center;
+  }
+
+  .admWrongItemStats > div > div:first-child {
+    width: 34px !important;
+    height: 34px !important;
+    margin: 0 auto 7px;
+  }
+
+  .admWrongItemStats > div > div:last-child > div:first-child {
+    font-size: 23px !important;
+  }
+
+  .admWrongItemActions > button {
+    flex: 1;
+    min-width: 42px;
+    justify-content: center;
+  }
+
+  .admWrongItemCase {
+    padding: 14px 12px !important;
+  }
+
+  .boDonutCard__inner {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .boDonutCard__legend {
+    width: 100%;
+  }
+
+  .boProvinceCard__row {
+    gap: 7px;
+    padding: 10px;
+  }
+
+  .boProvinceCard__stat {
+    min-width: 58px;
+  }
+
+  .boProvinceCard__region {
+    max-width: 82px;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .boStatGrid5,
+  .admPayoutStatGrid3,
+  .admStatGrid5--order {
+    grid-template-columns: 1fr !important;
+  }
+
+  .boStatGrid5 > :last-child,
+  .admPayoutStatGrid3 > :last-child,
+  .admStatGrid5--order > :last-child {
+    grid-column: auto;
+  }
+}
+
+.admOrderPage .admOrderCard .admTable {
+  table-layout: fixed;
+}
+
+.admOrderPage .admOrderCard .admTable th:nth-child(1),
+.admOrderPage .admOrderCard .admTable td:nth-child(1) { width: 12%; }
+.admOrderPage .admOrderCard .admTable th:nth-child(2),
+.admOrderPage .admOrderCard .admTable td:nth-child(2) { width: 23%; }
+.admOrderPage .admOrderCard .admTable th:nth-child(3),
+.admOrderPage .admOrderCard .admTable td:nth-child(3) { width: 18%; }
+.admOrderPage .admOrderCard .admTable th:nth-child(4),
+.admOrderPage .admOrderCard .admTable td:nth-child(4) { width: 12%; }
+.admOrderPage .admOrderCard .admTable th:nth-child(5),
+.admOrderPage .admOrderCard .admTable td:nth-child(5) { width: 12%; }
+.admOrderPage .admOrderCard .admTable th:nth-child(6),
+.admOrderPage .admOrderCard .admTable td:nth-child(6) { width: 12%; }
+.admOrderPage .admOrderCard .admTable th:nth-child(7),
+.admOrderPage .admOrderCard .admTable td:nth-child(7) { width: 11%; }
+
+/* ===== Mobile data cards: avoid forcing admins to pan wide tables ===== */
+@media (max-width: 820px) {
+  .admTableWrap,
+  .admPayoutTableWrap,
+  .admDonationTableWrap {
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .admTable,
+  .admOrderCard .admTable,
+  .admPayoutTable,
+  .admPayoutTable--history,
+  .admDonationTable {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: auto;
+    background: transparent;
+  }
+
+  .admPayoutTable colgroup {
+    display: none;
+  }
+
+  .admTable thead,
+  .admPayoutTable thead,
+  .admDonationTable thead {
+    display: none;
+  }
+
+  .admTable tbody,
+  .admPayoutTable tbody,
+  .admDonationTable tbody {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .admTable tbody tr,
+  .admPayoutTable tbody tr,
+  .admDonationTable tbody tr {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #dbe3ef;
+    border-radius: 14px;
+    background: #fff !important;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
+  }
+
+  .admTable tbody td,
+  .admPayoutTable tbody td,
+  .admDonationTable tbody td {
+    display: grid;
+    grid-template-columns: minmax(92px, 34%) minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+    width: 100% !important;
+    min-height: 42px;
+    padding: 10px 13px !important;
+    overflow: visible !important;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left !important;
+    white-space: normal !important;
+  }
+
+  .admTable tbody td:last-child,
+  .admPayoutTable tbody td:last-child,
+  .admDonationTable tbody td:last-child {
+    border-bottom: 0;
+  }
+
+  .admTable tbody td::before,
+  .admPayoutTable tbody td::before,
+  .admDonationTable tbody td::before {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  /* School management */
+  .admCard:not(.admOrderCard) .admTable td:nth-child(1)::before { content: "โรงเรียน"; }
+  .admCard:not(.admOrderCard) .admTable td:nth-child(2)::before { content: "ผู้ดูแลโรงเรียน"; }
+  .admCard:not(.admOrderCard) .admTable td:nth-child(3)::before { content: "ข้อมูลติดต่อ"; }
+  .admCard:not(.admOrderCard) .admTable td:nth-child(4)::before { content: "ที่อยู่"; }
+  .admCard:not(.admOrderCard) .admTable td:nth-child(5)::before { content: "เอกสาร"; }
+  .admCard:not(.admOrderCard) .admTable td:nth-child(6)::before { content: "สถานะ"; }
+  .admCard:not(.admOrderCard) .admTable td:nth-child(7)::before { content: "จัดการ"; }
+
+  /* Order management */
+  .admOrderCard .admTable td:nth-child(1)::before { content: "รหัส"; }
+  .admOrderCard .admTable td:nth-child(2)::before { content: "สินค้า"; }
+  .admOrderCard .admTable td:nth-child(3)::before { content: "ผู้ซื้อ / ผู้ขาย"; }
+  .admOrderCard .admTable td:nth-child(4)::before { content: "ยอดรวม"; }
+  .admOrderCard .admTable td:nth-child(5)::before { content: "ชำระเงิน"; }
+  .admOrderCard .admTable td:nth-child(6)::before { content: "สถานะ"; }
+  .admOrderCard .admTable td:nth-child(7)::before { content: "จัดการ"; }
+
+  /* Pending payout */
+  .admPayoutTable:not(.admPayoutTable--history) td:nth-child(1)::before { content: "ผู้ขายและบัญชี"; }
+  .admPayoutTable:not(.admPayoutTable--history) td:nth-child(2)::before { content: "ออเดอร์"; }
+  .admPayoutTable:not(.admPayoutTable--history) td:nth-child(3)::before { content: "ราคาสินค้า"; }
+  .admPayoutTable:not(.admPayoutTable--history) td:nth-child(4)::before { content: "ค่าจัดส่ง"; }
+  .admPayoutTable:not(.admPayoutTable--history) td:nth-child(5)::before { content: "ค่าธรรมเนียม"; }
+  .admPayoutTable:not(.admPayoutTable--history) td:nth-child(6)::before { content: "ยอดโอนสุทธิ"; }
+  .admPayoutTable:not(.admPayoutTable--history) td:nth-child(7)::before { content: "สถานะ"; }
+  .admPayoutTable:not(.admPayoutTable--history) td:nth-child(8)::before { content: "จัดการ"; }
+
+  /* Payout history */
+  .admPayoutTable--history td:nth-child(1)::before { content: "วันที่"; }
+  .admPayoutTable--history td:nth-child(2)::before { content: "ผู้ขาย"; }
+  .admPayoutTable--history td:nth-child(3)::before { content: "บัญชี"; }
+  .admPayoutTable--history td:nth-child(4)::before { content: "ยอดโอน"; }
+  .admPayoutTable--history td:nth-child(5)::before { content: "ค่าธรรมเนียม"; }
+  .admPayoutTable--history td:nth-child(6)::before { content: "สถานะ"; }
+  .admPayoutTable--history td:nth-child(7)::before { content: "รายละเอียด"; }
+
+  /* Overdue donation detail */
+  .admDonationTable td:nth-child(1)::before { content: "วันที่บริจาค"; }
+  .admDonationTable td:nth-child(2)::before { content: "ผู้บริจาค"; }
+  .admDonationTable td:nth-child(3)::before { content: "การจัดส่ง"; }
+  .admDonationTable td:nth-child(4)::before { content: "หลักฐาน"; }
+  .admDonationTable td:nth-child(5)::before { content: "รายการ"; }
+  .admDonationTable td:nth-child(6)::before { content: "สถานะ"; }
+  .admDonationTable td:nth-child(7)::before { content: "จัดการ"; }
+
+  .admTable tbody td[colspan],
+  .admPayoutTable tbody td[colspan],
+  .admDonationTable tbody td[colspan] {
+    display: block;
+    text-align: center !important;
+    padding: 28px 16px !important;
+  }
+
+  .admTable tbody td[colspan]::before,
+  .admPayoutTable tbody td[colspan]::before,
+  .admDonationTable tbody td[colspan]::before {
+    content: none !important;
+  }
+
+  .admActionsCell,
+  .admActionsCell--stack,
+  .admPayoutActionRow {
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  .admOrderActionBtn,
+  .admPayoutBtn {
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .boProjectModalOverlay {
+    align-items: flex-end;
+    padding: 8px;
+  }
+
+  .boProjectModal {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 16px);
+    border-radius: 16px 16px 10px 10px;
+  }
+
+  .boProjectModal__header {
+    padding: 14px;
+  }
+
+  .boProjectModal__title {
+    font-size: 16px;
+  }
+
+  .boProjectModal__sub {
+    line-height: 1.45;
+  }
+
+  .boProjectModal__list {
+    padding: 12px;
+  }
+
+  .boProjectModalItem {
+    padding: 10px;
+  }
+
+  .boProjectModalItem__top {
+    flex-wrap: wrap;
+  }
+
+  .boProjectModalItem__title {
+    white-space: normal;
+  }
+}

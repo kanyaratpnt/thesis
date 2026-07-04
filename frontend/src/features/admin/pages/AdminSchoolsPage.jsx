@@ -234,7 +234,7 @@ export default function AdminSchoolsPage() {
         </section>
 
         {/* Time filter */}
-        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: "14px 18px", marginBottom: 0, boxShadow: "0 2px 8px rgba(15,23,42,0.05)", marginTop: 14 }}>
+        <div className="boTimeFilter" style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: "14px 18px", marginBottom: 0, boxShadow: "0 2px 8px rgba(15,23,42,0.05)", marginTop: 14 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#1d4ed8,#3b82f6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -252,7 +252,7 @@ export default function AdminSchoolsPage() {
               </span>
             </div>
           </div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>
+          <div className="boTimeFilter__chips" style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>
             {[{ v: "all", l: "ทั้งหมด", icon: "mdi:format-list-bulleted" }, ...SCHOOL_TIME_FILTERS].map((t) => {
               const isActive = period === t.v && !showPicker;
               return (
@@ -270,7 +270,7 @@ export default function AdminSchoolsPage() {
             </button>
           </div>
           {showPicker && (
-            <div style={{ marginTop: 12, padding: "12px 16px", background: "linear-gradient(135deg,#eff6ff,#f0f9ff)", borderRadius: 12, border: "1px solid #bfdbfe", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            <div className="boTimeFilter__custom" style={{ marginTop: 12, padding: "12px 16px", background: "linear-gradient(135deg,#eff6ff,#f0f9ff)", borderRadius: 12, border: "1px solid #bfdbfe", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <Icon icon="mdi:calendar-start" style={{ color: "#fff", fontSize: 14 }} />

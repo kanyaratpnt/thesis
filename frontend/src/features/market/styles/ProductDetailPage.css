@@ -133,6 +133,7 @@
   color: #888; min-width: 80px; flex-shrink: 0;
 }
 .pdDetailVal { color: #111827; }
+.pdDetailVal { min-width: 0; overflow-wrap: anywhere; }
 .pdNoData { color: #bbb; }
 
 .pdBadgeLevel {
@@ -532,15 +533,84 @@
   .pdProjGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 768px) {
-  .pdMain { grid-template-columns: 1fr; gap: 24px; padding: 20px; }
+  .pdContainer { padding: 18px 16px 48px; }
+  .pdBreadcrumb { margin-bottom: 16px; overflow: hidden; white-space: nowrap; }
+  .pdBreadcrumb span { overflow: hidden; text-overflow: ellipsis; }
+  .pdMain { grid-template-columns: 1fr; gap: 20px; padding: 18px; border-radius: 16px; }
+  .pdMainImg { max-height: none; }
   .pdRelGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pdProjGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pdRelatedTitle { font-size: 20px; line-height: 1.35; }
+  .pdProjSub { line-height: 1.6; }
 }
 @media (max-width: 480px) {
-  .pdRelGrid { grid-template-columns: 1fr; }
-  .pdProjGrid { grid-template-columns: 1fr; }
-  .pdTitle { font-size: 18px; }
-  .pdPrice { font-size: 28px; }
+  .pdContainer { padding: 12px 10px 36px; }
+  .pdBreadcrumb { font-size: 11px; margin: 0 4px 12px; }
+  .pdMain { gap: 16px; padding: 12px; margin-bottom: 24px; border-radius: 14px; }
+  .pdMainImg { border-radius: 10px; }
+  .pdThumb { width: 52px; height: 52px; }
+  .pdInfo { gap: 10px; }
+  .pdTitle { font-size: 17px; line-height: 1.5; }
+  .pdSchool { font-size: 12px; }
+  .pdPrice { font-size: 25px; }
+  .pdPrice span { font-size: 13px; }
+  .pdDetails { gap: 7px; padding: 10px 0; }
+  .pdDetailRow { align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.55; }
+  .pdDetailLabel { min-width: 66px; }
+  .pdBadgeLevel,
+  .pdBadgeCond { display: inline-block; font-size: 11px; line-height: 1.4; }
+  .pdDesc { font-size: 13px; }
+  .pdSeller { padding: 10px; }
+  .pdSellerAvatar { width: 40px; height: 40px; }
+  .pdSellerName { font-size: 14px; }
+  .pdSellerPhone { font-size: 12px; }
+  .pdActions {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .pdCartBtn,
+  .pdBuyBtn { min-width: 0; width: 100%; height: 48px; padding: 0 10px; font-size: 13px; border-radius: 12px; line-height: 1.25; }
+  .pdBackBtn { grid-column: 1 / -1; width: fit-content; height: 44px; padding: 0 20px; font-size: 13px; }
+  .pdRelated { margin-top: 4px; }
+  .pdRelatedTitle { font-size: 18px; gap: 7px; margin: 0 2px 6px; }
+  .pdRelatedTitleIcon { font-size: 23px; }
+  .pdProjSub { font-size: 12px; margin: 0 2px 12px; }
+  .pdRelGrid,
+  .pdProjGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .pdProjCard { border-radius: 12px; }
+  .pdProjCover { aspect-ratio: 4 / 3; }
+  .pdProjBadge { top: 6px; left: 6px; gap: 2px; max-width: calc(100% - 12px); padding: 3px 6px; font-size: 9px; }
+  .pdProjBadge svg { font-size: 11px; }
+  .pdProjSelectedMark { top: 6px; right: 6px; width: 25px; height: 25px; font-size: 17px; }
+  .pdProjBody { padding: 8px; gap: 5px; }
+  .pdProjTitle { font-size: 11px; line-height: 1.45; }
+  .pdProjSchool,
+  .pdProjAddr,
+  .pdProjMeta { font-size: 9.5px; }
+  .pdProjAddr { display: none; }
+  .pdProjProgressTop { align-items: flex-start; gap: 4px; font-size: 9px; line-height: 1.35; }
+  .pdProjProgressPct { font-size: 10px; flex-shrink: 0; }
+  .pdProjProgressTrack { height: 5px; }
+  .pdProjMeta { padding: 5px 6px; line-height: 1.3; }
+  .pdProjActions { flex-direction: column; gap: 5px; }
+  .pdProjDetailBtn,
+  .pdProjSelectBtn { width: 100%; flex: none; height: 30px; padding: 0 4px; font-size: 9.5px; gap: 3px; }
+  .pdRelCard { border-radius: 12px; }
+  .pdRelBody { padding: 9px 9px 10px; }
+  .pdRelTitle {
+    min-height: 2.9em;
+    margin-bottom: 4px;
+    font-size: 11px;
+    line-height: 1.45;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .pdRelSchool { font-size: 9.5px; margin-bottom: 4px; }
+  .pdRelPrice { font-size: 13px; }
+  .pdRelBadge { top: 6px; right: 6px; font-size: 9px; padding: 2px 6px; }
 }
 
 /* PostProductPage.css */
