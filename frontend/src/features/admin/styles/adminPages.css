@@ -553,7 +553,7 @@
 }
 
 .admOrderCard .admTable thead th {
-  background: #3b82f6;
+  background: #eff6ff;
   color: #1e3a8a;
   font-weight: 700;
 }
@@ -1689,7 +1689,7 @@
   padding: 10px 14px;
   text-align: left;
   font-weight: 700;
-  color: #fff;
+  color: #1e3a8a;
   font-size: 13px;
 }
 
