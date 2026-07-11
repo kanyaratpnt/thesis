@@ -11,6 +11,7 @@ import "../styles/ProductDetailPage.css";
 // ── helpers ──────────────────────────────────────────────
 function SizeDisplay({ size, categoryId }) {
     if (!size) return <span className="pdNoData">ไม่ระบุ</span>;
+    let label = size;
     try {
         const s = JSON.parse(size);
         const cid = Number(categoryId);
@@ -22,12 +23,11 @@ function SizeDisplay({ size, categoryId }) {
             if (s.waist && s.waist !== "0") parts.push(`เอว ${s.waist}`);
             if (s.length && s.length !== "0") parts.push(`ยาว ${s.length}`);
         }
-        return parts.length
-            ? <span>{parts.join(" | ")} นิ้ว</span>
-            : <span className="pdNoData">ไม่ระบุ</span>;
+        label = parts.length ? `${parts.join(" | ")} นิ้ว` : "";
     } catch {
-        return <span>{size}</span>;
+        label = size;
     }
+    return label ? <span>{label}</span> : <span className="pdNoData">ไม่ระบุ</span>;
 }
 
 function getCategoryLabel(categoryId, gender) {
@@ -69,7 +69,7 @@ function RelatedCard({ product, navigate }) {
     );
 }
 
-function RecommendedProjectCard({ project, selected, onSelect }) {
+function RecommendedProjectCard({ project, selected, onSelect, onBuy, buying, disabled }) {
   // ✅ ดึงข้อมูลจาก endpoint เดียวกับ ProjectDetailPage เพื่อให้ยอดตรงกัน 100%
   const [detail, setDetail] = useState(null);
 
@@ -164,10 +164,19 @@ function RecommendedProjectCard({ project, selected, onSelect }) {
           <button
             type="button"
             className={`pdProjSelectBtn${selected ? " pdProjSelectBtnOn" : ""}`}
-            onClick={() => onSelect(project)}
+            onClick={() => selected ? onBuy(project) : onSelect(project)}
+            disabled={disabled || buying}
           >
-            <Icon icon={selected ? "mdi:check-circle" : "mdi:gift-outline"} />
-            {selected ? "เลือกแล้ว" : "เลือกโครงการนี้"}
+            <Icon
+              icon={buying
+                ? "mdi:loading"
+                : selected
+                  ? "mdi:cart-heart"
+                  : "mdi:gift-outline"
+              }
+              className={buying ? "pdSpinner" : undefined}
+            />
+            {selected ? "ซื้อเพื่อส่งต่อ" : "เลือกโครงการนี้"}
           </button>
         </div>
       </div>
@@ -184,7 +193,7 @@ export default function ProductDetailPage() {
   const donationAddress = location.state?.shippingAddress;
   const project = location.state?.project;
 
-    const { token, role, userName } = useAuth();
+    const { token } = useAuth();
     const { refreshCart } = useCart();
     const [product, setProduct] = useState(null);
     const [related, setRelated] = useState([]);
@@ -263,7 +272,7 @@ export default function ProductDetailPage() {
             setAddingCart(false);
         }
     };
-    const handleBuyNow = async () => {
+    const handleBuyNow = async (projectToDonate = null) => {
   if (!token) { navigate("/login"); return; }
   setAddingCart(true);
 
@@ -283,13 +292,15 @@ export default function ProductDetailPage() {
     await refreshCart();
 
     // 🔥 แยก logic
-    if (selectedProject) {
+    const donationProject = projectToDonate || selectedProject;
+
+    if (donationProject) {
       navigate(`/checkout?items=${id}&type=product`, {
         state: {
           isDonation: true,
-          shippingAddress: selectedProject.shipping_address,
-          project_id: selectedProject.request_id,
-          project_title: selectedProject.request_title,
+          shippingAddress: donationProject.shipping_address,
+          project_id: donationProject.request_id,
+          project_title: donationProject.request_title,
         }
       });
     } else if (isDonation) {
@@ -481,7 +492,7 @@ export default function ProductDetailPage() {
                                     </button>
                                     <button
                                         className="pdBuyBtn"
-                                        onClick={handleBuyNow}
+                                        onClick={() => handleBuyNow()}
                                         disabled={addingCart || product.quantity === 0}
                                     >
                                         <Icon icon="mdi:lightning-bolt" />
@@ -519,6 +530,9 @@ export default function ProductDetailPage() {
                                             project={p}
                                             selected={Number(selectedProject?.request_id) === Number(p.request_id)}
                                             onSelect={setSelectedProject}
+                                            onBuy={handleBuyNow}
+                                            buying={addingCart && Number(selectedProject?.request_id) === Number(p.request_id)}
+                                            disabled={product.quantity === 0}
                                         />
                                     ))}
                                 </div>
@@ -527,7 +541,7 @@ export default function ProductDetailPage() {
 
                         {/* ── Related Products ── */}
                         {related.length > 0 && (
-                            <section className="pdRelated" style={{ marginTop: recommendedProjects.length > 0 ? 36 : 0 }}>
+                            <section className="pdRelated pdRelatedProducts" style={{ marginTop: recommendedProjects.length > 0 ? 36 : 0 }}>
                                 <h2 className="pdRelatedTitle pdRelatedTitleAlt">สินค้าอื่นๆ ที่อาจถูกใจ</h2>
                                 <div className="pdRelGrid">
                                     {related.map(p => (
