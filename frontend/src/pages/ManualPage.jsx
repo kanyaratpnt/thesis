@@ -36,7 +36,7 @@ const manuals = [
     id: "donor",
     title: "ผู้บริจาค",
     subtitle: "เลือกโครงการ ส่งของให้โรงเรียน ติดตามสถานะ และรับใบเกียรติบัตร",
-    image: "/manual/5.png",
+    image: "/manual/5.png?v=donor-20260712",
     accent: "#f59e0b",
     soft: "#fef3c7",
     icon: "mdi:hand-heart-outline",
