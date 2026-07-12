@@ -736,6 +736,7 @@ const displayedProducts = useMemo(() => {
             <Link to="/market">ร้านค้า</Link>
             <Link to="/sell">ลงขาย</Link>
             <Link to="/about">เกี่ยวกับเรา</Link>
+            <Link to="/manual">คู่มือการใช้</Link>
           </div>
 
           <div className="footCol">

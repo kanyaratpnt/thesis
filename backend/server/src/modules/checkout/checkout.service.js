@@ -1,4 +1,5 @@
 import { db } from "../../config/db.js";
+import { sendNotification } from "../../lib/notify.js";
 import Omise from "omise";
 
 // ── Omise client ──────────────────────────────────────────
@@ -464,6 +465,7 @@ const placeOrder = async ({
 
     // ── Omise: Card Payment ───────────────────────────────
     let chargeId = null;
+    let paymentStatus = "pending";
 
     if (omiseToken && paymentMethod === "card") {
       // สร้าง charge ด้วย token (บาท → สตางค์ × 100)
@@ -483,6 +485,7 @@ const placeOrder = async ({
            WHERE order_id = ?`,
           [chargeId, orderId]
         );
+        paymentStatus = "paid";
       } else {
         // charge failed → rollback
         await conn.rollback();
@@ -577,6 +580,27 @@ const placeOrder = async ({
       }
     }
     await conn.commit();
+
+    if (sellerId && paymentStatus === "paid") {
+      try {
+        const itemCount = items.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+        await sendNotification(sellerId, {
+          type:   "seller_new_order",
+          title:  "มีคำสั่งซื้อใหม่",
+          body:   {
+            message: `ออเดอร์ #${orderId} ชำระเงินแล้ว กรุณาเตรียมจัดส่งสินค้า`,
+            order_id: orderId,
+            item_count: itemCount,
+            total_price: totalPrice,
+            order_type: orderType || "purchase",
+          },
+          ref_id: orderId,
+        });
+      } catch (notifErr) {
+        console.warn("[notify] seller_new_order:", notifErr.message);
+      }
+    }
+
     return {
       order_id:  orderId,
       charge_id: chargeId,

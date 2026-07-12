@@ -32,6 +32,7 @@ const CHIP_LABELS = {
   admin_approved:         "ดูรายการบริจาค →",
   donation_received:      "ตรวจสอบบริจาค →",
   donation_shipped:       "ดูประวัติการบริจาค →",
+  seller_new_order:       "จัดการออเดอร์ →",
   order_shipped:          "ดูออเดอร์ →",
   order_delivered:        "ดูออเดอร์ →",
   order_auto_delivered:   "ดูออเดอร์ →",
@@ -52,6 +53,7 @@ export const NOTIF_ICONS = {
   admin_approved:         "mdi:check-circle-outline",
   donation_received:      "mdi:gift-outline",
   donation_shipped:       "mdi:truck-delivery-outline",
+  seller_new_order:       "mdi:receipt-text-outline",
   order_shipped:          "mdi:package-variant-closed",
   order_delivered:        "mdi:check-decagram-outline",
   order_auto_delivered:   "mdi:check-decagram-outline",
@@ -68,6 +70,7 @@ export const NOTIF_ICON_CLASS = {
   admin_approved:           "nb-item-icon--approved",
   donation_received:        "nb-item-icon--approved",
   order_delivered:          "nb-item-icon--approved",
+  seller_new_order:         "nb-item-icon--cert",
   order_shipped:            "nb-item-icon--cert",
   payout_completed:         "nb-item-icon--approved",
   donation_issue:           "nb-item-icon--default",
@@ -108,6 +111,7 @@ export function getNotifAction(notif, role) {
   }
 
   const sellerOrderTypes = new Set([
+    "seller_new_order",
     "order_cancel_warning",
     "order_auto_cancelled_seller",
   ]);
