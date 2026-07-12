@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
+import Footer from "./Footer.jsx";
 import "./styles/ManualPage.css";
 
 const manuals = [
@@ -152,45 +152,7 @@ export default function ManualPage() {
           </div>
         </section>
       </main>
-
-      <footer id="about" className="footer">
-        <div className="footerInner">
-          <div className="footBrand">
-            <div>
-              <Link to="/" onClick={() => window.scrollTo(0, 0)}>
-                <img className="footLogo" src="/unieed_pic/logo.png" alt="Unieed" />
-              </Link>
-              <div className="footDesc">
-                แพลตฟอร์มส่งต่อแบ่งปันชุดนักเรียน
-                <br />
-                เพื่อมอบโอกาสทางการศึกษาให้กับนักเรียน
-              </div>
-            </div>
-          </div>
-
-          <div className="footCol">
-            <div className="footTitle">เมนูลัด</div>
-            <Link to="/" onClick={() => window.scrollTo(0, 0)}>หน้าหลัก</Link>
-            <Link to="/projects">โครงการ</Link>
-            <Link to="/market">ร้านค้า</Link>
-            <Link to="/sell">ลงขาย</Link>
-            <Link to="/about">เกี่ยวกับเรา</Link>
-            <Link to="/manual">คู่มือการใช้</Link>
-          </div>
-
-          <div className="footCol">
-            <div className="footTitle">ติดต่อเรา</div>
-            <div className="manualContactItem">
-              <Icon icon="mdi:phone-outline" />
-              <div id="contactfooter">062-379-0000</div>
-            </div>
-            <div className="manualContactItem">
-              <Icon icon="mdi:email-outline" />
-              <div id="contactfooter">contact@unieed.com</div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

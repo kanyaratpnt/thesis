@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { getJson } from "../api/http.js";
 import Navbar from "./Navbar.jsx";
+import Footer from "./Footer.jsx";
 import { Icon } from "@iconify/react";
 import "./styles/AboutPage.css";
 
@@ -307,49 +308,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
-      {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="footer">
-        <div className="footerInner">
-          <div className="footBrand">
-            <div>
-              <Link to="/" onClick={() => window.scrollTo(0, 0)}>
-                <img className="footLogo" src="/unieed_pic/logo.png" alt="Unieed" />
-              </Link>
-              <div className="footDesc">
-                แพลตฟอร์มส่งต่อแบ่งปันชุดนักเรียน<br />
-                เพื่อมอบโอกาสทางการศึกษาให้กับนักเรียน
-              </div>
-            </div>
-          </div>
-
-          <div className="footCol">
-            <div className="footTitle">เมนูลัด</div>
-            <Link to="/" onClick={() => window.scrollTo(0, 0)}>หน้าหลัก</Link>
-            <Link to="/projects">โครงการ</Link>
-            <Link to="/market">ร้านค้า</Link>
-            <Link to="/sell">ลงขาย</Link>
-            <Link to="/about">เกี่ยวกับเรา</Link>
-            <Link to="/manual">คู่มือการใช้</Link>
-          </div>
-
-          <div className="footCol">
-            <div className="footTitle">ติดต่อเรา</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" clipRule="evenodd" d="M9.55537 3.40517C11.5837 1.3885 14.9237 1.74684 16.622 4.01684L18.7254 6.8235C20.1087 8.67017 19.9854 11.2502 18.3437 12.8818L17.947 13.2785C17.9021 13.445 17.8975 13.6199 17.9337 13.7885C18.0387 14.4685 18.607 15.9085 20.987 18.2752C23.367 20.6418 24.817 21.2085 25.507 21.3152C25.6809 21.3501 25.8605 21.345 26.032 21.3002L26.712 20.6235C28.172 19.1735 30.412 18.9018 32.2187 19.8835L35.402 21.6168C38.1304 23.0968 38.8187 26.8035 36.5854 29.0252L34.217 31.3785C33.4704 32.1202 32.467 32.7385 31.2437 32.8535C28.227 33.1352 21.1987 32.7752 13.8104 25.4302C6.91537 18.5735 5.59204 12.5935 5.4237 9.64684C5.34037 8.15684 6.0437 6.89684 6.94037 6.00684L9.55537 3.40517Z" fill="white" />
-              </svg>
-              <div id="contactfooter">062-379-0000</div>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M36.6663 10.0003C36.6663 8.16699 35.1663 6.66699 33.333 6.66699H6.66634C4.83301 6.66699 3.33301 8.16699 3.33301 10.0003V30.0003C3.33301 31.8337 4.83301 33.3337 6.66634 33.3337H33.333C35.1663 33.3337 36.6663 31.8337 36.6663 30.0003V10.0003ZM33.333 10.0003L19.9997 18.3337L6.66634 10.0003H33.333ZM33.333 30.0003H6.66634V13.3337L19.9997 21.667L33.333 13.3337V30.0003Z" fill="white" />
-              </svg>
-              <div id="contactfooter">contact@unieed.com</div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
