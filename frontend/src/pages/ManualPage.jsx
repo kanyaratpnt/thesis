@@ -41,6 +41,15 @@ const manuals = [
     soft: "#fef3c7",
     icon: "mdi:hand-heart-outline",
   },
+  {
+    id: "school",
+    title: "โรงเรียน",
+    subtitle: "สมัครโรงเรียน เปิดโครงการ จัดการคำขอ และตรวจสอบรายการบริจาค",
+    image: "/manual/6.png?v=school-20260713",
+    accent: "#7c3aed",
+    soft: "#ede9fe",
+    icon: "mdi:school-outline",
+  },
 ];
 
 export default function ManualPage() {
@@ -76,7 +85,7 @@ export default function ManualPage() {
           </div>
           <div className="manualHeroPanel" aria-hidden="true">
             <Icon icon="mdi:book-open-page-variant-outline" />
-            <span>4 คู่มือ</span>
+            <span>{manuals.length} คู่มือ</span>
           </div>
         </section>
 
