@@ -1,5 +1,6 @@
 import { db } from "../../config/db.js";
 import { sendNotification } from "../../lib/notify.js";
+import { Resend } from "resend";
 import {
   decryptBankAccountNumber,
   formatBankAccountNumber,
@@ -7,6 +8,8 @@ import {
   maskBankAccountNumber,
   sanitizeBankNumber,
 } from "../../utils/bankAccountSecurity.js";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /** คืนเวลาไทย (UTC+7) ในรูปแบบ YYYY-MM-DD HH:MM:SS สำหรับส่งเข้า DB */
 function thaiNow() {
@@ -129,6 +132,92 @@ function pad2(n) {
   return String(n).padStart(2, "0");
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function getFrontendUrl(path = "") {
+  const baseUrl = String(process.env.FRONTEND_URL || "").replace(/\/+$/, "");
+  return `${baseUrl}${path}`;
+}
+
+async function sendSchoolApprovalEmail({ email, schoolName }) {
+  if (!email) return;
+
+  const loginUrl = getFrontendUrl("/login");
+  const logoUrl = getFrontendUrl("/unieed_pic/logo.png");
+  const safeSchoolName = escapeHtml(schoolName || "โรงเรียนของคุณ");
+
+  await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL,
+    to: email,
+    subject: "การลงทะเบียนโรงเรียนของคุณได้รับการยืนยันแล้ว",
+    html: `
+      <div style="margin:0;padding:0;background:#f3f7fb;font-family:Arial,'Helvetica Neue',sans-serif;color:#172033">
+        <div style="display:none;max-height:0;overflow:hidden;opacity:0">
+          การลงทะเบียนโรงเรียนของคุณได้รับการยืนยันแล้ว สามารถเข้าสู่ระบบ Unieed ได้ทันที
+        </div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;background:#f3f7fb">
+          <tr>
+            <td align="center" style="padding:32px 16px">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;max-width:560px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(30,64,175,0.12)">
+                <tr>
+                  <td align="center" style="padding:30px 28px 18px;background:#ffffff">
+                    <img src="${logoUrl}" alt="Unieed" width="132" style="display:block;border:0;outline:none;text-decoration:none;max-width:132px;height:auto" />
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:0 34px 8px">
+                    <div style="display:inline-block;padding:8px 14px;border-radius:999px;background:#e8f7ff;color:#1684c7;font-size:13px;font-weight:700">
+                      อนุมัติเรียบร้อย
+                    </div>
+                    <h1 style="margin:18px 0 10px;font-size:26px;line-height:1.35;color:#172033;font-weight:800">
+                      โรงเรียนของคุณได้รับการยืนยันแล้ว
+                    </h1>
+                    <p style="margin:0;font-size:16px;line-height:1.75;color:#596579">
+                      การลงทะเบียนของ <strong style="color:#172033">${safeSchoolName}</strong> ได้รับการตรวจสอบและอนุมัติแล้ว
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:16px 34px 0">
+                    <div style="background:#f7fbff;border:1px solid #dcecf8;border-radius:14px;padding:18px 20px">
+                      <p style="margin:0;font-size:15px;line-height:1.75;color:#465366">
+                        คุณสามารถเข้าสู่ระบบเพื่อจัดการข้อมูลโรงเรียน สร้างโครงการขอรับบริจาค และใช้งานระบบของ Unieed ได้แล้ว
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:28px 34px 10px">
+                    <a href="${loginUrl}"
+                      style="display:inline-block;min-width:220px;padding:14px 28px;background:#1f9bd1;color:#ffffff;border-radius:10px;text-decoration:none;font-size:16px;font-weight:800;box-shadow:0 10px 24px rgba(31,155,209,0.28)">
+                      เข้าสู่ระบบ Unieed
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:8px 34px 34px">
+                    <p style="margin:0;font-size:13px;line-height:1.7;color:#8a95a6">
+                      หากปุ่มไม่ทำงาน สามารถคัดลอกลิงก์นี้ไปเปิดในเบราว์เซอร์<br/>
+                      <a href="${loginUrl}" style="color:#1f7fb5;text-decoration:none;word-break:break-all">${loginUrl}</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `,
+  });
+}
+
 function chartBucketKey(date, granularity) {
   const y = date.getFullYear();
   const m = pad2(date.getMonth() + 1);
@@ -209,13 +298,43 @@ export async function listSchools({ status = "", q = "", sort = "latest" } = {})
 
 export async function approveSchool(school_id) {
   const conn = await db.getConnection();
+  let approvalEmail = null;
+  let approvalSchoolName = null;
   try {
     await conn.beginTransaction();
     const [r] = await conn.query(
       `UPDATE schools SET verification_status='approved', verification_note=NULL WHERE school_id=?`, [school_id]);
     if (r.affectedRows === 0) throw Object.assign(new Error("School not found"), { status: 404 });
-    await conn.query(`UPDATE users SET status='active' WHERE role='school_admin' AND school_id=?`, [school_id]);
+
+    const [[approvalTarget]] = await conn.query(
+      `SELECT s.school_name, u.user_email
+       FROM schools s
+       LEFT JOIN users u ON u.user_id = (
+         SELECT user_id FROM users
+         WHERE school_id = s.school_id AND role = 'school_admin'
+         ORDER BY is_primary DESC, joined_school_at ASC, created_at ASC LIMIT 1
+       )
+       WHERE s.school_id=?`,
+      [school_id]
+    );
+    approvalEmail = approvalTarget?.user_email || null;
+    approvalSchoolName = approvalTarget?.school_name || null;
+
+    await conn.query(
+      `UPDATE users
+       SET status='active',
+           email_verified=1,
+           verification_token=NULL,
+           verification_expired_at=NULL
+       WHERE role='school_admin' AND school_id=?`,
+      [school_id]
+    );
     await conn.commit();
+
+    sendSchoolApprovalEmail({ email: approvalEmail, schoolName: approvalSchoolName }).catch((err) => {
+      console.error("sendSchoolApprovalEmail failed:", err);
+    });
+
     return { message: "Approved" };
   } catch (e) { await conn.rollback(); throw e; } finally { conn.release(); }
 }
