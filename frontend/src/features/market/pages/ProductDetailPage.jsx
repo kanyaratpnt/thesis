@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext.jsx";
 import { getJson } from "../../../api/http.js";
 import Navbar from "../../../pages/Navbar.jsx";
 import { useCart } from "../context/CartContext.jsx";  // ✅ เพิ่ม
+import { getShippingLogoSrc } from "../utils/shippingLogos.js";
 import "../styles/ProductDetailPage.css";
 
 // ── helpers ──────────────────────────────────────────────
@@ -38,19 +39,6 @@ function getCategoryLabel(categoryId, gender) {
     return "ชุดนักเรียน";
 }
 
-const SHIPPING_LOGO_MAP = {
-    KEX: "https://www.kerryexpress.com/img/kerry-logo.svg",
-    KERRY: "https://www.kerryexpress.com/img/kerry-logo.svg",
-    FLX: "https://www.flashexpress.co.th/wp-content/uploads/2021/04/flash_logo-1.png",
-    FLASH: "https://www.flashexpress.co.th/wp-content/uploads/2021/04/flash_logo-1.png",
-    THP: "https://www.thaipost.go.th/main/img/logo-thaipost.png",
-    THAIPOST: "https://www.thaipost.go.th/main/img/logo-thaipost.png",
-    EMS: "https://www.thaipost.go.th/main/img/logo-thaipost.png",
-    JNT: "https://th.jtexpress.co.th/dist/img/logo.svg",
-    JT: "https://th.jtexpress.co.th/dist/img/logo.svg",
-    DHL: "https://www.dhl.com/content/dam/dhl/global/core/images/logos/dhl-logo.svg",
-};
-
 const SHIPPING_BRAND = {
     kerry: { bg: "#e8f0fe", color: "#1a56db", icon: "mdi:truck-fast", abbr: "KEX" },
     flash: { bg: "#fff3e0", color: "#e65100", icon: "mdi:lightning-bolt", abbr: "FLX" },
@@ -63,16 +51,6 @@ const SHIPPING_BRAND = {
     default: { bg: "#f1f5f9", color: "#475569", icon: "mdi:truck-outline", abbr: "ส่ง" },
 };
 
-function getShippingLogo(code, name) {
-    const codeKey = (code || "").toUpperCase();
-    const nameLower = (name || "").toLowerCase();
-    if (SHIPPING_LOGO_MAP[codeKey]) return SHIPPING_LOGO_MAP[codeKey];
-    for (const [key, url] of Object.entries(SHIPPING_LOGO_MAP)) {
-        if (nameLower.includes(key.toLowerCase())) return url;
-    }
-    return null;
-}
-
 function getShippingBrand(code, name) {
     const n = `${name || ""} ${code || ""}`.toLowerCase();
     for (const [key, brand] of Object.entries(SHIPPING_BRAND)) {
@@ -83,7 +61,7 @@ function getShippingBrand(code, name) {
 
 function ShippingLogo({ code, name, size = 36 }) {
     const [imgError, setImgError] = useState(false);
-    const logoUrl = getShippingLogo(code, name);
+    const logoUrl = getShippingLogoSrc(code, name);
     const brand = getShippingBrand(code, name);
 
     if (!logoUrl || imgError) {
@@ -124,7 +102,10 @@ function formatBaht(value) {
 }
 
 function formatShippingRange(providers) {
-    const prices = providers.map(p => Number(p.estimated_price || 0));
+    const prices = providers
+        .filter(p => p.has_price_data)
+        .map(p => Number(p.estimated_price || 0));
+    if (!prices.length) return "กำลังโหลดราคา...";
     const min = Math.min(...prices);
     const max = Math.max(...prices);
     if (min === max) return formatBaht(min);
@@ -306,6 +287,7 @@ export default function ProductDetailPage() {
     const [err, setErr] = useState("");
     const [recommendedProjects, setRecommendedProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [shippingCatalog, setShippingCatalog] = useState([]);
 
     // fetch product
     // แก้ใน ProductDetailPage.jsx — เฉพาะส่วน useEffect ที่ fetch related
@@ -337,6 +319,13 @@ export default function ProductDetailPage() {
             .catch(() => setErr("ไม่สามารถโหลดข้อมูลสินค้าได้"))
             .finally(() => setLoading(false));
     }, [id]);
+
+    useEffect(() => {
+        fetch("/api/checkout/shipping")
+            .then(r => r.json())
+            .then(data => setShippingCatalog(Array.isArray(data) ? data : []))
+            .catch(() => setShippingCatalog([]));
+    }, []);
 
     useEffect(() => {
         if (!id) return;
@@ -439,10 +428,25 @@ export default function ProductDetailPage() {
         : "";
 
     const images = product?.images || [];
-    const shippingProviders = (product?.shipping_providers || []).map(provider => ({
-        ...provider,
-        estimated_price: calcShippingEstimate(provider, 1, Number(product?.price || 0)),
-    }));
+    const shippingProviders = (product?.shipping_providers || []).map(provider => {
+        const catalog = shippingCatalog.find(item => (
+            Number(item.provider_id) === Number(provider.provider_id) ||
+            (item.code && provider.code && String(item.code).toLowerCase() === String(provider.code).toLowerCase()) ||
+            String(item.name || "").toLowerCase() === String(provider.name || "").toLowerCase()
+        ));
+        const mergedProvider = { ...catalog, ...provider };
+        const hasPriceData = [
+            mergedProvider.base_price,
+            mergedProvider.price_per_item,
+            mergedProvider.max_price,
+            mergedProvider.free_threshold,
+        ].some(value => value !== undefined && value !== null);
+        return {
+            ...mergedProvider,
+            has_price_data: hasPriceData,
+            estimated_price: calcShippingEstimate(mergedProvider, 1, Number(product?.price || 0)),
+        };
+    });
     const shippingRange = shippingProviders.length ? formatShippingRange(shippingProviders) : "";
 
     return (
@@ -582,7 +586,10 @@ export default function ProductDetailPage() {
                                                         )}
                                                     </div>
                                                     <div className="pdShippingPrice">
-                                                        {formatBaht(provider.estimated_price)}
+                                                        {provider.has_price_data
+                                                            ? formatBaht(provider.estimated_price)
+                                                            : "กำลังโหลดราคา..."
+                                                        }
                                                     </div>
                                                 </div>
                                             ))}

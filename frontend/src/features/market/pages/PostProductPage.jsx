@@ -7,6 +7,7 @@ import "../../../pages/styles/Homepage.css";
 import "../styles/PostProductPage.css";
 import Navbar from "../../../pages/Navbar.jsx";
 import Footer from "../../../pages/Footer.jsx";
+import { getShippingLogoSrc } from "../utils/shippingLogos.js";
  
 const SIZE_LABELS = { chest: "อก", waist: "เอว", length: "ยาว" };
  
@@ -22,17 +23,6 @@ const LEVELS           = ["ทุกระดับชั้น", "อนุบ�
 const CONDITION_PERCENTS = ["10","20","30","40","50","60","70","80","90","100"];
 const CONDITION_LABELS   = ["มีตำหนิ","พอใช้ได้","สภาพดี","สภาพดีมาก","ใหม่มาก"];
 const MAX_IMAGES         = 4;
- 
-// โลโก้ขนส่ง — ใช้ URL จาก CDN สาธารณะ (fallback เป็น icon ถ้าโหลดไม่ได้)
-const SHIPPING_LOGOS = {
-  "ไปรษณีย์ไทย":   "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Thailand_Post_logo.svg/200px-Thailand_Post_logo.svg.png",
-  "Kerry Express":  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Kerry_Express_logo.svg/200px-Kerry_Express_logo.svg.png",
-  "Flash Express":  "https://companieslogo.com/img/orig/FLASH.BK-5e0d2d86.png",
-  "J&T Express":    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/J%26T_Express_logo.svg/200px-J%26T_Express_logo.svg.png",
-  "Ninja Van":      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Ninjavan-logo.svg/200px-ninjavan-logo.svg.png",
-  "Shopee Express": "https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/cb0479f3c6a5e4e82b56.png",
-  "Lazada Express": "https://lzd-img-global.slatic.net/g/tsp/tb/img/logo/lazada_logo_160.png",
-};
  
 const makeItem = () => ({
   _id:              Math.random().toString(36).slice(2),
@@ -52,9 +42,9 @@ const makeItem = () => ({
 });
  
 // ── ShippingLogo component ────────────────────────────────
-function ShippingLogo({ name, size = 36 }) {
+function ShippingLogo({ code, name, size = 36 }) {
   const [error, setError] = useState(false);
-  const src = SHIPPING_LOGOS[name];
+  const src = getShippingLogoSrc(code, name);
   if (!src || error) {
     return (
       <div style={{
@@ -698,7 +688,7 @@ export default function PostProductPage() {
                         }
                       >
                         <div className="ppShipCardIcon">
-                          <ShippingLogo name={p.name} size={38} />
+                          <ShippingLogo code={p.code} name={p.name} size={38} />
                         </div>
                         <div className="ppShipCardName">{p.name}</div>
                         <div className="ppShipCardPrice">

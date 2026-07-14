@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext.jsx";
 import Navbar from "../../../pages/Navbar.jsx";
 import "../styles/CheckoutPage.css";
 import { searchAddress, suggestProvinces, ensureAddressDataReady, isAddressDataReady } from "../../../utils/thaiAddress.js";
+import { getShippingLogoSrc } from "../utils/shippingLogos.js";
 
 // ── Helpers ───────────────────────────────────────────────
 function getCategoryLabel(cid, gender) {
@@ -385,37 +386,6 @@ function AddressModal({ address, onSave, onClose }) {
 }
 
 
-// ── Shipping Logo Map ─────────────────────────────────────
-// match ด้วย code (KEX, FLX ฯลฯ) หรือ name (ไม่ case-sensitive)
-const SHIPPING_LOGO_MAP = {
-  // Kerry Express — official CDN
-  KEX:   "https://www.kerryexpress.com/img/kerry-logo.svg",
-  KERRY: "https://www.kerryexpress.com/img/kerry-logo.svg",
-  // Flash Express — official asset
-  FLX:   "https://www.flashexpress.co.th/wp-content/uploads/2021/04/flash_logo-1.png",
-  FLASH: "https://www.flashexpress.co.th/wp-content/uploads/2021/04/flash_logo-1.png",
-  // Thailand Post / EMS
-  THP:      "https://www.thaipost.go.th/main/img/logo-thaipost.png",
-  THAIPOST: "https://www.thaipost.go.th/main/img/logo-thaipost.png",
-  EMS:      "https://www.thaipost.go.th/main/img/logo-thaipost.png",
-  // J&T Express
-  JNT: "https://th.jtexpress.co.th/dist/img/logo.svg",
-  JT:  "https://th.jtexpress.co.th/dist/img/logo.svg",
-  // Ninja Van
-  NJV:      "https://www.ninjavan.co/static/logo.svg",
-  NINJAVAN: "https://www.ninjavan.co/static/logo.svg",
-  // Shopee Express
-  SHOPEE: "https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/homepage/6d9f0d1b41d4f4c9.png",
-  SPX:    "https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/homepage/6d9f0d1b41d4f4c9.png",
-  // Lazada Logistics
-  LAZADA: "https://lzd-img-global.slatic.net/g/tsp/tb/img/logo/lazada_logo_160.png",
-  LZD:    "https://lzd-img-global.slatic.net/g/tsp/tb/img/logo/lazada_logo_160.png",
-  // DHL
-  DHL: "https://www.dhl.com/content/dam/dhl/global/core/images/logos/dhl-logo.svg",
-  // SCG Logistics
-  SCG: "https://www.scglogistics.co.th/wp-content/uploads/2023/01/logo-scgl.png",
-};
-
 // ── Brand identity สำหรับ fallback badge ─────────────────
 // แต่ละแบรนด์มีสีและ icon เป็นของตัวเอง
 const SHIPPING_BRAND = {
@@ -434,16 +404,6 @@ const SHIPPING_BRAND = {
   default: { bg: "#f1f5f9", color: "#475569", icon: "mdi:truck-outline",   abbr: "???" },
 };
 
-function getShippingLogo(code, name) {
-  const codeKey = (code || "").toUpperCase();
-  const nameLower = (name || "").toLowerCase();
-  if (SHIPPING_LOGO_MAP[codeKey]) return SHIPPING_LOGO_MAP[codeKey];
-  for (const [key, url] of Object.entries(SHIPPING_LOGO_MAP)) {
-    if (nameLower.includes(key.toLowerCase())) return url;
-  }
-  return null;
-}
-
 function getShippingBrand(code, name) {
   const n = ((name || "") + " " + (code || "")).toLowerCase();
   for (const [key, brand] of Object.entries(SHIPPING_BRAND)) {
@@ -454,7 +414,7 @@ function getShippingBrand(code, name) {
 
 function ShippingLogo({ code, name, size = 40 }) {
   const [imgError, setImgError] = React.useState(false);
-  const logoUrl = getShippingLogo(code, name);
+  const logoUrl = getShippingLogoSrc(code, name);
   const brand   = getShippingBrand(code, name);
 
   // ── Fallback badge: มีสีประจำแบรนด์ + icon + abbr ──
@@ -661,7 +621,7 @@ function OmiseCardForm({ amount, onToken, onError, disabled }) {
       omiseRef.current = window.Omise;
     };
     document.head.appendChild(script);
-    return () => { try { document.head.removeChild(script); } catch {} };
+    return () => { try { document.head.removeChild(script); } catch { /* script may already be removed */ } };
   }, []);
 
   const formatCardNum = (val) => {
@@ -828,7 +788,7 @@ function OmiseCardForm({ amount, onToken, onError, disabled }) {
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════
 export default function CheckoutPage() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const navigate  = useNavigate();
   const location  = useLocation();
   const [params]  = useSearchParams();
