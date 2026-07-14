@@ -38,6 +38,108 @@ function getCategoryLabel(categoryId, gender) {
     return "ชุดนักเรียน";
 }
 
+const SHIPPING_LOGO_MAP = {
+    KEX: "https://www.kerryexpress.com/img/kerry-logo.svg",
+    KERRY: "https://www.kerryexpress.com/img/kerry-logo.svg",
+    FLX: "https://www.flashexpress.co.th/wp-content/uploads/2021/04/flash_logo-1.png",
+    FLASH: "https://www.flashexpress.co.th/wp-content/uploads/2021/04/flash_logo-1.png",
+    THP: "https://www.thaipost.go.th/main/img/logo-thaipost.png",
+    THAIPOST: "https://www.thaipost.go.th/main/img/logo-thaipost.png",
+    EMS: "https://www.thaipost.go.th/main/img/logo-thaipost.png",
+    JNT: "https://th.jtexpress.co.th/dist/img/logo.svg",
+    JT: "https://th.jtexpress.co.th/dist/img/logo.svg",
+    DHL: "https://www.dhl.com/content/dam/dhl/global/core/images/logos/dhl-logo.svg",
+};
+
+const SHIPPING_BRAND = {
+    kerry: { bg: "#e8f0fe", color: "#1a56db", icon: "mdi:truck-fast", abbr: "KEX" },
+    flash: { bg: "#fff3e0", color: "#e65100", icon: "mdi:lightning-bolt", abbr: "FLX" },
+    thai: { bg: "#fce4ec", color: "#c62828", icon: "mdi:mailbox-outline", abbr: "THP" },
+    post: { bg: "#fce4ec", color: "#c62828", icon: "mdi:mailbox-outline", abbr: "EMS" },
+    ems: { bg: "#fce4ec", color: "#c62828", icon: "mdi:mailbox-outline", abbr: "EMS" },
+    "j&t": { bg: "#fff8e1", color: "#f57f17", icon: "mdi:truck-delivery", abbr: "J&T" },
+    jnt: { bg: "#fff8e1", color: "#f57f17", icon: "mdi:truck-delivery", abbr: "J&T" },
+    dhl: { bg: "#fff9c4", color: "#b71c1c", icon: "mdi:truck-outline", abbr: "DHL" },
+    default: { bg: "#f1f5f9", color: "#475569", icon: "mdi:truck-outline", abbr: "ส่ง" },
+};
+
+function getShippingLogo(code, name) {
+    const codeKey = (code || "").toUpperCase();
+    const nameLower = (name || "").toLowerCase();
+    if (SHIPPING_LOGO_MAP[codeKey]) return SHIPPING_LOGO_MAP[codeKey];
+    for (const [key, url] of Object.entries(SHIPPING_LOGO_MAP)) {
+        if (nameLower.includes(key.toLowerCase())) return url;
+    }
+    return null;
+}
+
+function getShippingBrand(code, name) {
+    const n = `${name || ""} ${code || ""}`.toLowerCase();
+    for (const [key, brand] of Object.entries(SHIPPING_BRAND)) {
+        if (key !== "default" && n.includes(key)) return brand;
+    }
+    return SHIPPING_BRAND.default;
+}
+
+function ShippingLogo({ code, name, size = 36 }) {
+    const [imgError, setImgError] = useState(false);
+    const logoUrl = getShippingLogo(code, name);
+    const brand = getShippingBrand(code, name);
+
+    if (!logoUrl || imgError) {
+        return (
+            <div className="pdShipLogoFallback" style={{ width: size, height: size, background: brand.bg, color: brand.color }}>
+                <Icon icon={brand.icon} />
+                <span>{brand.abbr}</span>
+            </div>
+        );
+    }
+
+    return (
+        <img
+            src={logoUrl}
+            alt={name}
+            onError={() => setImgError(true)}
+            className="pdShipLogoImg"
+            style={{ width: size, height: size }}
+        />
+    );
+}
+
+function calcShippingEstimate(provider, qty = 1, subtotal = 0) {
+    const basePrice = Number(provider?.base_price || 0);
+    const perItem = Number(provider?.price_per_item || 0);
+    const maxPrice = provider?.max_price ? Number(provider.max_price) : null;
+    const freeThreshold = provider?.free_threshold ? Number(provider.free_threshold) : null;
+
+    let price = basePrice + (perItem * Math.max(Number(qty) || 1, 1));
+    if (maxPrice !== null && price > maxPrice) price = maxPrice;
+    if (freeThreshold !== null && Number(subtotal) >= freeThreshold) price = 0;
+    return Math.round(price * 100) / 100;
+}
+
+function formatBaht(value) {
+    const num = Number(value || 0);
+    return `${num.toLocaleString(undefined, { maximumFractionDigits: 2 })} บาท`;
+}
+
+function formatShippingRange(providers) {
+    const prices = providers.map(p => Number(p.estimated_price || 0));
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    if (min === max) return formatBaht(min);
+    return `${min.toLocaleString(undefined, { maximumFractionDigits: 2 })}-${max.toLocaleString(undefined, { maximumFractionDigits: 2 })} บาท`;
+}
+
+function formatEstDays(provider) {
+    const min = provider?.est_days_min;
+    const max = provider?.est_days_max;
+    if (min && max) return `${min}-${max} วัน`;
+    if (min) return `${min} วันขึ้นไป`;
+    if (max) return `ไม่เกิน ${max} วัน`;
+    return null;
+}
+
 // ── Related Card ─────────────────────────────────────────
 function RelatedCard({ product, navigate }) {
     const categoryLabel = getCategoryLabel(product.category_id, product.gender);
@@ -337,6 +439,11 @@ export default function ProductDetailPage() {
         : "";
 
     const images = product?.images || [];
+    const shippingProviders = (product?.shipping_providers || []).map(provider => ({
+        ...provider,
+        estimated_price: calcShippingEstimate(provider, 1, Number(product?.price || 0)),
+    }));
+    const shippingRange = shippingProviders.length ? formatShippingRange(shippingProviders) : "";
 
     return (
         <div className="pdPage">
@@ -452,6 +559,36 @@ export default function ProductDetailPage() {
                                         <span className="pdDetailVal">{product.quantity} ชิ้น</span>
                                     </div>
                                 </div>
+
+                                {shippingProviders.length > 0 && (
+                                    <div className="pdShipping">
+                                        <div className="pdShippingHead">
+                                            <div>
+                                                <div className="pdShippingTitle">
+                                                    <Icon icon="mdi:truck-delivery-outline" />
+                                                    ขนส่งที่รองรับ
+                                                </div>
+                                                <div className="pdShippingSub">ราคาประมาณ {shippingRange}</div>
+                                            </div>
+                                        </div>
+                                        <div className="pdShippingList">
+                                            {shippingProviders.map(provider => (
+                                                <div className="pdShippingItem" key={provider.provider_id}>
+                                                    <ShippingLogo code={provider.code} name={provider.name} />
+                                                    <div className="pdShippingInfo">
+                                                        <div className="pdShippingName">{provider.name}</div>
+                                                        {formatEstDays(provider) && (
+                                                            <div className="pdShippingDays">{formatEstDays(provider)}</div>
+                                                        )}
+                                                    </div>
+                                                    <div className="pdShippingPrice">
+                                                        {formatBaht(provider.estimated_price)}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Description */}
                                 {product.product_description && (

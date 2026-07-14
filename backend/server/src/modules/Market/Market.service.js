@@ -273,10 +273,12 @@ const getProductById = async (id) => {
 
   // ดึง shipping providers ที่ผู้ขายรองรับ
   const [shippingRows] = await db.execute(
-    `SELECT sp.provider_id, sp.name, sp.code
+    `SELECT sp.provider_id, sp.name, sp.code,
+            sp.base_price, sp.price_per_item, sp.max_price,
+            sp.free_threshold, sp.est_days_min, sp.est_days_max
      FROM product_shipping ps
      JOIN shipping_provider sp ON sp.provider_id = ps.provider_id
-     WHERE ps.product_id = ?
+     WHERE ps.product_id = ? AND sp.is_active = 1
      ORDER BY sp.name`,
     [id]
   );

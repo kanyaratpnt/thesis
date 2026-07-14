@@ -75,6 +75,23 @@ function ShippingLogo({ name, size = 36 }) {
     />
   );
 }
+
+function calcShippingEstimate(provider, qty = 1, subtotal = 0) {
+  const basePrice = Number(provider?.base_price || 0);
+  const perItem = Number(provider?.price_per_item || 0);
+  const maxPrice = provider?.max_price ? Number(provider.max_price) : null;
+  const freeThreshold = provider?.free_threshold ? Number(provider.free_threshold) : null;
+
+  let price = basePrice + (perItem * Math.max(Number(qty) || 1, 1));
+  if (maxPrice !== null && price > maxPrice) price = maxPrice;
+  if (freeThreshold !== null && Number(subtotal) >= freeThreshold) price = 0;
+  return Math.round(price * 100) / 100;
+}
+
+function formatBaht(value) {
+  const num = Number(value || 0);
+  return `${num.toLocaleString(undefined, { maximumFractionDigits: 2 })} บาท`;
+}
  
 export default function PostProductPage() {
   const { token, updateRole } = useAuth();
@@ -107,6 +124,10 @@ export default function PostProductPage() {
   const [submitting,        setSubmitting]        = useState(false);
   const [err,               setErr]               = useState("");
   const fileInputRefs = useRef({});
+  const totalItemQty = items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+  const subtotalEstimate = items.reduce((sum, item) => {
+    return sum + ((Number(item.price) || 0) * (Number(item.quantity) || 1));
+  }, 0);
  
   const updateItem = (idx, patch) =>
     setItems(prev => prev.map((it, i) => i === idx ? { ...it, ...patch } : it));
@@ -680,6 +701,9 @@ export default function PostProductPage() {
                           <ShippingLogo name={p.name} size={38} />
                         </div>
                         <div className="ppShipCardName">{p.name}</div>
+                        <div className="ppShipCardPrice">
+                          ประมาณ {formatBaht(calcShippingEstimate(p, totalItemQty, subtotalEstimate))}
+                        </div>
                         {active && (
                           <div className="ppShipCardCheck">
                             <Icon icon="mdi:check-circle" />
