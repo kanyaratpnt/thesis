@@ -569,7 +569,7 @@ for (const cat of MAIN_CATEGORIES) {
                           stroke="#CBD5E1" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                       <span>คลิกเพื่ออัปโหลดรูปของโรงเรียน</span>
-                      <span className="epModalUploadHint">JPG, PNG ไม่เกิน 5MB</span>
+                      <span className="epModalUploadHint">JPG, PNG ไม่เกิน 20MB</span>
                     </div>
                   )}
               </label>

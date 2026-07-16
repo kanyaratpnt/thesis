@@ -6,7 +6,10 @@ import { uploadSchoolLogo } from "./upload.controller.js";
 
 
 const r = Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
 
 // ✅ ของเดิม (ถ้าคุณใช้กับหน้าอื่น และอยากให้ต้อง login ก็เก็บ auth ไว้)
 r.post("/image", auth, upload.single("file"), uploadImage);

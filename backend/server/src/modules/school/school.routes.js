@@ -2,7 +2,10 @@ import { Router } from "express";
 import { auth } from "../../middleware/auth.js";
 import { requireRole } from "../../middleware/requireRole.js";
 import multer from "multer";
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
 
 import {
   schoolMe,

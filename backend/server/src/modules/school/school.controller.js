@@ -2,7 +2,7 @@ import { getSchoolMe, syncProjectFeedStatus } from "./school.service.js";
 import { db } from "../../config/db.js";
 import { cloudinary } from "../../config/cloudinary.js"; // ปรับ path ตามจริง
 
-const MAX_PROJECT_IMAGES = 6;
+const MAX_PROJECT_IMAGES = 4;
 
 function parseProjectImages(value) {
   if (!value) return [];

@@ -16,8 +16,8 @@ export default function SchoolRequestCreatePage() {
   const [dragOver, setDragOver] = useState(false);
   const imageItemsRef = useRef([]);
 
-  const maxImages = 6;
-  const maxImageMb = 5;
+  const maxImages = 4;
+  const maxImageMb = 20;
   const coverPreview = imageItems[0]?.preview || null;
   const todayIso = new Date().toISOString().split("T")[0];
 
