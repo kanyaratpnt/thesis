@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import { postJson } from "../../../api/http.js";
@@ -10,13 +10,26 @@ export default function SchoolRequestCreatePage() {
 
   const [request_title, setTitle] = useState("");
   const [request_description, setDesc] = useState("");
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [imageItems, setImageItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const imageItemsRef = useRef([]);
 
+  const maxImages = 6;
+  const maxImageMb = 5;
+  const coverPreview = imageItems[0]?.preview || null;
   const todayIso = new Date().toISOString().split("T")[0];
+
+  useEffect(() => {
+    imageItemsRef.current = imageItems;
+  }, [imageItems]);
+
+  useEffect(() => {
+    return () => {
+      imageItemsRef.current.forEach((item) => URL.revokeObjectURL(item.preview));
+    };
+  }, []);
 
   // วันเริ่มโครงการ — default วันนี้
   const [startDate, setStartDate] = useState(todayIso);
@@ -37,24 +50,77 @@ export default function SchoolRequestCreatePage() {
     return new Date(iso).toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" });
   };
 
-  const handleImageChange = (file) => {
-    if (!file || !file.type.startsWith("image/")) return;
-    setImageFile(file);
-    setPreview(URL.createObjectURL(file));
+  const handleImageChange = (files) => {
+    const incoming = Array.from(files || []);
+    if (incoming.length === 0) return;
+
+    const validFiles = incoming.filter((file) => {
+      if (!file.type.startsWith("image/")) {
+        setErr("กรุณาเลือกเฉพาะไฟล์รูปภาพ");
+        return false;
+      }
+      if (file.size > maxImageMb * 1024 * 1024) {
+        setErr(`รูปภาพแต่ละไฟล์ต้องมีขนาดไม่เกิน ${maxImageMb}MB`);
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length === 0) return;
+
+    setImageItems((prev) => {
+      const remainingSlots = maxImages - prev.length;
+      if (remainingSlots <= 0) {
+        setErr(`เพิ่มรูปได้สูงสุด ${maxImages} รูป`);
+        return prev;
+      }
+
+      if (validFiles.length > remainingSlots) {
+        setErr(`เพิ่มได้อีก ${remainingSlots} รูปเท่านั้น (สูงสุด ${maxImages} รูป)`);
+      } else if (err) {
+        setErr("");
+      }
+
+      const nextItems = validFiles.slice(0, remainingSlots).map((file) => ({
+        id: `${file.name}-${file.lastModified}-${globalThis.crypto?.randomUUID?.() || Date.now()}`,
+        file,
+        preview: URL.createObjectURL(file),
+      }));
+
+      return [...prev, ...nextItems];
+    });
   };
 
-  const uploadImage = async () => {
-    if (!imageFile) return null;
-    const formData = new FormData();
-    formData.append("file", imageFile);
-    const res = await fetch("/upload/image?type=project", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
+  const removeImage = (id) => {
+    setImageItems((prev) => {
+      const item = prev.find((img) => img.id === id);
+      if (item) URL.revokeObjectURL(item.preview);
+      return prev.filter((img) => img.id !== id);
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data?.message || "อัปโหลดรูปไม่สำเร็จ");
-    return data;
+  };
+
+  const clearImages = () => {
+    imageItems.forEach((item) => URL.revokeObjectURL(item.preview));
+    setImageItems([]);
+  };
+
+  const uploadImages = async () => {
+    if (imageItems.length === 0) return [];
+
+    const uploaded = [];
+    for (const item of imageItems) {
+      const formData = new FormData();
+      formData.append("file", item.file);
+      const res = await fetch("/upload/image?type=project", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "อัปโหลดรูปไม่สำเร็จ");
+      uploaded.push(data);
+    }
+    return uploaded;
   };
 
   const onSubmit = async (e) => {
@@ -62,15 +128,21 @@ export default function SchoolRequestCreatePage() {
     if (!request_title.trim()) { setErr("กรุณากรอกชื่อโครงการ"); return; }
     try {
       setErr(""); setLoading(true);
-      let imageData = null;
-      if (imageFile) imageData = await uploadImage();
+      const uploadedImages = await uploadImages();
+      const coverImage = uploadedImages[0] || null;
       const created = await postJson("/school/projects", {
         request_title,
         request_description,
         start_date: startDate,
         end_date: endDate,
-        request_image_url: imageData?.image_url || null,
-        request_image_public_id: imageData?.public_id || null,
+        request_image_url: coverImage?.image_url || null,
+        request_image_public_id: coverImage?.public_id || null,
+        request_images: uploadedImages.map((image, index) => ({
+          image_url: image.image_url,
+          public_id: image.public_id,
+          is_cover: index === 0,
+          sort_order: index,
+        })),
       }, true);
       nav(`/school/projects/${created.request_id}`, { state: { newProject: true } });
     } catch (e2) {
@@ -215,43 +287,80 @@ export default function SchoolRequestCreatePage() {
           {/* ภาพโครงการ */}
           <div className="srcField">
             <label className="srcLabel">ภาพโครงการ <span className="srcOpt">(ไม่บังคับ)</span></label>
-            <div
-              className={`srcDropzone ${dragOver ? "srcDropzoneOver" : ""} ${preview ? "srcDropzoneHasImage" : ""}`}
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={(e) => { e.preventDefault(); setDragOver(false); handleImageChange(e.dataTransfer.files[0]); }}
-              onClick={() => document.getElementById("srcFileInput").click()}
-            >
-              {preview ? (
-                <>
-                  <img className="srcPreviewImg" src={preview} alt="preview" />
-                  <div className="srcPreviewOverlay">
-                    <span style={{ display:"flex", alignItems:"center", gap:6 }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4V2.21c0-.45-.54-.67-.85-.35l-2.8 2.79c-.2.2-.2.51 0 .71l2.79 2.79c.32.31.86.09.86-.36V6c3.31 0 6 2.69 6 6c0 .79-.15 1.56-.44 2.25c-.15.36-.04.77.23 1.04c.51.51 1.37.33 1.64-.34c.37-.91.57-1.91.57-2.95c0-4.42-3.58-8-8-8m0 14c-3.31 0-6-2.69-6-6c0-.79.15-1.56.44-2.25c.15-.36.04-.77-.23-1.04c-.51-.51-1.37-.33-1.64.34C4.2 9.96 4 10.96 4 12c0 4.42 3.58 8 8 8v1.79c0 .45.54.67.85.35l2.79-2.79c.2-.2.2-.51 0-.71l-2.79-2.79a.5.5 0 0 0-.85.36z"/></svg>
-                      เปลี่ยนรูป
-                    </span>
+            <div className="srcImageManager">
+              <div
+                className={`srcDropzone ${dragOver ? "srcDropzoneOver" : ""} ${coverPreview ? "srcDropzoneHasImage" : ""}`}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={(e) => { e.preventDefault(); setDragOver(false); handleImageChange(e.dataTransfer.files); }}
+                onClick={() => document.getElementById("srcFileInput").click()}
+              >
+                {coverPreview ? (
+                  <>
+                    <img className="srcPreviewImg" src={coverPreview} alt="ภาพหน้าปกโครงการ" />
+                    <div className="srcCoverBadge">รูปหน้าปก</div>
+                    <div className="srcPreviewOverlay">
+                      <span style={{ display:"flex", alignItems:"center", gap:6 }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2m0 16H5V5h14zm-8-2h2v-4h4v-2h-4V7h-2v4H7v2h4z"/></svg>
+                        เพิ่มรูปภาพ
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="srcDropzoneContent">
+                    <div className="srcDropzoneIcon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48"><g fill="none"><path fill="#5285e8" d="M44 24a2 2 0 1 0-4 0zM24 8a2 2 0 1 0 0-4zm15 32H9v4h30zM8 39V9H4v30zm32-15v15h4V24zM9 8h15V4H9zm0 32a1 1 0 0 1-1-1H4a5 5 0 0 0 5 5zm30 4a5 5 0 0 0 5-5h-4a1 1 0 0 1-1 1zM8 9a1 1 0 0 1 1-1V4a5 5 0 0 0-5 5z"/><path stroke="#5285e8" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="m6 35l10.693-9.802a2 2 0 0 1 2.653-.044L32 36m-4-5l4.773-4.773a2 2 0 0 1 2.615-.186L42 31M30 12h12m-6-6v12"/></g></svg>
+                    </div>
+                    <div className="srcDropzoneText">วางรูปภาพหลายรูปที่นี่ หรือคลิกเพื่อเลือก</div>
+                    <div className="srcDropzoneSub">รองรับ JPG, PNG, WEBP — สูงสุด {maxImages} รูป / รูปละไม่เกิน {maxImageMb}MB</div>
                   </div>
-                  <button
-                    type="button"
-                    className="srcRemoveImgCorner"
-                    onClick={(e) => { e.stopPropagation(); setImageFile(null); setPreview(null); }}
-                  >✕</button>
-                </>
-              ) : (
-                <div className="srcDropzoneContent">
-                  <div className="srcDropzoneIcon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48"><g fill="none"><path fill="#5285e8" d="M44 24a2 2 0 1 0-4 0zM24 8a2 2 0 1 0 0-4zm15 32H9v4h30zM8 39V9H4v30zm32-15v15h4V24zM9 8h15V4H9zm0 32a1 1 0 0 1-1-1H4a5 5 0 0 0 5 5zm30 4a5 5 0 0 0 5-5h-4a1 1 0 0 1-1 1zM8 9a1 1 0 0 1 1-1V4a5 5 0 0 0-5 5z"/><path stroke="#5285e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m6 35l10.693-9.802a2 2 0 0 1 2.653-.044L32 36m-4-5l4.773-4.773a2 2 0 0 1 2.615-.186L42 31M30 12h12m-6-6v12"/></g></svg>
-                  </div>
-                  <div className="srcDropzoneText">วางรูปภาพที่นี่ หรือคลิกเพื่อเลือก</div>
-                  <div className="srcDropzoneSub">รองรับ JPG, PNG, WEBP — ขนาดไม่เกิน 5MB</div>
+                )}
+              </div>
+
+              {imageItems.length > 0 && (
+                <div className="srcImageToolbar">
+                  <span>{imageItems.length}/{maxImages} รูป</span>
+                  <button type="button" onClick={clearImages}>ล้างรูปทั้งหมด</button>
+                </div>
+              )}
+
+              {imageItems.length > 0 && (
+                <div className="srcImageGrid">
+                  {imageItems.map((item, index) => (
+                    <div className="srcImageTile" key={item.id}>
+                      <img src={item.preview} alt={`รูปโครงการ ${index + 1}`} />
+                      {index === 0 && <span className="srcImageCoverTag">หน้าปก</span>}
+                      <button
+                        type="button"
+                        className="srcImageRemove"
+                        onClick={() => removeImage(item.id)}
+                        aria-label={`ลบรูปที่ ${index + 1}`}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                  {imageItems.length < maxImages && (
+                    <button
+                      type="button"
+                      className="srcImageAddTile"
+                      onClick={() => document.getElementById("srcFileInput").click()}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
+                      เพิ่มรูป
+                    </button>
+                  )}
                 </div>
               )}
             </div>
             <input
               id="srcFileInput"
-              type="file" accept="image/*"
+              type="file" accept="image/*" multiple
               style={{ display: "none" }}
-              onChange={(e) => handleImageChange(e.target.files?.[0])}
+              onChange={(e) => {
+                handleImageChange(e.target.files);
+                e.target.value = "";
+              }}
             />
           </div>
 
@@ -271,10 +380,13 @@ export default function SchoolRequestCreatePage() {
         <div className="srcPreviewCard">
           <div className="srcPreviewBadge">ตัวอย่างโครงการ</div>
           <div className="srcPreviewCardImg">
-            {preview
-              ? <img src={preview} alt="project" />
+            {coverPreview
+              ? <img src={coverPreview} alt="project" />
               : <div className="srcPreviewCardImgEmpty">🏫</div>
             }
+            {imageItems.length > 1 && (
+              <div className="srcPreviewCount">+{imageItems.length - 1} รูป</div>
+            )}
           </div>
           <div className="srcPreviewCardBody">
             <div className="srcPreviewCardTitle">

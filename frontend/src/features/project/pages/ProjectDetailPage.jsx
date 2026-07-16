@@ -21,6 +21,7 @@ export default function ProjectDetailPage() {
   const [activeLevel, setActiveLevel] = useState(null);
   const [lightboxImg, setLightboxImg] = useState(null);
   const [descExpanded, setDescExpanded] = useState(false);
+  const [activeProjectImageIndex, setActiveProjectImageIndex] = useState(0);
 
   // ── Uniform filter states ──
   const [activeGender, setActiveGender] = useState("male");   // "male" | "female"
@@ -64,6 +65,10 @@ export default function ProjectDetailPage() {
       }, 300);
     }
   }, [project]);
+
+  useEffect(() => {
+    setActiveProjectImageIndex(0);
+  }, [requestId, project?.project_images?.length]);
 
   useEffect(() => {
     if (!project?.uniform_items?.length) return;
@@ -160,6 +165,13 @@ export default function ProjectDetailPage() {
   const pct       = needed > 0 ? Math.min(Math.round((fulfilled / needed) * 100), 100) : 0;
 
   const isFulfilled = needed > 0 && fulfilled >= needed;
+
+  const projectImages = Array.isArray(project?.project_images) && project.project_images.length > 0
+    ? project.project_images
+    : (project?.request_image_url ? [{ image_url: project.request_image_url }] : []);
+  const activeProjectImage = projectImages[
+    Math.min(activeProjectImageIndex, Math.max(projectImages.length - 1, 0))
+  ]?.image_url;
 
   // progress bar widths
   const barTotal  = isFulfilled ? Math.max(fulfilled + pending, 1) : Math.max(needed, 1);
@@ -426,11 +438,29 @@ export default function ProjectDetailPage() {
             <div className="pdHeroCard">
               {/* Left */}
               <div className="pdLeft">
-                <div className="pdImgWrap">
-                  {project.request_image_url
-                    ? <img src={project.request_image_url} alt={project.school_name} />
+                <div
+                  className={`pdImgWrap ${activeProjectImage ? "pdImgClickable" : ""}`}
+                  onClick={() => activeProjectImage && setLightboxImg(activeProjectImage)}
+                >
+                  {activeProjectImage
+                    ? <img src={activeProjectImage} alt={project.school_name} />
                     : <div className="pdImgPlaceholder" />}
                 </div>
+                {projectImages.length > 1 && (
+                  <div className="pdProjectThumbs">
+                    {projectImages.map((image, index) => (
+                      <button
+                        type="button"
+                        key={`${image.image_id || image.image_url}-${index}`}
+                        className={`pdProjectThumb ${index === activeProjectImageIndex ? "pdProjectThumbActive" : ""}`}
+                        onClick={() => setActiveProjectImageIndex(index)}
+                        aria-label={`ดูรูปโครงการ ${index + 1}`}
+                      >
+                        <img src={image.image_url} alt={`รูปโครงการ ${index + 1}`} />
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div className="pdProgressBlock">
                   <div className="pdProgressTopRow">
                     <span className="pdProgressCount">

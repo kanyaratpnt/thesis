@@ -29,7 +29,36 @@
 .pdLeft { display:flex; flex-direction:column; gap:16px; }
 .pdImgWrap { width:100%; height:280px; border-radius:16px; overflow:hidden; background:#FAF0CA; }
 .pdImgWrap img { width:100%; height:100%; object-fit:cover; }
+.pdImgClickable { cursor: zoom-in; }
 .pdImgPlaceholder { width:100%; height:100%; background:linear-gradient(135deg,#e5e7eb,#f3f4f6); }
+.pdProjectThumbs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+.pdProjectThumb {
+  aspect-ratio: 1 / 1;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 0;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: border-color 0.16s, box-shadow 0.16s, transform 0.16s;
+}
+.pdProjectThumb:hover {
+  border-color: #87C7EB;
+}
+.pdProjectThumbActive {
+  border-color: #5285E8;
+  box-shadow: 0 0 0 3px rgba(82, 133, 232, 0.16);
+}
+.pdProjectThumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
 
 .pdRight { display:flex; flex-direction:column; gap:12px; }
 .pdRight svg { align-items: center; display: inline-flex;}
@@ -202,6 +231,7 @@
   .pdWrapper { padding: 0 12px; margin: 20px auto 40px; }
 
   .pdHeroCard { padding: 18px 16px; border-radius: 16px; gap: 20px; }
+  .pdProjectThumbs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
   .pdSchoolName { font-size: 20px; }
   .pdTitle { font-size: 15px; }

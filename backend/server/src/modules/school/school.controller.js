@@ -1,6 +1,102 @@
 import { getSchoolMe, syncProjectFeedStatus } from "./school.service.js";
 import { db } from "../../config/db.js";
 import { cloudinary } from "../../config/cloudinary.js"; // ปรับ path ตามจริง
+
+const MAX_PROJECT_IMAGES = 6;
+
+function parseProjectImages(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+function normalizeProjectImages(rawImages, fallbackImage = null) {
+  const images = parseProjectImages(rawImages)
+    .map((image, index) => ({
+      image_url: image?.image_url || image?.url || null,
+      public_id: image?.public_id || null,
+      is_cover: index === 0 || image?.is_cover === true || image?.is_cover === 1,
+      sort_order: Number.isFinite(Number(image?.sort_order)) ? Number(image.sort_order) : index,
+    }))
+    .filter((image) => image.image_url)
+    .slice(0, MAX_PROJECT_IMAGES);
+
+  if (images.length === 0 && fallbackImage?.image_url) {
+    images.push({
+      image_url: fallbackImage.image_url,
+      public_id: fallbackImage.public_id || null,
+      is_cover: true,
+      sort_order: 0,
+    });
+  }
+
+  return images.map((image, index) => ({
+    ...image,
+    is_cover: index === 0 ? 1 : 0,
+    sort_order: index,
+  }));
+}
+
+async function getProjectImages(request_id, fallbackImage = null) {
+  try {
+    const [rows] = await db.query(
+      `SELECT image_id, image_url, public_id, is_cover, sort_order
+       FROM donation_request_images
+       WHERE request_id = ?
+       ORDER BY sort_order ASC, image_id ASC`,
+      [request_id]
+    );
+    if (rows.length > 0) {
+      return rows.map((row, index) => ({
+        ...row,
+        is_cover: Number(row.is_cover) === 1 || index === 0,
+        sort_order: Number(row.sort_order) || index,
+      }));
+    }
+  } catch (err) {
+    console.warn("[project_images] query skipped:", err.message);
+  }
+
+  return fallbackImage?.image_url
+    ? [{ image_url: fallbackImage.image_url, public_id: fallbackImage.public_id || null, is_cover: true, sort_order: 0 }]
+    : [];
+}
+
+async function upsertProjectCoverImage(client, request_id, image_url, public_id = null) {
+  if (!image_url) return;
+
+  const [rows] = await client.query(
+    `SELECT image_id FROM donation_request_images
+     WHERE request_id = ?
+     ORDER BY sort_order ASC, image_id ASC
+     LIMIT 1`,
+    [request_id]
+  );
+
+  if (rows[0]) {
+    await client.query(
+      `UPDATE donation_request_images
+       SET image_url = ?, public_id = ?, is_cover = 1, sort_order = 0
+       WHERE image_id = ?`,
+      [image_url, public_id, rows[0].image_id]
+    );
+  } else {
+    await client.query(
+      `INSERT INTO donation_request_images
+        (request_id, image_url, public_id, is_cover, sort_order, created_at)
+       VALUES (?, ?, ?, 1, 0, NOW())`,
+      [request_id, image_url, public_id]
+    );
+  }
+}
  
 export async function schoolMe(req, res, next) {
   try {
@@ -25,6 +121,7 @@ export async function getProjectByIdPublic(req, res, next) {
          dr.request_title,
          dr.request_description,
          dr.request_image_url,
+         dr.request_image_public_id,
          dr.status,
          dr.created_at,
          dr.start_date,
@@ -83,6 +180,10 @@ export async function getProjectByIdPublic(req, res, next) {
       donor_count: Number(rows[0].donor_count) || 0,
       uniform_items: [],   // ✅ default ก่อน กัน undefined
     };
+    project.project_images = await getProjectImages(request_id, {
+      image_url: project.request_image_url,
+      public_id: project.request_image_public_id,
+    });
  
     const { school_id } = project;
  
@@ -932,6 +1033,7 @@ export async function createProject(req, res, next) {
     request_description,
     request_image_url,
     request_image_public_id,
+    request_images,
     start_date,
     end_date,
   } = req.body;
@@ -1016,6 +1118,20 @@ export async function createProject(req, res, next) {
         end_date,
       ]
     );
+
+    const projectImages = normalizeProjectImages(request_images, {
+      image_url: request_image_url || null,
+      public_id: request_image_public_id || null,
+    });
+
+    for (const image of projectImages) {
+      await conn.query(
+        `INSERT INTO donation_request_images
+          (request_id, image_url, public_id, is_cover, sort_order, created_at)
+         VALUES (?, ?, ?, ?, ?, NOW())`,
+        [result.insertId, image.image_url, image.public_id, image.is_cover, image.sort_order]
+      );
+    }
 
     let carriedStudents = 0;
     let carriedNeeds = 0;
@@ -1150,6 +1266,10 @@ export async function getLatestProject(req, res, next) {
 
     if (!rows[0]) return res.json(null);
     const project = { ...rows[0], total_needed: Number(rows[0].total_needed) || 0, total_pending: Number(rows[0].total_pending) || 0, total_fulfilled: 0 };
+    project.project_images = await getProjectImages(project.request_id, {
+      image_url: project.request_image_url,
+      public_id: project.request_image_public_id,
+    });
 
     // คำนวณ total_fulfilled จาก snapshot (per-type, capped) เหมือน getProjectByIdPublic
     try {
@@ -1222,7 +1342,14 @@ export async function getProjectById(req, res, next) {
       [request_id, school_id]
     );
  
-    res.json(rows[0] || null);
+    if (!rows[0]) return res.json(null);
+    const project = rows[0];
+    project.project_images = await getProjectImages(request_id, {
+      image_url: project.request_image_url,
+      public_id: project.request_image_public_id,
+    });
+
+    res.json(project);
   } catch (err) {
     next(err);
   }
@@ -1268,6 +1395,7 @@ export async function updateProject(req, res, next) {
         school_id,
       ]
     );
+    await upsertProjectCoverImage(db, request_id, request_image_url || null, null);
  
     res.json({ message: "updated" });
   } catch (err) {
@@ -1334,6 +1462,7 @@ export async function uploadProjectImage(req, res, next) {
        WHERE request_id=? AND school_id=?`,
       [up.secure_url, up.public_id, request_id, school_id]
     );
+    await upsertProjectCoverImage(db, request_id, up.secure_url, up.public_id);
  
     return res.json({ url: up.secure_url, public_id: up.public_id });
   } catch (err) {

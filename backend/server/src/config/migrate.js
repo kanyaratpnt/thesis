@@ -232,6 +232,39 @@ export async function runMigrations() {
     await addColumnIfMissing("donation_record", "clarification_text",  "TEXT NULL DEFAULT NULL");
     await addColumnIfMissing("donation_record", "clarified_at",        "DATETIME NULL DEFAULT NULL");
 
+    // ── donation_request_images (gallery รูปโครงการ) ─────
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS donation_request_images (
+        image_id    INT AUTO_INCREMENT PRIMARY KEY,
+        request_id  INT NOT NULL,
+        image_url   TEXT NOT NULL,
+        public_id   VARCHAR(255) NULL DEFAULT NULL,
+        is_cover    TINYINT(1) NOT NULL DEFAULT 0,
+        sort_order  INT NOT NULL DEFAULT 0,
+        created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_dri_request (request_id),
+        INDEX idx_dri_order (request_id, sort_order)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    `);
+
+    await db.query(`
+      INSERT INTO donation_request_images
+        (request_id, image_url, public_id, is_cover, sort_order, created_at)
+      SELECT
+        dr.request_id,
+        dr.request_image_url,
+        dr.request_image_public_id,
+        1,
+        0,
+        NOW()
+      FROM donation_request dr
+      LEFT JOIN donation_request_images dri
+        ON dri.request_id = dr.request_id
+      WHERE dr.request_image_url IS NOT NULL
+        AND dr.request_image_url <> ''
+        AND dri.image_id IS NULL
+    `);
+
     // ── payouts ───────────────────────────────────────────
     // สร้าง table payouts ถ้ายังไม่มี
     await db.query(`
