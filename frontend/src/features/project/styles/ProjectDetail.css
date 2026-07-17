@@ -681,3 +681,40 @@
   background: #29B6E8;
   transform: scale(1.3);
 }
+
+/* ── Needs Summary ── */
+.pdNeedsSummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  background: #f8faff;
+  border-radius: 12px;
+  border: 1.5px solid #e0eaff;
+}
+.pdNeedsRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+}
+.pdNeedsImg {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.pdNeedsEmoji { font-size: 16px; line-height: 1; flex-shrink: 0; }
+.pdNeedsLabel { color: #475569; }
+.pdNeedsCountWarn { color: #f59e0b; font-weight: 700; }
+.pdNeedsCountOk   { color: #16a34a; font-weight: 700; }
+
+@media (max-width: 768px) {
+  .pdNeedsSummary { padding: 8px 12px; gap: 4px 10px; }
+  .pdNeedsRow { font-size: 12px; gap: 5px; }
+  .pdNeedsImg { width: 15px; height: 15px; }
+  .pdNeedsEmoji { font-size: 14px; }
+}
