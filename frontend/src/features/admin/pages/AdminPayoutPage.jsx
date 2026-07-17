@@ -107,7 +107,8 @@ const payoutStageMeta = (stage) => {
   return { label: "รอตัดรอบ", cls: "admPayoutStatus--cycle", icon: "mdi:calendar-clock" };
 };
 
-const payableRows = (rows) => rows.filter((row) => Number(row.payable_amount || 0) > 0);
+const hasReadyBank = (row) => row.bank_account_ready !== false;
+const payableRows = (rows) => rows.filter((row) => Number(row.payable_amount || 0) > 0 && hasReadyBank(row));
 
 const buildPageItems = (current, total) => {
   const safeTotal = Math.max(1, Number(total) || 1);
@@ -949,6 +950,8 @@ export default function AdminPayoutPage() {
   const [summaryStats, setSummaryStats] = useState({
     pending_total: 0, pending_count: 0, pending_seller_count: 0,
     payable_total: 0, payable_count: 0, payable_seller_count: 0,
+    transferable_total: 0, transferable_count: 0, transferable_seller_count: 0,
+    bank_blocked_total: 0, bank_blocked_count: 0, bank_blocked_seller_count: 0,
     ready_total: 0, ready_count: 0,
     overdue_total: 0, overdue_count: 0,
     cycle_pending_total: 0, cycle_pending_count: 0,
@@ -1036,7 +1039,12 @@ export default function AdminPayoutPage() {
   const handlePayAll = async () => {
     try {
       const data = await request("/admin/payouts/pay-all", { method: "POST", auth: true });
-      showToast(`โอนเงินสำเร็จ ${data.count || ""} ผู้ขาย`);
+      const skipped = Number(data.skipped_missing_bank || 0);
+      showToast(
+        skipped > 0
+          ? `โอนเงินสำเร็จ ${data.count || 0} ผู้ขาย · ข้าม ${skipped} ผู้ขายที่ยังไม่มีบัญชี`
+          : `โอนเงินสำเร็จ ${data.count || ""} ผู้ขาย`
+      );
       setPayAllModal(false);
       setHistorySort("latest");
       setPage(1);
@@ -1269,7 +1277,7 @@ export default function AdminPayoutPage() {
         {/* stat cards */}
         <div className="admPayoutStatGrid3">
           {[
-            { label: "พร้อมโอน",       value: summaryStats.payable_total, sub: `${summaryStats.payable_count||0} รายการผ่านรอบแล้ว`, cls: "red",   icon: "mdi:bank-transfer-out",      iconBg: "#fee2e2", iconColor: "#e03131" },
+            { label: "พร้อมโอน",       value: summaryStats.transferable_total ?? summaryStats.payable_total, sub: `${summaryStats.transferable_count ?? (summaryStats.payable_count || 0)} รายการบัญชีพร้อม`, cls: "red",   icon: "mdi:bank-transfer-out",      iconBg: "#fee2e2", iconColor: "#e03131" },
             { label: "โอนแล้ว",        value: summaryStats.paid_total,    sub: `${summaryStats.paid_count||0} รายการ`,       cls: "green", icon: "mdi:check-circle-outline",   iconBg: "#dcfce7", iconColor: "#22b14c" },
             { label: "ค่าธรรมเนียมสะสม", value: summaryStats.fee_total,  sub: "",                                             cls: "blue",  icon: "mdi:percent-circle-outline", iconBg: "#dbeafe", iconColor: "#5285e8", extra: true },
           ].map((c) => (
@@ -1296,6 +1304,12 @@ export default function AdminPayoutPage() {
             <Icon icon="mdi:alert-circle-outline" style={{ fontSize: 13 }} />
             เกินกำหนด {summaryStats.overdue_count || 0} รายการ · {fmtBaht(summaryStats.overdue_total)}
           </span>
+          {Number(summaryStats.bank_blocked_count || 0) > 0 && (
+            <span className="admPayoutStatus admPayoutStatus--overdue">
+              <Icon icon="mdi:bank-alert" style={{ fontSize: 13 }} />
+              รอข้อมูลบัญชี {summaryStats.bank_blocked_count || 0} รายการ · {fmtBaht(summaryStats.bank_blocked_total)}
+            </span>
+          )}
         </div>
 
         {loading && (
@@ -1327,10 +1341,10 @@ export default function AdminPayoutPage() {
                     )}
                   </div>
                 </div>
-                {Number(summaryStats.payable_seller_count || 0) > 0 && (
+                {Number(summaryStats.transferable_seller_count ?? (summaryStats.payable_seller_count || 0)) > 0 && (
                   <button onClick={() => setPayAllModal(true)} className="admPayAllBtn">
                     <Icon icon="mdi:bank-transfer-out" style={{ width: 18, height: 18 }} />
-                    โอนเงินที่พร้อมโอนทั้งหมด ({fmtBaht(summaryStats.payable_total)})
+                    โอนเงินที่พร้อมโอนทั้งหมด ({fmtBaht(summaryStats.transferable_total ?? summaryStats.payable_total)})
                   </button>
                 )}
               </div>
@@ -1403,7 +1417,12 @@ export default function AdminPayoutPage() {
                       const payableShipping = Number(row.payable_shipping_total || 0);
                       const payableProductTotal = Math.max(0, Number(row.payable_total_sales || 0) - payableShipping);
                       const stage = payoutStageMeta(row.payout_stage);
-                      const canPay = Number(row.payable_amount || 0) > 0;
+                      const hasBank = hasReadyBank(row);
+                      const isDue = Number(row.payable_amount || 0) > 0;
+                      const canPay = isDue && hasBank;
+                      const statusMeta = isDue && !hasBank
+                        ? { label: "รอข้อมูลบัญชี", cls: "admPayoutStatus--overdue", icon: "mdi:bank-alert" }
+                        : stage;
                       return (
                         <tr key={i}>
                           <td>
@@ -1417,6 +1436,11 @@ export default function AdminPayoutPage() {
                                   <span className="admPayoutBankChip">{bankLabelShort(row.bank_code)}</span>
                                   <span className="admPayoutAccountText">{maskAccNo(row.bank_account_number)}</span>
                                 </div>
+                                {isDue && !hasBank && (
+                                  <div style={{ fontSize: 10, color: "#b45309", marginTop: 3 }}>
+                                    {row.payout_block_message || "ยังไม่มีข้อมูลบัญชีรับเงิน"}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </td>
@@ -1443,16 +1467,16 @@ export default function AdminPayoutPage() {
                             <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 2 }}>{row.payout_cycle_months || row.first_cycle_month || "—"}</div>
                           </td>
                           <td>
-                            <span className={`admPayoutStatus ${stage.cls}`}>
-                              <Icon icon={stage.icon} style={{ fontSize: 13 }} />
-                              {stage.label}
+                            <span className={`admPayoutStatus ${statusMeta.cls}`}>
+                              <Icon icon={statusMeta.icon} style={{ fontSize: 13 }} />
+                              {statusMeta.label}
                             </span>
                           </td>
                           <td>
                             <div className="admPayoutActionRow">
                               <button
                                 className="admPayoutBtn admPayoutBtn--transfer"
-                                title={canPay ? "โอนเงินรอบที่พร้อมโอน" : "รายการนี้ยังไม่ถึงรอบโอน"}
+                                title={canPay ? "โอนเงินรอบที่พร้อมโอน" : (isDue ? "ผู้ขายยังไม่มีข้อมูลบัญชีรับเงิน" : "รายการนี้ยังไม่ถึงรอบโอน")}
                                 disabled={!canPay}
                                 onClick={() => {
                                   if (!canPay) return;
@@ -1467,7 +1491,7 @@ export default function AdminPayoutPage() {
                                 }}
                               >
                                 <Icon icon="mdi:bank-transfer-out" style={{ fontSize: 15 }} />
-                                {canPay ? "โอนเงิน" : "รอตัดรอบ"}
+                                {canPay ? "โอนเงิน" : (isDue ? "รอบัญชี" : "รอตัดรอบ")}
                               </button>
                               <button className="admPayoutBtn admPayoutBtn--detail" onClick={() => setOrderDetail({ ...row })}>
                                 <Icon icon="mdi:file-document-outline" style={{ fontSize: 15 }} />
@@ -1626,8 +1650,8 @@ export default function AdminPayoutPage() {
       {payAllModal && (
         <PayAllConfirmModal
           rows={pendingRows}
-          totalNet={summaryStats.payable_total}
-          sellerCount={summaryStats.payable_seller_count}
+          totalNet={summaryStats.transferable_total ?? summaryStats.payable_total}
+          sellerCount={summaryStats.transferable_seller_count ?? summaryStats.payable_seller_count}
           onConfirm={handlePayAll}
           onCancel={() => setPayAllModal(false)}
         />

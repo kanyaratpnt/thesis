@@ -5,6 +5,7 @@ import { sendNotification } from "../lib/notify.js";
 const AUTO_CANCEL_DAYS  = 3;  // ยกเลิกอัตโนมัติถ้าผู้ขายไม่จัดส่งภายใน 3 วัน
 const WARN_AT_DAY       = 2;  // แจ้งเตือนผู้ขายเมื่อครบ 2 วัน (เหลือ 1 วัน)
 const AUTO_CONFIRM_DAYS = 7;  // ยืนยันรับอัตโนมัติถ้าผู้ซื้อไม่กดภายใน 7 วันหลังจัดส่ง
+const PAYOUT_DEADLINE_DAYS = 7; // โอนเงินภายใน 7 วันหลังสิ้นรอบ
 
 // ── Entry point ────────────────────────────────────────────
 export async function runOrderLifecycleCron() {
@@ -12,6 +13,7 @@ export async function runOrderLifecycleCron() {
     await warnPendingOrders();
     await autoCancelPendingOrders();
     await autoConfirmShippedOrders();
+    await warnMissingBankBeforePayout();
   } catch (err) {
     console.error("[Cron] orderLifecycle error:", err.message);
   }
@@ -199,4 +201,62 @@ async function autoConfirmShippedOrders() {
   } finally {
     conn.release();
   }
+}
+
+// ── 4. แจ้งเตือนผู้ขายที่มีเงินรอโอน แต่ยังไม่กรอกบัญชีรับเงิน ────────
+// เงื่อนไข: delivered + payout pending, ผ่านวันตัดรอบแล้ว และยังอยู่ในกรอบ 7 วันโอนเงิน
+// ส่งซ้ำได้วันละครั้งเพื่อเตือนก่อนหลุดรอบโอน
+async function warnMissingBankBeforePayout() {
+  const [rows] = await db.query(
+    `SELECT
+       COALESCE(o.seller_id, seller_map.seller_id) AS seller_id,
+       COUNT(*) AS order_count,
+       COALESCE(SUM(o.seller_payout_amount), 0) AS pending_amount,
+       MIN(TIMESTAMP(LAST_DAY(COALESCE(o.completed_at, o.created_at)), '23:59:59')) AS cutoff_at,
+       MIN(DATE_ADD(TIMESTAMP(LAST_DAY(COALESCE(o.completed_at, o.created_at)), '23:59:59'), INTERVAL ? DAY)) AS payout_deadline_at
+     FROM orders o
+     LEFT JOIN (
+       SELECT oi.order_id, MIN(p.seller_id) AS seller_id
+       FROM order_items oi
+       JOIN products p ON p.product_id = oi.product_id
+       GROUP BY oi.order_id
+     ) seller_map ON seller_map.order_id = o.order_id
+     LEFT JOIN users u ON u.user_id = COALESCE(o.seller_id, seller_map.seller_id)
+     WHERE o.order_status = 'delivered'
+       AND o.payout_status = 'pending'
+       AND COALESCE(o.seller_id, seller_map.seller_id) IS NOT NULL
+       AND NOW() > TIMESTAMP(LAST_DAY(COALESCE(o.completed_at, o.created_at)), '23:59:59')
+       AND NOW() <= DATE_ADD(TIMESTAMP(LAST_DAY(COALESCE(o.completed_at, o.created_at)), '23:59:59'), INTERVAL ? DAY)
+       AND (
+         u.bank_code IS NULL OR u.bank_code = ''
+         OR u.bank_account_number IS NULL OR u.bank_account_number = ''
+         OR u.bank_account_name IS NULL OR u.bank_account_name = ''
+       )
+       AND NOT EXISTS (
+         SELECT 1 FROM notifications n
+         WHERE n.user_id = COALESCE(o.seller_id, seller_map.seller_id)
+           AND n.type = 'payout_bank_account_required'
+           AND DATE(n.created_at) = CURDATE()
+       )
+     GROUP BY COALESCE(o.seller_id, seller_map.seller_id)`,
+    [PAYOUT_DEADLINE_DAYS, PAYOUT_DEADLINE_DAYS]
+  ).catch(() => [[]]);
+
+  for (const row of rows || []) {
+    const deadline = new Date(row.payout_deadline_at);
+    const deadlineStr = Number.isNaN(deadline.getTime())
+      ? "รอบโอนนี้"
+      : deadline.toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" });
+    const amount = Math.round(Number(row.pending_amount || 0)).toLocaleString("th-TH");
+
+    await sendNotification(row.seller_id, {
+      type: "payout_bank_account_required",
+      title: "กรุณาเพิ่มบัญชีธนาคารเพื่อรับเงิน",
+      body: `คุณมียอดรอโอน ฿${amount} (${Number(row.order_count || 0)} รายการ) กรุณาเพิ่มข้อมูลบัญชีธนาคารก่อน ${deadlineStr} เพื่อรับเงินในรอบนี้`,
+      ref_id: row.seller_id,
+    }).catch(() => {});
+  }
+
+  if (rows.length > 0)
+    console.log(`[Cron] warned ${rows.length} seller(s) to add payout bank account`);
 }

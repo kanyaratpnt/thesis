@@ -163,6 +163,37 @@ function pendingPayoutOrderSelect(extraWhere = "") {
   `;
 }
 
+function getSellerBankStatus(seller = {}) {
+  const bankNum = sanitizeBankNumber(decryptBankAccountNumber(seller.bank_account_number));
+  const hasRequired = Boolean(
+    String(seller.bank_code || "").trim()
+    && bankNum
+    && String(seller.bank_account_name || "").trim()
+  );
+  if (!hasRequired) {
+    return {
+      bankNum,
+      bankAccountReady: false,
+      payoutBlockReason: "missing_bank_account",
+      payoutBlockMessage: "ผู้ขายยังไม่ได้กรอกข้อมูลบัญชีรับเงินให้ครบถ้วน",
+    };
+  }
+  if (!isValidBankNumber(bankNum)) {
+    return {
+      bankNum,
+      bankAccountReady: false,
+      payoutBlockReason: "invalid_bank_account",
+      payoutBlockMessage: "เลขบัญชีผู้ขายไม่ถูกต้อง",
+    };
+  }
+  return {
+    bankNum,
+    bankAccountReady: true,
+    payoutBlockReason: null,
+    payoutBlockMessage: "",
+  };
+}
+
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
@@ -1203,6 +1234,36 @@ export async function listPayouts({
       COALESCE(SUM(CASE WHEN payout_stage IN ('ready','overdue') THEN net_amount ELSE 0 END), 0) AS payable_total,
       COUNT(CASE WHEN payout_stage IN ('ready','overdue') THEN 1 END) AS payable_count,
       COUNT(DISTINCT CASE WHEN payout_stage IN ('ready','overdue') THEN seller_id END) AS payable_seller_count,
+      COALESCE(SUM(CASE WHEN payout_stage IN ('ready','overdue')
+        AND u.bank_code IS NOT NULL AND u.bank_code <> ''
+        AND u.bank_account_number IS NOT NULL AND u.bank_account_number <> ''
+        AND u.bank_account_name IS NOT NULL AND u.bank_account_name <> ''
+        THEN net_amount ELSE 0 END), 0) AS transferable_total,
+      COUNT(CASE WHEN payout_stage IN ('ready','overdue')
+        AND u.bank_code IS NOT NULL AND u.bank_code <> ''
+        AND u.bank_account_number IS NOT NULL AND u.bank_account_number <> ''
+        AND u.bank_account_name IS NOT NULL AND u.bank_account_name <> ''
+        THEN 1 END) AS transferable_count,
+      COUNT(DISTINCT CASE WHEN payout_stage IN ('ready','overdue')
+        AND u.bank_code IS NOT NULL AND u.bank_code <> ''
+        AND u.bank_account_number IS NOT NULL AND u.bank_account_number <> ''
+        AND u.bank_account_name IS NOT NULL AND u.bank_account_name <> ''
+        THEN seller_id END) AS transferable_seller_count,
+      COALESCE(SUM(CASE WHEN payout_stage IN ('ready','overdue')
+        AND (u.bank_code IS NULL OR u.bank_code = ''
+          OR u.bank_account_number IS NULL OR u.bank_account_number = ''
+          OR u.bank_account_name IS NULL OR u.bank_account_name = '')
+        THEN net_amount ELSE 0 END), 0) AS bank_blocked_total,
+      COUNT(CASE WHEN payout_stage IN ('ready','overdue')
+        AND (u.bank_code IS NULL OR u.bank_code = ''
+          OR u.bank_account_number IS NULL OR u.bank_account_number = ''
+          OR u.bank_account_name IS NULL OR u.bank_account_name = '')
+        THEN 1 END) AS bank_blocked_count,
+      COUNT(DISTINCT CASE WHEN payout_stage IN ('ready','overdue')
+        AND (u.bank_code IS NULL OR u.bank_code = ''
+          OR u.bank_account_number IS NULL OR u.bank_account_number = ''
+          OR u.bank_account_name IS NULL OR u.bank_account_name = '')
+        THEN seller_id END) AS bank_blocked_seller_count,
       COALESCE(SUM(CASE WHEN payout_stage = 'ready' THEN net_amount ELSE 0 END), 0) AS ready_total,
       COUNT(CASE WHEN payout_stage = 'ready' THEN 1 END) AS ready_count,
       COALESCE(SUM(CASE WHEN payout_stage = 'overdue' THEN net_amount ELSE 0 END), 0) AS overdue_total,
@@ -1210,9 +1271,12 @@ export async function listPayouts({
       COALESCE(SUM(CASE WHEN payout_stage = 'cycle' THEN net_amount ELSE 0 END), 0) AS cycle_pending_total,
       COUNT(CASE WHEN payout_stage = 'cycle' THEN 1 END) AS cycle_pending_count
     FROM (${pendingBaseSql}) po
+    LEFT JOIN users u ON u.user_id = po.seller_id
   `, pendingParams).catch(() => [[{
     pending_total: 0, pending_count: 0, pending_seller_count: 0,
     payable_total: 0, payable_count: 0, payable_seller_count: 0,
+    transferable_total: 0, transferable_count: 0, transferable_seller_count: 0,
+    bank_blocked_total: 0, bank_blocked_count: 0, bank_blocked_seller_count: 0,
     ready_total: 0, ready_count: 0, overdue_total: 0, overdue_count: 0,
     cycle_pending_total: 0, cycle_pending_count: 0,
   }]]);
@@ -1239,6 +1303,42 @@ export async function listPayouts({
     WHERE o.order_status='delivered' AND o.created_at BETWEEN ? AND ?
   `, [from, to]).catch(() => [[{ fee_total: 0 }]]);
 
+  const [bankAuditRows] = await db.query(`
+    SELECT
+      po.seller_id,
+      u.bank_account_number,
+      u.bank_account_name,
+      u.bank_code,
+      COALESCE(SUM(CASE WHEN po.payout_stage IN ('ready','overdue') THEN po.net_amount ELSE 0 END), 0) AS payable_amount,
+      COUNT(CASE WHEN po.payout_stage IN ('ready','overdue') THEN 1 END) AS payable_count
+    FROM (${pendingBaseSql}) po
+    LEFT JOIN users u ON u.user_id = po.seller_id
+    GROUP BY po.seller_id, u.bank_account_number, u.bank_account_name, u.bank_code
+  `, pendingParams).catch(() => [[]]);
+  const bankAudit = (bankAuditRows || []).reduce((acc, row) => {
+    const payableAmount = Math.round(Number(row.payable_amount || 0));
+    const payableCount = Number(row.payable_count || 0);
+    if (payableAmount <= 0 || payableCount <= 0) return acc;
+    const bankStatus = getSellerBankStatus(row);
+    if (bankStatus.bankAccountReady) {
+      acc.transferable_total += payableAmount;
+      acc.transferable_count += payableCount;
+      acc.transferable_seller_count += 1;
+    } else {
+      acc.bank_blocked_total += payableAmount;
+      acc.bank_blocked_count += payableCount;
+      acc.bank_blocked_seller_count += 1;
+    }
+    return acc;
+  }, {
+    transferable_total: 0,
+    transferable_count: 0,
+    transferable_seller_count: 0,
+    bank_blocked_total: 0,
+    bank_blocked_count: 0,
+    bank_blocked_seller_count: 0,
+  });
+
   return {
     stats: {
       pending_total: Math.round(Number(pendStats?.pending_total || 0)),
@@ -1247,6 +1347,12 @@ export async function listPayouts({
       payable_total: Math.round(Number(pendStats?.payable_total || 0)),
       payable_count: Number(pendStats?.payable_count || 0),
       payable_seller_count: Number(pendStats?.payable_seller_count || 0),
+      transferable_total: bankAudit.transferable_total,
+      transferable_count: bankAudit.transferable_count,
+      transferable_seller_count: bankAudit.transferable_seller_count,
+      bank_blocked_total: bankAudit.bank_blocked_total,
+      bank_blocked_count: bankAudit.bank_blocked_count,
+      bank_blocked_seller_count: bankAudit.bank_blocked_seller_count,
       ready_total: Math.round(Number(pendStats?.ready_total || 0)),
       ready_count: Number(pendStats?.ready_count || 0),
       overdue_total: Math.round(Number(pendStats?.overdue_total || 0)),
@@ -1258,12 +1364,16 @@ export async function listPayouts({
       fee_total:     Math.round(Number(feeStats?.fee_total      || 0)),
     },
     pending: (pendingRows || []).map(r => {
-      const rawNum = decryptBankAccountNumber(r.bank_account_number);
+      const bankStatus = getSellerBankStatus(r);
+      const dueForPayout = Number(r.ready_count || 0) + Number(r.overdue_count || 0) > 0;
       return {
         ...r,
-        bank_account_number: rawNum,
-        bank_account_number_masked: maskBankAccountNumber(rawNum),
-        bank_account_number_formatted: formatBankAccountNumber(rawNum),
+        bank_account_number: bankStatus.bankNum,
+        bank_account_number_masked: maskBankAccountNumber(bankStatus.bankNum),
+        bank_account_number_formatted: formatBankAccountNumber(bankStatus.bankNum),
+        bank_account_ready: bankStatus.bankAccountReady,
+        payout_block_reason: dueForPayout && !bankStatus.bankAccountReady ? bankStatus.payoutBlockReason : null,
+        payout_block_message: dueForPayout && !bankStatus.bankAccountReady ? bankStatus.payoutBlockMessage : "",
         total_sales:    Math.round(Number(r.total_sales    || 0)),
         fee_amount:     Math.round(Number(r.fee_amount     || 0)),
         net_amount:     Math.round(Number(r.net_amount     || 0)),
@@ -1329,12 +1439,20 @@ export async function paySeller(seller_id, net_amount) {
       `SELECT bank_code, bank_account_number, bank_account_name FROM users WHERE user_id = ? LIMIT 1`,
       [seller_id]
     );
-    const bankNum = sanitizeBankNumber(decryptBankAccountNumber(seller?.bank_account_number));
-    if (!seller?.bank_code || !bankNum || !seller?.bank_account_name) {
-      throw Object.assign(new Error("ผู้ขายยังไม่ได้ตั้งค่าบัญชีรับเงินให้ครบถ้วน"), { status: 400 });
-    }
-    if (!isValidBankNumber(bankNum)) {
-      throw Object.assign(new Error("เลขบัญชีผู้ขายไม่ถูกต้อง"), { status: 400 });
+    const bankStatus = getSellerBankStatus(seller);
+    if (!bankStatus.bankAccountReady) {
+      try {
+        await sendNotification(seller_id, {
+          type: "payout_bank_account_required",
+          title: "กรุณาเพิ่มบัญชีธนาคารเพื่อรับเงิน",
+          body: "แอดมินไม่สามารถโอนเงินให้คุณได้ เนื่องจากข้อมูลบัญชีรับเงินยังไม่ครบถ้วน กรุณาเพิ่มข้อมูลบัญชีธนาคารก่อนรอบโอน",
+          ref_id: seller_id,
+        });
+      } catch (_) {}
+      throw Object.assign(new Error(bankStatus.payoutBlockMessage), {
+        status: 400,
+        code: bankStatus.payoutBlockReason,
+      });
     }
 
     // 1) สรุปยอดผู้ขายก่อน mark เฉพาะรายการที่ผ่านรอบสิ้นเดือนแล้ว
@@ -1853,13 +1971,27 @@ export async function payAllSellers() {
   try {
     await conn.beginTransaction();
     let paidCount = 0;
+    let skippedMissingBank = 0;
+    const skippedSellers = [];
     for (const s of sellers) {
       const [[seller]] = await conn.query(
         `SELECT bank_code, bank_account_number, bank_account_name FROM users WHERE user_id = ? LIMIT 1`,
         [s.seller_id]
       );
-      const bankNum = sanitizeBankNumber(decryptBankAccountNumber(seller?.bank_account_number));
-      if (!seller?.bank_code || !bankNum || !seller?.bank_account_name || !isValidBankNumber(bankNum)) {
+      const bankStatus = getSellerBankStatus(seller);
+      if (!bankStatus.bankAccountReady) {
+        skippedMissingBank += 1;
+        skippedSellers.push({
+          seller_id: s.seller_id,
+          reason: bankStatus.payoutBlockReason,
+          message: bankStatus.payoutBlockMessage,
+        });
+        sendNotification(s.seller_id, {
+          type: "payout_bank_account_required",
+          title: "กรุณาเพิ่มบัญชีธนาคารเพื่อรับเงิน",
+          body: `ยังไม่สามารถโอนยอดรอรับ ฿${Math.round(Number(s.net_amount || 0)).toLocaleString()} ได้ เนื่องจากข้อมูลบัญชีรับเงินยังไม่ครบถ้วน`,
+          ref_id: s.seller_id,
+        }).catch(e => console.warn("[notify] payAllSellers missing bank:", e.message));
         continue;
       }
 
@@ -1891,6 +2023,11 @@ export async function payAllSellers() {
       paidCount += 1;
     }
     await conn.commit();
-    return { message: "All paid", count: paidCount };
+    return {
+      message: "All paid",
+      count: paidCount,
+      skipped_missing_bank: skippedMissingBank,
+      skipped_sellers: skippedSellers,
+    };
   } catch (e) { await conn.rollback(); throw e; } finally { conn.release(); }
 }

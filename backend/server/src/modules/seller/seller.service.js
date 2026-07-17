@@ -251,6 +251,7 @@ function buildDashboardBuckets(range, bucket) {
 const BANK_UPDATE_COOLDOWN_MS = 2000;
 const bankUpdateLastAt = new Map();
 let usersHasBankVerifiedColumn = null;
+const PAYOUT_DEADLINE_DAYS = 7;
 
 async function hasUsersColumn(columnName) {
   if (columnName === "bank_account_verified" && usersHasBankVerifiedColumn !== null) {
@@ -266,6 +267,96 @@ async function hasUsersColumn(columnName) {
   const exists = rows.length > 0;
   if (columnName === "bank_account_verified") usersHasBankVerifiedColumn = exists;
   return exists;
+}
+
+function getBankStatus(bank = {}) {
+  const bankNum = sanitizeBankNumber(decryptBankAccountNumber(bank.bank_account_number));
+  const hasRequired = Boolean(
+    String(bank.bank_code || "").trim()
+    && bankNum
+    && String(bank.bank_account_name || "").trim()
+  );
+  if (!hasRequired) {
+    return {
+      bankNum,
+      ready: false,
+      reason: "missing_bank_account",
+      message: "กรุณาเพิ่มข้อมูลบัญชีธนาคารเพื่อรับเงิน",
+    };
+  }
+  if (!isValidBankNumber(bankNum)) {
+    return {
+      bankNum,
+      ready: false,
+      reason: "invalid_bank_account",
+      message: "เลขบัญชีรับเงินไม่ถูกต้อง กรุณาแก้ไขข้อมูลบัญชี",
+    };
+  }
+  return { bankNum, ready: true, reason: null, message: "" };
+}
+
+async function getPayoutAccountWarning(sellerId, bankReady) {
+  const [[row]] = await db.query(`
+    SELECT
+      COUNT(*) AS order_count,
+      COALESCE(SUM(seller_payout_amount), 0) AS pending_amount,
+      MIN(TIMESTAMP(LAST_DAY(COALESCE(completed_at, created_at)), '23:59:59')) AS cutoff_at,
+      MIN(DATE_ADD(TIMESTAMP(LAST_DAY(COALESCE(completed_at, created_at)), '23:59:59'), INTERVAL ? DAY)) AS payout_deadline_at,
+      MIN(DATEDIFF(DATE_ADD(TIMESTAMP(LAST_DAY(COALESCE(completed_at, created_at)), '23:59:59'), INTERVAL ? DAY), NOW())) AS days_until_payout_deadline,
+      SUM(NOW() > TIMESTAMP(LAST_DAY(COALESCE(completed_at, created_at)), '23:59:59')) AS due_order_count
+    FROM orders
+    WHERE seller_id = ?
+      AND order_status = 'delivered'
+      AND payout_status = 'pending'
+  `, [PAYOUT_DEADLINE_DAYS, PAYOUT_DEADLINE_DAYS, sellerId]).catch(() => [[{}]]);
+
+  const pendingAmount = Math.round(Number(row?.pending_amount || 0));
+  const pendingCount = Number(row?.order_count || 0);
+  const dueCount = Number(row?.due_order_count || 0);
+  const daysUntilDeadline = row?.days_until_payout_deadline === null || row?.days_until_payout_deadline === undefined
+    ? null
+    : Number(row.days_until_payout_deadline);
+  const needsBank = pendingAmount > 0 && !bankReady;
+  const payoutBlocked = needsBank && dueCount > 0;
+  const shouldNotify = needsBank && dueCount > 0 && daysUntilDeadline !== null && daysUntilDeadline >= 0 && daysUntilDeadline <= PAYOUT_DEADLINE_DAYS;
+
+  return {
+    bank_account_required: needsBank,
+    payout_blocked: payoutBlocked,
+    should_notify: shouldNotify,
+    pending_amount: pendingAmount,
+    pending_count: pendingCount,
+    due_order_count: dueCount,
+    cutoff_at: row?.cutoff_at || null,
+    payout_deadline_at: row?.payout_deadline_at || null,
+    days_until_payout_deadline: daysUntilDeadline,
+  };
+}
+
+async function notifyMissingBankIfNeeded(sellerId, warning) {
+  if (!warning?.should_notify) return;
+
+  const [[existing]] = await db.query(
+    `SELECT notification_id
+     FROM notifications
+     WHERE user_id = ?
+       AND type = 'payout_bank_account_required'
+       AND DATE(created_at) = CURDATE()
+     LIMIT 1`,
+    [sellerId]
+  ).catch(() => [[null]]);
+  if (existing?.notification_id) return;
+
+  const deadline = warning.payout_deadline_at ? new Date(warning.payout_deadline_at) : null;
+  const deadlineText = deadline && !Number.isNaN(deadline.getTime())
+    ? deadline.toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" })
+    : "รอบโอนนี้";
+  await sendNotification(sellerId, {
+    type: "payout_bank_account_required",
+    title: "กรุณาเพิ่มบัญชีธนาคารเพื่อรับเงิน",
+    body: `คุณมียอดรอโอน ฿${warning.pending_amount.toLocaleString("th-TH")} (${warning.pending_count} รายการ) กรุณาเพิ่มข้อมูลบัญชีธนาคารก่อน ${deadlineText} เพื่อรับเงินในรอบนี้`,
+    ref_id: sellerId,
+  }).catch(e => console.warn("[notify] payout_bank_account_required:", e.message));
 }
 
 /* ────────────────────────────────────────────────────────
@@ -908,13 +999,15 @@ export async function getSellerPayouts(sellerId, { page = 1, limit = 10 } = {}) 
     FROM users WHERE user_id = ?
   `, [sellerId]);
 
-  const decryptedNumber = decryptBankAccountNumber(bank?.bank_account_number);
+  const bankStatus = getBankStatus(bank);
   const verifiedColExists = await hasUsersColumn("bank_account_verified");
   let verified = false;
   if (verifiedColExists) {
     const [[v]] = await db.query(`SELECT bank_account_verified FROM users WHERE user_id = ?`, [sellerId]);
     verified = !!v?.bank_account_verified;
   }
+  const payoutWarning = await getPayoutAccountWarning(sellerId, bankStatus.ready);
+  await notifyMissingBankIfNeeded(sellerId, payoutWarning);
 
   // คำนวณวันตัดรอบและวันโอนเงินของเดือนนี้
   const now = new Date();
@@ -939,10 +1032,11 @@ export async function getSellerPayouts(sellerId, { page = 1, limit = 10 } = {}) 
     bank: bank
       ? {
           bank_code: bank.bank_code,
-          bank_account_number: decryptedNumber,
-          bank_account_number_masked: maskBankAccountNumber(decryptedNumber),
-          bank_account_number_formatted: formatBankAccountNumber(decryptedNumber),
+          bank_account_number: bankStatus.bankNum,
+          bank_account_number_masked: maskBankAccountNumber(bankStatus.bankNum),
+          bank_account_number_formatted: formatBankAccountNumber(bankStatus.bankNum),
           bank_account_name: bank.bank_account_name,
+          is_complete: bankStatus.ready,
           is_verified: verified,
         }
       : {
@@ -951,8 +1045,16 @@ export async function getSellerPayouts(sellerId, { page = 1, limit = 10 } = {}) 
           bank_account_number_masked: null,
           bank_account_number_formatted: null,
           bank_account_name: null,
+          is_complete: false,
           is_verified: false,
         },
+    payout_warning: {
+      ...payoutWarning,
+      reason: bankStatus.reason,
+      message: payoutWarning.bank_account_required
+        ? bankStatus.message
+        : "",
+    },
   };
 }
 

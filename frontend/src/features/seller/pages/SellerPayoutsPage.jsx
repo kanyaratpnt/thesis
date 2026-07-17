@@ -95,6 +95,7 @@ export default function SellerPayoutsPage() {
 
   const s    = data.stats;
   const bank = data.bank;
+  const payoutWarning = data.payout_warning || {};
   const selectedBank = BANK_LIST.find(b => b.code === bank?.bank_code);
 
   return (
@@ -108,6 +109,12 @@ export default function SellerPayoutsPage() {
 
       {/* กล่องรอบโอนเงิน */}
       {data.payout_cycle && <PayoutCycleBox cycle={data.payout_cycle} />}
+      {payoutWarning.bank_account_required && (
+        <BankAccountWarning
+          warning={payoutWarning}
+          onOpenBank={() => setEditingBank(true)}
+        />
+      )}
 
       <div className="slIncomeColumns">
         {/* History */}
@@ -167,7 +174,7 @@ export default function SellerPayoutsPage() {
                 <div style={{ fontWeight:700 }}>
                   {BANK_LIST.find(b => b.code === bank?.bank_code)?.name || bank?.bank_code || "ยังไม่ได้ตั้งค่า"}
                 </div>
-                {bank?.bank_account_number && (
+                {bank?.bank_account_number ? (
                   <>
                     <div style={{ fontSize:12, color:"#64748b", marginTop:6 }}>
                       เลขบัญชี: {bank.bank_account_number_masked || `xxxxx${String(bank.bank_account_number).slice(-4)}`}
@@ -177,6 +184,10 @@ export default function SellerPayoutsPage() {
                       สถานะยืนยันบัญชี: {bank?.is_verified ? "ยืนยันแล้ว" : "รอตรวจสอบ"}
                     </div>
                   </>
+                ) : (
+                  <div style={{ fontSize:12, color:"#b45309", marginTop:6 }}>
+                    ยังไม่มีข้อมูลบัญชีรับเงิน ระบบจะพักยอดไว้จนกว่าจะเพิ่มบัญชี
+                  </div>
                 )}
               </div>
             </div>
@@ -317,6 +328,43 @@ function PayoutCycleBox({ cycle }) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function BankAccountWarning({ warning, onOpenBank }) {
+  const deadline = warning.payout_deadline_at
+    ? new Date(warning.payout_deadline_at).toLocaleDateString("th-TH", { day:"numeric", month:"long", year:"numeric" })
+    : "";
+  const isBlocked = Boolean(warning.payout_blocked);
+
+  return (
+    <div style={{
+      display:"flex", gap:12, alignItems:"flex-start",
+      padding:"14px 18px", marginBottom:16,
+      background:isBlocked ? "#fff7ed" : "#fffbeb",
+      border:`1px solid ${isBlocked ? "#fdba74" : "#fde68a"}`,
+      borderRadius:12, fontSize:13
+    }}>
+      <Icon icon={isBlocked ? "mdi:alert-circle-outline" : "mdi:bell-alert-outline"} style={{ fontSize:24, color:isBlocked ? "#ea580c" : "#d97706", flexShrink:0, marginTop:1 }} />
+      <div style={{ flex:1 }}>
+        <div style={{ fontWeight:800, color:isBlocked ? "#9a3412" : "#92400e", marginBottom:4 }}>
+          {isBlocked ? "ยอดโอนถูกพักไว้เพราะยังไม่มีบัญชีรับเงิน" : "กรุณาเพิ่มบัญชีธนาคารก่อนถึงรอบโอน"}
+        </div>
+        <div style={{ color:isBlocked ? "#9a3412" : "#92400e", lineHeight:1.65 }}>
+          คุณมียอดรอโอน {fmtBaht(warning.pending_amount)} ({warning.pending_count || 0} รายการ)
+          {deadline ? ` กรุณาเพิ่มข้อมูลบัญชีก่อน ${deadline}` : ""} เพื่อรับเงินในรอบนี้
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onOpenBank}
+        className="slBtnPrimary slBtn"
+        style={{ whiteSpace:"nowrap", display:"inline-flex", alignItems:"center", gap:6 }}
+      >
+        <Icon icon="mdi:bank-plus" />
+        เพิ่มบัญชี
+      </button>
     </div>
   );
 }
