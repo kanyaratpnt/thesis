@@ -3043,22 +3043,52 @@
 
 .admOrderPage .admOrderCard .admTable {
   table-layout: fixed;
+  min-width: 1120px;
+}
+
+.admOrderPage .admTableWrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admOrderPage .admOrderCard .admTable th:nth-child(1),
-.admOrderPage .admOrderCard .admTable td:nth-child(1) { width: 12%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(1) { width: 11%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(2),
-.admOrderPage .admOrderCard .admTable td:nth-child(2) { width: 23%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(2) { width: 21%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(3),
-.admOrderPage .admOrderCard .admTable td:nth-child(3) { width: 18%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(3) { width: 19%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(4),
-.admOrderPage .admOrderCard .admTable td:nth-child(4) { width: 12%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(4) { width: 10%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(5),
-.admOrderPage .admOrderCard .admTable td:nth-child(5) { width: 12%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(5) { width: 10%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(6),
-.admOrderPage .admOrderCard .admTable td:nth-child(6) { width: 12%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(6) { width: 11%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(7),
-.admOrderPage .admOrderCard .admTable td:nth-child(7) { width: 11%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(7) { width: 18%; }
+
+.admOrderPage .admOrderCard .admTable th:nth-child(7),
+.admOrderPage .admOrderCard .admTable td:nth-child(7) {
+  overflow: visible;
+}
+
+.admOrderActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.admOrderActionInline {
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+.admOrderActionInline:disabled {
+  cursor: wait !important;
+  opacity: 0.62;
+}
 
 /* ===== Mobile data cards: avoid forcing admins to pan wide tables ===== */
 @media (max-width: 820px) {
@@ -3213,6 +3243,11 @@
   .admOrderActionBtn,
   .admPayoutBtn {
     min-height: 40px;
+  }
+
+  .admOrderActions {
+    align-items: stretch;
+    width: 100%;
   }
 }
 

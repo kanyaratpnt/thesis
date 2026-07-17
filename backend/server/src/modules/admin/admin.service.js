@@ -11,12 +11,6 @@ import {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-/** คืนเวลาไทย (UTC+7) ในรูปแบบ YYYY-MM-DD HH:MM:SS สำหรับส่งเข้า DB */
-function thaiNow() {
-  const d = new Date(Date.now() + 7 * 60 * 60 * 1000);
-  return d.toISOString().replace("T", " ").slice(0, 19);
-}
-
 function toSqlLocalDateTime(date) {
   return [
     date.getFullYear(),
@@ -27,6 +21,45 @@ function toSqlLocalDateTime(date) {
     pad2(date.getMinutes()),
     pad2(date.getSeconds()),
   ].join(":");
+}
+
+function dateFromSqlDateInput(value, endOfDay = false) {
+  const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  const d = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  d.setHours(endOfDay ? 23 : 0, endOfDay ? 59 : 0, endOfDay ? 59 : 0, endOfDay ? 999 : 0);
+  return d;
+}
+
+function bangkokNowDate() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Bangkok",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    hourCycle: "h23",
+  }).formatToParts(new Date()).reduce((acc, part) => {
+    if (part.type !== "literal") acc[part.type] = part.value;
+    return acc;
+  }, {});
+  return new Date(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour),
+    Number(parts.minute),
+    Number(parts.second),
+    0
+  );
+}
+
+/** คืนเวลาไทย (Asia/Bangkok) ในรูปแบบ YYYY-MM-DD HH:MM:SS สำหรับส่งเข้า DB */
+function thaiNow() {
+  return toSqlLocalDateTime(bangkokNowDate());
 }
 
 /* ────── helpers ────── */
@@ -41,10 +74,12 @@ function normalizeThaiPhone(input) {
 }
 
 function periodToDateRange(period, startDate = null, endDate = null) {
-  const now = new Date();
+  const now = bangkokNowDate();
   if (period === "custom" && startDate && endDate) {
-    const f = new Date(startDate); f.setHours(0, 0, 0, 0);
-    const t = new Date(endDate);   t.setHours(23, 59, 59, 999);
+    const f = dateFromSqlDateInput(startDate) || new Date(startDate);
+    const t = dateFromSqlDateInput(endDate, true) || new Date(endDate);
+    f.setHours(0, 0, 0, 0);
+    t.setHours(23, 59, 59, 999);
     return { from: toSqlLocalDateTime(f), to: toSqlLocalDateTime(t) };
   }
   let from;
@@ -1050,7 +1085,7 @@ export async function shipOrder(order_id) {
 
 export async function cancelOrder(order_id) {
   const [r] = await db.query(
-    `UPDATE orders SET order_status='cancelled' WHERE order_id=? AND order_status IN ('pending','shipping')`,
+    `UPDATE orders SET order_status='cancelled' WHERE order_id=? AND order_status IN ('pending','confirmed','shipping')`,
     [order_id]);
   if (r.affectedRows === 0) throw Object.assign(new Error("ไม่พบออเดอร์หรือสถานะไม่ถูกต้อง"), { status: 400 });
   return { message: "Cancelled", order_id };

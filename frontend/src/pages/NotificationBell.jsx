@@ -14,27 +14,36 @@ import "./styles/NotificationBell.css";
 
 const BASE = import.meta?.env?.VITE_API_BASE_URL || (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
 
+const seededRandom = (seed) => {
+  const x = Math.sin(seed * 9999) * 10000;
+  return x - Math.floor(x);
+};
+
 // ── Confetti ───────────────────────────────────────────────────────
 function ConfettiEffect() {
   const colors = ["#29B6E8", "#FFBE1B", "#f97316", "#16a34a", "#7c3aed", "#ec4899"];
   return (
     <div className="nb-confetti-wrap">
-      {Array.from({ length: 60 }).map((_, i) => (
-        <div
-          key={i}
-          style={{
-            position:     "absolute",
-            top:          "-20px",
-            left:         `${Math.random() * 100}%`,
-            width:        `${6 + Math.random() * 8}px`,
-            height:       `${10 + Math.random() * 12}px`,
-            background:   colors[Math.floor(Math.random() * colors.length)],
-            borderRadius: Math.random() > 0.5 ? "50%" : "2px",
-            animation:    `confettiFall ${2 + Math.random() * 3}s ${Math.random() * 2}s linear forwards`,
-            transform:    `rotate(${Math.random() * 360}deg)`,
-          }}
-        />
-      ))}
+      {Array.from({ length: 60 }).map((_, i) => {
+        const seed = i + 1;
+        const colorIndex = Math.floor(seededRandom(seed + 3) * colors.length) % colors.length;
+        return (
+          <div
+            key={i}
+            style={{
+              position:     "absolute",
+              top:          "-20px",
+              left:         `${seededRandom(seed) * 100}%`,
+              width:        `${6 + seededRandom(seed + 1) * 8}px`,
+              height:       `${10 + seededRandom(seed + 2) * 12}px`,
+              background:   colors[colorIndex],
+              borderRadius: seededRandom(seed + 4) > 0.5 ? "50%" : "2px",
+              animation:    `confettiFall ${2 + seededRandom(seed + 5) * 3}s ${seededRandom(seed + 6) * 2}s linear forwards`,
+              transform:    `rotate(${seededRandom(seed + 7) * 360}deg)`,
+            }}
+          />
+        );
+      })}
       <style>{`@keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }`}</style>
     </div>
   );
@@ -961,6 +970,11 @@ export default function NotificationBell() {
     return `${d} วันที่แล้ว`;
   };
 
+  const notifTimeLabel = (notif) => {
+    if (notif._syntheticTask) return "รอดำเนินการ";
+    return timeAgo(notif.created_at);
+  };
+
   if (!token) return null;
 
   return (
@@ -1032,7 +1046,7 @@ export default function NotificationBell() {
                           {action.chip}
                         </div>
                       )}
-                      <div className="nb-item-time">{timeAgo(notif.created_at)}</div>
+                      <div className="nb-item-time">{notifTimeLabel(notif)}</div>
                     </div>
                     {!notif.is_read && <div className="nb-item-dot" />}
                   </div>

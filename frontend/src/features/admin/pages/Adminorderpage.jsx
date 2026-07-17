@@ -115,6 +115,7 @@ export default function AdminOrderPage() {
   const [startDate, setStartDate]       = useState("");
   const [endDate, setEndDate]           = useState("");
   const [showPicker, setShowPicker]     = useState(false);
+  const [cancelingId, setCancelingId]   = useState(null);
 
   const now     = new Date();
   const dateStr = now.toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" });
@@ -155,9 +156,11 @@ export default function AdminOrderPage() {
   const handleCancel = async (orderId) => {
     if (!window.confirm("ยืนยันการยกเลิกออเดอร์นี้?")) return;
     try {
+      setCancelingId(orderId);
       await request(`/admin/orders/${orderId}/cancel`, { method: "PATCH", auth: true });
       showToast("ยกเลิกออเดอร์แล้ว"); loadOrders();
     } catch (e) { showToast(e?.data?.message || "เกิดข้อผิดพลาด", "error"); }
+    finally { setCancelingId(null); }
   };
 
   const openDetail = async (orderId) => {
@@ -335,8 +338,8 @@ export default function AdminOrderPage() {
                           <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 3 }}>{fmtDate(row.created_at)}</div>
                         </td>
 
-                        <td style={{ ...tdSt, maxWidth: 200 }}>
-                          <div style={{ fontWeight: 600, color: "#334155", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 180 }}>
+                        <td style={{ ...tdSt, maxWidth: 240 }}>
+                          <div style={{ fontWeight: 600, color: "#334155", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>
                             {row.products || "-"}
                           </div>
                           {row.total_qty > 0 && (
@@ -371,13 +374,19 @@ export default function AdminOrderPage() {
                         </td>
 
                         <td style={{ ...tdSt, textAlign: "left" }}>
-                          <div style={{ display: "flex", gap: 6, justifyContent: "flex-start" }}>
-                            <button type="button" style={btnSt("#3b82f6")} onClick={() => openDetail(row.order_id)}>
+                          <div className="admOrderActions">
+                            <button type="button" className="admOrderActionInline" style={btnSt("#3b82f6")} onClick={() => openDetail(row.order_id)}>
                               รายละเอียด
                             </button>
                             {["pending", "confirmed", "shipping"].includes(row.order_status) && (
-                              <button type="button" style={btnSt("#ef4444")} onClick={() => handleCancel(row.order_id)}>
-                                ยกเลิก
+                              <button
+                                type="button"
+                                className="admOrderActionInline"
+                                style={btnSt("#ef4444")}
+                                onClick={() => handleCancel(row.order_id)}
+                                disabled={cancelingId === row.order_id}
+                              >
+                                {cancelingId === row.order_id ? "กำลังยกเลิก..." : "ยกเลิก"}
                               </button>
                             )}
                           </div>
