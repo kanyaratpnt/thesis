@@ -2,6 +2,66 @@
 import { db } from "../../config/db.js";
 import { cloudinary, uploadToCloudinary } from "../../config/cloudinary.js";
 
+const SEEDED_PRODUCT_IMAGES = {
+  maleShirt: "/unieed_pic/products/male-shirt.jpeg",
+  femaleShirt: "/unieed_pic/products/female-shirt.jpeg",
+  pants: "/unieed_pic/products/pants.jpeg",
+  skirt: "/unieed_pic/products/skirt.jpg",
+};
+
+function getSeededProductImage(row = {}) {
+  const categoryId = Number(row.category_id);
+  const gender = String(row.gender || "").toLowerCase();
+  const text = [
+    row.product_title,
+    row.type_name,
+    row.custom_type_name,
+    row.category_name,
+  ].filter(Boolean).join(" ").toLowerCase();
+
+  if (categoryId === 2 || text.includes("กางเกง") || text.includes("pants")) {
+    return SEEDED_PRODUCT_IMAGES.pants;
+  }
+  if (categoryId === 3 || text.includes("กระโปรง") || text.includes("skirt")) {
+    return SEEDED_PRODUCT_IMAGES.skirt;
+  }
+  if (categoryId === 1 || text.includes("เสื้อ") || text.includes("shirt")) {
+    if (gender === "female" || text.includes("หญิง") || text.includes("female")) {
+      return SEEDED_PRODUCT_IMAGES.femaleShirt;
+    }
+    return SEEDED_PRODUCT_IMAGES.maleShirt;
+  }
+  return null;
+}
+
+function isLegacyDemoImage(url = "") {
+  const value = String(url || "");
+  if (!value) return false;
+  return value.includes("placehold.co") || /[?&]text=Demo/i.test(value);
+}
+
+function normalizeProductImageUrl(url, row) {
+  if (!isLegacyDemoImage(url)) return url;
+  return getSeededProductImage(row) || url;
+}
+
+function normalizeProductImages(row, imageUrls = []) {
+  const urls = imageUrls.filter(Boolean).map((url) => normalizeProductImageUrl(url, row));
+  if (urls.length) return urls.map((image_url) => ({ image_url }));
+
+  const isMockProduct = [
+    row.product_title,
+    row.type_name,
+    row.custom_type_name,
+  ].filter(Boolean).join(" ").toLowerCase().includes("mock demo");
+  const fallback = isMockProduct ? getSeededProductImage(row) : null;
+  return fallback ? [{ image_url: fallback }] : [];
+}
+
+function normalizeCoverImage(row, url) {
+  return normalizeProductImageUrl(url, row);
+}
+
 // ─────────────────────────────────────────────────────────
 // Batch create products
 // items: each item มี school_name (string, ไม่บังคับ)
@@ -233,9 +293,7 @@ const getProducts = async ({ search, ids, category_id, gender, uniform_type_id, 
     products: rows.map(row => ({
       ...row,
       shipping_providers: [],
-      images: row.image_urls
-        ? row.image_urls.split('|||').map(url => ({ image_url: url }))
-        : [],
+      images: normalizeProductImages(row, row.image_urls ? row.image_urls.split('|||') : []),
     })),
     pagination: {
       total: Number(total),
@@ -283,7 +341,14 @@ const getProductById = async (id) => {
     [id]
   );
 
-  return { ...product, images, shipping_providers: shippingRows };
+  return {
+    ...product,
+    images: images.map((image) => ({
+      ...image,
+      image_url: normalizeProductImageUrl(image.image_url, product),
+    })),
+    shipping_providers: shippingRows,
+  };
 };
 const getRelatedProducts = async ({ productId, categoryId, gender, level, limit = 6 }) => {
   const where = [`p.status = 'available'`, `p.product_id != ?`];
@@ -331,7 +396,10 @@ const getRelatedProducts = async ({ productId, categoryId, gender, level, limit 
      LIMIT ${Number(limit)}`,
     params
   );
-  return rows;
+  return rows.map((row) => ({
+    ...row,
+    cover_image: normalizeCoverImage(row, row.cover_image),
+  }));
 };
 // ─────────────────────────────────────────────────────────
 // Delete product + Cloudinary cleanup
@@ -888,9 +956,8 @@ const getMatchedProducts = async (project_id) => {
       shipping_providers: p.shipping_providers
         ? p.shipping_providers.split("|||").filter(Boolean)
         : [],
-      images: p.image_urls
-        ? p.image_urls.split("|||").map(url => ({ image_url: url }))
-        : [],
+      cover_image: normalizeCoverImage(p, p.cover_image),
+      images: normalizeProductImages(p, p.image_urls ? p.image_urls.split("|||") : []),
     }))
     .sort((a, b) => b.match_score - a.match_score);
 
