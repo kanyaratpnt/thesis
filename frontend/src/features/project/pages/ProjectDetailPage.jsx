@@ -608,12 +608,15 @@ export default function ProjectDetailPage() {
                 <h1 className="pdSchoolName">{project.school_name}</h1>
 
                 {/* ── Headline: ขอรับบริจาค X ชุด ── */}
-                <p className="pdHeadline">
-                  ขอรับบริจาคชุดนักเรียน{" "}
-                  <span className="pdHeadlineCount">
-                    {project.uniform_items?.reduce((s, i) => s + (i.quantity ?? 0), 0) || ""} ชุด
-                  </span>
-                </p>
+                {(() => {
+                  const total = project.uniform_items?.reduce((s, i) => s + (i.quantity ?? 0), 0) || 0;
+                  return total > 0 ? (
+                    <p className="pdHeadline">
+                      ขอรับบริจาคชุดนักเรียน{" "}
+                      <span className="pdHeadlineCount">{total} ชุด</span>
+                    </p>
+                  ) : null;
+                })()}
 
                 {/* ── คำอธิบายโครงการ ── เล็กลง สีเทา */}
                 <p className="pdTitleSub">{project.request_title}</p>
