@@ -10,14 +10,21 @@ const __dirname = path.dirname(__filename);
 
 /* ---------------- utils ---------------- */
 
-async function uploadOne(localPath, folder) {
+async function uploadOne(localPath, folder, publicId = null) {
   if (!fs.existsSync(localPath)) {
     throw new Error(`File not found: ${localPath}`);
   }
-  const res = await cloudinary.uploader.upload(localPath, {
+  const options = {
     folder,
     resource_type: "image",
-  });
+  };
+  if (publicId) {
+    options.public_id = publicId;
+    options.overwrite = true;
+    options.invalidate = true;
+  }
+
+  const res = await cloudinary.uploader.upload(localPath, options);
   return { url: res.secure_url, public_id: res.public_id };
 }
 
@@ -35,7 +42,19 @@ async function findProductNaturalKey(p) {
      LIMIT 1`,
     [p.uniform_type_id, p.title, p.size]
   );
-  return rows[0] || null;
+  if (rows[0]) return rows[0];
+
+  if (!p.legacy) return null;
+  const [legacyRows] = await db.query(
+    `SELECT product_id
+     FROM products
+     WHERE uniform_type_id = ?
+       AND product_title = ?
+       AND size = ?
+     LIMIT 1`,
+    [p.legacy.uniform_type_id, p.legacy.title, p.legacy.size]
+  );
+  return legacyRows[0] || null;
 }
 
 /**
@@ -59,7 +78,7 @@ async function findProjectNaturalKey(p) {
  */
 async function getProductCoverImage(product_id) {
   const [rows] = await db.query(
-    `SELECT image_url, public_id
+    `SELECT image_id, image_url, public_id
      FROM product_images
      WHERE product_id = ?
      ORDER BY is_cover DESC, sort_order ASC, created_at ASC
@@ -83,6 +102,21 @@ async function ensureProductCover(product_id, img, shouldInsert) {
      VALUES (?,?,?,?,0,NOW())`,
     [product_id, img.url, img.public_id, 1]
   );
+}
+
+async function upsertProductCover(product_id, img) {
+  const cover = await getProductCoverImage(product_id);
+  if (cover) {
+    await db.query(
+      `UPDATE product_images
+       SET image_url = ?, public_id = ?, is_cover = 1, sort_order = 0
+       WHERE image_id = ?`,
+      [img.url, img.public_id, cover.image_id]
+    );
+    return;
+  }
+
+  await ensureProductCover(product_id, img, true);
 }
 
 /* ---------------- seed products ---------------- */
@@ -114,22 +148,24 @@ const PRODUCTS = [
     image: "p2.jpeg",
   },
   {
-    uniform_type_id: 3,
-    title: "กางเกงนักเรียนเอกชน",
+    uniform_type_id: 2,
+    title: "เสื้อนักเรียนหญิง แขนสั้น",
     description: "เสื้อนักเรียนหญิง แขนสั้น ใช้งานน้อย",
     size: "S",
     condition: "ดีมาก",
     price: 100,
     image: "p3.jpeg",
+    legacy: { uniform_type_id: 3, title: "กางเกงนักเรียนเอกชน", size: "S" },
   },
   {
     uniform_type_id: 4,
-    title: "เสื้อนักเรียนเอกชน",
-    description: "เสื้อนักเรียนหญิง แขนยาว",
+    title: "กระโปรงนักเรียนหญิง",
+    description: "กระโปรงนักเรียนหญิง สีกรมท่า จีบรอบ ใช้งานน้อย",
     size: "L",
     condition: "ดี",
     price: 180,
     image: "p4.jpg",
+    legacy: { uniform_type_id: 4, title: "เสื้อนักเรียนเอกชน", size: "L" },
   },
 ];
 
@@ -139,11 +175,12 @@ async function seedProducts() {
 
   for (const p of PRODUCTS) {
     const existed = await findProductNaturalKey(p);
+    const imgPath = path.join(dir, p.image);
+    const imgPublicId = `seed-${path.parse(p.image).name}`;
 
     if (!existed) {
       // ✅ ยังไม่มี -> อัปโหลดรูป + INSERT
-      const imgPath = path.join(dir, p.image);
-      const img = await uploadOne(imgPath, "unieed/products");
+      const img = await uploadOne(imgPath, "unieed/products", imgPublicId);
 
       const [r] = await db.query(
         `INSERT INTO products
@@ -159,7 +196,7 @@ async function seedProducts() {
 
       console.log("✔ product inserted:", p.title, `(id=${product_id})`);
     } else {
-      // ✅ มีอยู่แล้ว -> UPDATE เฉพาะข้อมูลสินค้า (ไม่เพิ่มแถวใหม่ / ไม่อัปโหลดรูปใหม่)
+      // ✅ มีอยู่แล้ว -> UPDATE ข้อมูลสินค้าและ refresh cover seed ให้ตรงประเภทล่าสุด
       await db.query(
         `UPDATE products
          SET uniform_type_id=?,
@@ -180,17 +217,9 @@ async function seedProducts() {
         ]
       );
 
-      // ไม่แตะรูปเดิม เพื่อกัน Cloudinary ซ้ำ
-      const cover = await getProductCoverImage(existed.product_id);
-      if (!cover) {
-        // กรณีพิเศษ: เคยมี product แต่ไม่มีรูป -> ค่อยอัปโหลดครั้งเดียว
-        const imgPath = path.join(dir, p.image);
-        const img = await uploadOne(imgPath, "unieed/products");
-        await ensureProductCover(existed.product_id, img, true);
-        console.log("↺ product updated + cover added:", p.title, `(id=${existed.product_id})`);
-      } else {
-        console.log("↺ product updated (no duplicate):", p.title, `(id=${existed.product_id})`);
-      }
+      const img = await uploadOne(imgPath, "unieed/products", imgPublicId);
+      await upsertProductCover(existed.product_id, img);
+      console.log("↺ product updated + cover refreshed:", p.title, `(id=${existed.product_id})`);
     }
   }
 }

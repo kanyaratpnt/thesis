@@ -67,7 +67,7 @@ const PRODUCT_TEMPLATES = [
     size: '{"chest":"36","length":"24"}',
     level: "มัธยมต้น",
     price: 180,
-    imageColor: "e8f0fe",
+    imagePath: "/unieed_pic/products/male-shirt.jpeg",
   },
   {
     sellerIndex: 0,
@@ -78,7 +78,7 @@ const PRODUCT_TEMPLATES = [
     size: '{"chest":"34","length":"23"}',
     level: "ประถมศึกษา",
     price: 160,
-    imageColor: "fef3c7",
+    imagePath: "/unieed_pic/products/female-shirt.jpeg",
   },
   {
     sellerIndex: 1,
@@ -89,7 +89,7 @@ const PRODUCT_TEMPLATES = [
     size: '{"waist":"28","length":"36"}',
     level: "มัธยมต้น",
     price: 220,
-    imageColor: "dcfce7",
+    imagePath: "/unieed_pic/products/pants.jpeg",
   },
   {
     sellerIndex: 2,
@@ -100,7 +100,7 @@ const PRODUCT_TEMPLATES = [
     size: '{"waist":"26","length":"22"}',
     level: "มัธยมปลาย",
     price: 210,
-    imageColor: "fce7f3",
+    imagePath: "/unieed_pic/products/skirt.jpg",
   },
 ];
 
@@ -446,8 +446,8 @@ async function createProducts(conn, { sellerIds, categories, uniformTypeIds, pro
        VALUES (?, ?, ?, 1, 0)`,
       [
         productId,
-        `https://placehold.co/600x600/${item.imageColor}/1f2937?text=Demo+${i + 1}`,
-        `${MOCK_PREFIX}/p${i + 1}`,
+        item.imagePath,
+        `${MOCK_PREFIX}/${item.uniformKey}`,
       ]
     );
 

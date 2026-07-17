@@ -6,7 +6,6 @@ import { useAuth } from "../../../context/AuthContext.jsx";
 import { getJson } from "../../../api/http.js";
 import Navbar from "../../../pages/Navbar.jsx";
 import { useCart } from "../context/CartContext.jsx";  // ✅ เพิ่ม
-import { getShippingLogoSrc } from "../utils/shippingLogos.js";
 import "../styles/ProductDetailPage.css";
 
 // ── helpers ──────────────────────────────────────────────
@@ -37,88 +36,6 @@ function getCategoryLabel(categoryId, gender) {
     if (cid === 2) return "กางเกงนักเรียน";
     if (cid === 3) return "กระโปรงนักเรียน";
     return "ชุดนักเรียน";
-}
-
-const SHIPPING_BRAND = {
-    kerry: { bg: "#e8f0fe", color: "#1a56db", icon: "mdi:truck-fast", abbr: "KEX" },
-    flash: { bg: "#fff3e0", color: "#e65100", icon: "mdi:lightning-bolt", abbr: "FLX" },
-    thai: { bg: "#fce4ec", color: "#c62828", icon: "mdi:mailbox-outline", abbr: "THP" },
-    post: { bg: "#fce4ec", color: "#c62828", icon: "mdi:mailbox-outline", abbr: "EMS" },
-    ems: { bg: "#fce4ec", color: "#c62828", icon: "mdi:mailbox-outline", abbr: "EMS" },
-    "j&t": { bg: "#fff8e1", color: "#f57f17", icon: "mdi:truck-delivery", abbr: "J&T" },
-    jnt: { bg: "#fff8e1", color: "#f57f17", icon: "mdi:truck-delivery", abbr: "J&T" },
-    dhl: { bg: "#fff9c4", color: "#b71c1c", icon: "mdi:truck-outline", abbr: "DHL" },
-    default: { bg: "#f1f5f9", color: "#475569", icon: "mdi:truck-outline", abbr: "ส่ง" },
-};
-
-function getShippingBrand(code, name) {
-    const n = `${name || ""} ${code || ""}`.toLowerCase();
-    for (const [key, brand] of Object.entries(SHIPPING_BRAND)) {
-        if (key !== "default" && n.includes(key)) return brand;
-    }
-    return SHIPPING_BRAND.default;
-}
-
-function ShippingLogo({ code, name, size = 36 }) {
-    const [imgError, setImgError] = useState(false);
-    const logoUrl = getShippingLogoSrc(code, name);
-    const brand = getShippingBrand(code, name);
-
-    if (!logoUrl || imgError) {
-        return (
-            <div className="pdShipLogoFallback" style={{ width: size, height: size, background: brand.bg, color: brand.color }}>
-                <Icon icon={brand.icon} />
-                <span>{brand.abbr}</span>
-            </div>
-        );
-    }
-
-    return (
-        <img
-            src={logoUrl}
-            alt={name}
-            onError={() => setImgError(true)}
-            className="pdShipLogoImg"
-            style={{ width: size, height: size }}
-        />
-    );
-}
-
-function calcShippingEstimate(provider, qty = 1, subtotal = 0) {
-    const basePrice = Number(provider?.base_price || 0);
-    const perItem = Number(provider?.price_per_item || 0);
-    const maxPrice = provider?.max_price ? Number(provider.max_price) : null;
-    const freeThreshold = provider?.free_threshold ? Number(provider.free_threshold) : null;
-
-    let price = basePrice + (perItem * Math.max(Number(qty) || 1, 1));
-    if (maxPrice !== null && price > maxPrice) price = maxPrice;
-    if (freeThreshold !== null && Number(subtotal) >= freeThreshold) price = 0;
-    return Math.round(price * 100) / 100;
-}
-
-function formatBaht(value) {
-    const num = Number(value || 0);
-    return `${num.toLocaleString(undefined, { maximumFractionDigits: 2 })} บาท`;
-}
-
-function formatShippingRange(providers) {
-    const prices = providers
-        .filter(p => p.has_price_data)
-        .map(p => Number(p.estimated_price || 0));
-    if (!prices.length) return "กำลังโหลดราคา...";
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    if (min === max) return formatBaht(min);
-    return `${min.toLocaleString(undefined, { maximumFractionDigits: 2 })}-${max.toLocaleString(undefined, { maximumFractionDigits: 2 })} บาท`;
-}
-
-function formatEstDays(provider) {
-    const min = provider?.est_days_min;
-    const max = provider?.est_days_max;
-    if (min && max) return `${min}-${max} วัน`;
-    if (min) return `${min} วันขึ้นไป`;
-    if (max) return `ไม่เกิน ${max} วัน`;
-    return null;
 }
 
 // ── Related Card ─────────────────────────────────────────
@@ -287,7 +204,6 @@ export default function ProductDetailPage() {
     const [err, setErr] = useState("");
     const [recommendedProjects, setRecommendedProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
-    const [shippingCatalog, setShippingCatalog] = useState([]);
 
     // fetch product
     // แก้ใน ProductDetailPage.jsx — เฉพาะส่วน useEffect ที่ fetch related
@@ -319,13 +235,6 @@ export default function ProductDetailPage() {
             .catch(() => setErr("ไม่สามารถโหลดข้อมูลสินค้าได้"))
             .finally(() => setLoading(false));
     }, [id]);
-
-    useEffect(() => {
-        fetch("/api/checkout/shipping")
-            .then(r => r.json())
-            .then(data => setShippingCatalog(Array.isArray(data) ? data : []))
-            .catch(() => setShippingCatalog([]));
-    }, []);
 
     useEffect(() => {
         if (!id) return;
@@ -428,27 +337,6 @@ export default function ProductDetailPage() {
         : "";
 
     const images = product?.images || [];
-    const shippingProviders = (product?.shipping_providers || []).map(provider => {
-        const catalog = shippingCatalog.find(item => (
-            Number(item.provider_id) === Number(provider.provider_id) ||
-            (item.code && provider.code && String(item.code).toLowerCase() === String(provider.code).toLowerCase()) ||
-            String(item.name || "").toLowerCase() === String(provider.name || "").toLowerCase()
-        ));
-        const mergedProvider = { ...catalog, ...provider };
-        const hasPriceData = [
-            mergedProvider.base_price,
-            mergedProvider.price_per_item,
-            mergedProvider.max_price,
-            mergedProvider.free_threshold,
-        ].some(value => value !== undefined && value !== null);
-        return {
-            ...mergedProvider,
-            has_price_data: hasPriceData,
-            estimated_price: calcShippingEstimate(mergedProvider, 1, Number(product?.price || 0)),
-        };
-    });
-    const shippingRange = shippingProviders.length ? formatShippingRange(shippingProviders) : "";
-
     return (
         <div className="pdPage">
             {/* ── Navbar ── */}
@@ -563,39 +451,6 @@ export default function ProductDetailPage() {
                                         <span className="pdDetailVal">{product.quantity} ชิ้น</span>
                                     </div>
                                 </div>
-
-                                {shippingProviders.length > 0 && (
-                                    <div className="pdShipping">
-                                        <div className="pdShippingHead">
-                                            <div>
-                                                <div className="pdShippingTitle">
-                                                    <Icon icon="mdi:truck-delivery-outline" />
-                                                    ขนส่งที่รองรับ
-                                                </div>
-                                                <div className="pdShippingSub">ราคาประมาณ {shippingRange}</div>
-                                            </div>
-                                        </div>
-                                        <div className="pdShippingList">
-                                            {shippingProviders.map(provider => (
-                                                <div className="pdShippingItem" key={provider.provider_id}>
-                                                    <ShippingLogo code={provider.code} name={provider.name} />
-                                                    <div className="pdShippingInfo">
-                                                        <div className="pdShippingName">{provider.name}</div>
-                                                        {formatEstDays(provider) && (
-                                                            <div className="pdShippingDays">{formatEstDays(provider)}</div>
-                                                        )}
-                                                    </div>
-                                                    <div className="pdShippingPrice">
-                                                        {provider.has_price_data
-                                                            ? formatBaht(provider.estimated_price)
-                                                            : "กำลังโหลดราคา..."
-                                                        }
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
 
                                 {/* Description */}
                                 {product.product_description && (
