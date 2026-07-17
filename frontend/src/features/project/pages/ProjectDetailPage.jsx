@@ -666,6 +666,7 @@ export default function ProjectDetailPage() {
                 ) : (
                   <>
                     <UniformBlock />
+                    <div className="pdDeliverySection">
                     <div className="pdProgressLabel"><span>ช่องทางการส่งต่อ</span></div>
                     {suspension.is_suspended && (
                       <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 12, padding: "12px 16px", marginBottom: 12, fontSize: 13, color: "#dc2626" }}>
@@ -717,6 +718,7 @@ export default function ProjectDetailPage() {
                       </button>
                     )}
                     <p className="pdNote">*รับเกียรติบัตรออนไลน์ เพียงอัปโหลดหลักฐานการส่งต่อของท่าน*</p>
+                    </div>{/* end pdDeliverySection */}
                   </>
                 )}
               </div>
