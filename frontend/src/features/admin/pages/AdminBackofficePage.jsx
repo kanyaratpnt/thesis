@@ -118,7 +118,7 @@ export default function AdminBackofficePage() {
     pct_platform_revenue: null, pct_fee_15: null, pct_fee_min: null,
   });
   const [chart, setChart] = useState({ months: [], sales: [], fees: [], donation_open_pct: 0 });
-  const [tasks, setTasks] = useState({ pending_schools: 0, pending_shipments: 0, pending_donations: 0 });
+  const [tasks, setTasks] = useState({ pending_schools: 0, pending_shipments: 0, pending_donations: 0, tasks: [] });
   const [demand, setDemand] = useState({
     top3_types: [], province_demand: [], region_demand: [], open_projects: 0,
     completed_stats: { closed_projects: 0, school_count: 0, total_uniforms: 0, students_helped: 0 },
@@ -145,6 +145,8 @@ export default function AdminBackofficePage() {
   const now = new Date();
   const dateStr = now.toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" });
   const timeStr = now.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+  const pendingTaskRows = Array.isArray(tasks.tasks) ? tasks.tasks : [];
+  const pendingTaskTotal = pendingTaskRows.reduce((sum, task) => sum + Number(task.count || 0), 0);
 
   // โหลด overview / tasks ครั้งแรก
   useEffect(() => {
@@ -176,6 +178,12 @@ export default function AdminBackofficePage() {
           pending_schools: Number(tk?.pending_schools || 0),
           pending_shipments: Number(tk?.pending_shipments || 0),
           pending_donations: Number(tk?.pending_donations || 0),
+          overdue_donations: Number(tk?.overdue_donations || 0),
+          payout_due: Number(tk?.payout_due || 0),
+          payout_due_orders: Number(tk?.payout_due_orders || 0),
+          payout_due_amount: Number(tk?.payout_due_amount || 0),
+          system_warnings: Number(tk?.system_warnings || 0),
+          tasks: Array.isArray(tk?.tasks) ? tk.tasks : [],
         });
         setDemand(dm || { top3_types: [], open_projects: 0 });
         setAllOpenProjects(Array.isArray(openProj?.rows) ? openProj.rows : []);
@@ -484,47 +492,29 @@ export default function AdminBackofficePage() {
 
           <div className="boPendingCard">
             <div className="boPendingCard__header">
-              <div className="boPendingCard__title">รายการรอดำเนินงาน</div>
+              <div className="boPendingCard__title">ศูนย์แจ้งเตือนแอดมิน</div>
               <div className="boPendingCard__count">
-                {tasks.pending_schools + tasks.pending_shipments + tasks.pending_donations} รายการ
+                {pendingTaskTotal} งาน
               </div>
             </div>
 
-            {tasks.pending_schools === 0 && tasks.pending_shipments === 0 && tasks.pending_donations === 0 ? (
+            {pendingTaskRows.length === 0 ? (
               <div style={{ color: "#94a3b8", fontSize: 13, padding: "16px 4px" }}>ไม่มีรายการรอดำเนินงาน</div>
             ) : (
-              <>
-                {tasks.pending_schools > 0 && (
-                  <PendingItem
-                    label="โรงเรียนรออนุมัติ"
-                    count={tasks.pending_schools}
-                    link="/admin/schools"
-                    bg="#fff8d8"
-                    labelColor="#92400e"
-                    btnLabel="อนุมัติ"
-                  />
-                )}
-                {tasks.pending_shipments > 0 && (
-                  <PendingItem
-                    label="รายการสินค้าค้างส่ง"
-                    count={tasks.pending_shipments}
-                    link="/admin/orders"
-                    bg="#ffe2e2"
-                    labelColor="#991b1b"
-                    btnLabel="จัดการ"
-                  />
-                )}
-                {tasks.pending_donations > 0 && (
-                  <PendingItem
-                    label="บริจาคไม่ถูกยืนยัน"
-                    count={tasks.pending_donations}
-                    link="/admin/donations"
-                    bg="#ffe2e2"
-                    labelColor="#991b1b"
-                    btnLabel="จัดการ"
-                  />
-                )}
-              </>
+              pendingTaskRows.map((task) => (
+                <PendingItem
+                  key={task.key}
+                  label={task.label}
+                  count={task.count}
+                  unit={task.unit}
+                  link={task.url}
+                  bg={task.bg}
+                  labelColor={task.labelColor}
+                  btnLabel={task.action}
+                  icon={task.icon}
+                  meta={task.meta}
+                />
+              ))
             )}
           </div>
         </div>
@@ -1006,15 +996,22 @@ function AdminTimeFilter({ period, showPicker, startDate, endDate, onSelectPerio
   );
 }
 
-function PendingItem({ label, count, link, bg, labelColor, btnLabel }) {
+function PendingItem({ label, count, unit = "รายการ", link, bg = "#f8fafc", labelColor = "#1e293b", btnLabel = "จัดการ", icon = "mdi:bell-alert-outline", meta }) {
   return (
     <div className="boPendingItem" style={{ background: bg }}>
-      <div>
-        <div className="boPendingItem__label" style={{ color: labelColor }}>{label}</div>
-        <div className="boPendingItem__sub">{count} รายการ</div>
+      <div className="boPendingItem__main">
+        <div className="boPendingItem__label" style={{ color: labelColor }}>
+          <Icon icon={icon} className="boPendingItem__icon" />
+          {label}
+        </div>
+        <div className="boPendingItem__sub">
+          {Number(count || 0).toLocaleString()} {unit}
+          {meta?.orders ? ` · ${Number(meta.orders).toLocaleString()} ออเดอร์` : ""}
+          {meta?.amount ? ` · ${formatBaht(meta.amount)}` : ""}
+        </div>
       </div>
       <a href={link} className="boPendingItem__btn">
-        {btnLabel} <Icon icon="material-symbols:arrow-outward" />
+        {btnLabel || "จัดการ"} <Icon icon="material-symbols:arrow-outward" />
       </a>
     </div>
   );

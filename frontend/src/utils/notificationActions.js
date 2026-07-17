@@ -29,6 +29,13 @@ const CHIP_LABELS = {
   strike_appeal:          "ไปตรวจสอบ →",
   wrong_item_report:      "ไปตรวจสอบ →",
   donation_clarify:       "ไปตรวจสอบ →",
+  school_join_request:    "ตรวจสอบโรงเรียน →",
+  donation_request_pending: "ตรวจสอบคำขอ →",
+  order_paid_pending_ship: "จัดการออเดอร์ →",
+  payout_due:             "โอนเงินให้ผู้ขาย →",
+  donation_overdue:       "ตรวจสอบบริจาคค้างนาน →",
+  wrong_items:            "ตรวจสอบของไม่ตรง →",
+  system_warning:         "ดูรายละเอียด →",
   admin_approved:         "ดูรายการบริจาค →",
   donation_received:      "ตรวจสอบบริจาค →",
   donation_shipped:       "ดูประวัติการบริจาค →",
@@ -50,6 +57,13 @@ export const NOTIF_ICONS = {
   strike_appeal:          "mdi:file-document-edit-outline",
   wrong_item_report:      "mdi:swap-horizontal",
   donation_clarify:       "mdi:message-reply-outline",
+  school_join_request:    "mdi:school-outline",
+  donation_request_pending: "mdi:hand-heart-outline",
+  order_paid_pending_ship: "mdi:truck-fast-outline",
+  payout_due:             "mdi:bank-transfer-out",
+  donation_overdue:       "mdi:clock-alert-outline",
+  wrong_items:            "mdi:swap-horizontal-circle-outline",
+  system_warning:         "mdi:alert-outline",
   admin_approved:         "mdi:check-circle-outline",
   donation_received:      "mdi:gift-outline",
   donation_shipped:       "mdi:truck-delivery-outline",
@@ -76,6 +90,13 @@ export const NOTIF_ICON_CLASS = {
   donation_issue:           "nb-item-icon--default",
   wrong_item_report:        "nb-item-icon--default",
   donation_clarify:         "nb-item-icon--default",
+  school_join_request:      "nb-item-icon--school",
+  donation_request_pending: "nb-item-icon--donation",
+  order_paid_pending_ship:  "nb-item-icon--order",
+  payout_due:               "nb-item-icon--payout",
+  donation_overdue:         "nb-item-icon--warning",
+  wrong_items:              "nb-item-icon--warning",
+  system_warning:           "nb-item-icon--warning",
   order_cancel_warning:     "nb-item-icon--default",
   default:                  "nb-item-icon--default",
 };
@@ -100,6 +121,30 @@ export function getNotifAction(notif, role) {
       state: refId ? { openDonationId: refId } : undefined,
       chip: CHIP_LABELS[type],
     };
+  }
+
+  if (role === "admin") {
+    if (type === "school_join_request") {
+      return { mode: "navigate", path: "/admin/schools?status=pending", chip: CHIP_LABELS[type] };
+    }
+    if (type === "donation_request_pending") {
+      return { mode: "navigate", path: "/admin/donations?status=pending", chip: CHIP_LABELS[type] };
+    }
+    if (type === "order_paid_pending_ship") {
+      return { mode: "navigate", path: "/admin/orders?status=pending", chip: CHIP_LABELS[type] };
+    }
+    if (type === "payout_due") {
+      return { mode: "navigate", path: "/admin/payouts", chip: CHIP_LABELS[type] };
+    }
+    if (type === "donation_overdue") {
+      return { mode: "navigate", path: "/admin/donations", chip: CHIP_LABELS[type] };
+    }
+    if (type === "wrong_items") {
+      return { mode: "navigate", path: "/admin/wrong-items", chip: CHIP_LABELS[type] };
+    }
+    if (type === "system_warning") {
+      return { mode: "navigate", path: "/admin/backoffice", chip: CHIP_LABELS[type] };
+    }
   }
 
   if (type === "donation_shipped") {

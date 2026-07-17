@@ -159,6 +159,26 @@
   background: linear-gradient(135deg, #15803d, #16a34a);
 }
 
+.nb-item-icon--school {
+  background: linear-gradient(135deg, #0369a1, #29b6e8);
+}
+
+.nb-item-icon--donation {
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.nb-item-icon--order {
+  background: linear-gradient(135deg, #4f46e5, #60a5fa);
+}
+
+.nb-item-icon--payout {
+  background: linear-gradient(135deg, #15803d, #84cc16);
+}
+
+.nb-item-icon--warning {
+  background: linear-gradient(135deg, #b45309, #f97316);
+}
+
 .nb-item-body {
   flex: 1;
   min-width: 0;

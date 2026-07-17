@@ -6,6 +6,7 @@ import crypto from "crypto";
 import { Resend } from "resend";
 import * as jose from "jose";
 import { isValidAsciiEmail } from "../../utils/emailValidation.js";
+import { sendNotificationMany } from "../../lib/notify.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -279,6 +280,24 @@ export async function registerSchoolOneStep(payload) {
   sendVerificationEmail(email, verificationToken).catch((err) => {
     console.error("sendVerificationEmail failed:", err);
   });
+
+  db.query("SELECT user_id FROM users WHERE role = 'admin'")
+    .then(([admins]) => sendNotificationMany(admins.map(a => a.user_id), {
+      type:  "school_join_request",
+      title: `มีโรงเรียนขอเข้าร่วมใหม่: ${String(school_name).trim()}`,
+      body:  {
+        message: `${String(school_name).trim()} ส่งคำขอเข้าร่วมระบบ รอแอดมินตรวจสอบเอกสาร`,
+        school_id,
+        school_name: String(school_name).trim(),
+        contact_name: cleanUserName,
+        contact_email: email,
+        school_phone: phoneDigits,
+      },
+      ref_id: school_id,
+    }))
+    .catch((err) => {
+      console.error("[notify] school_join_request failed:", err.message);
+    });
 
   return { message: "School registered", school_id, verification_status: "pending" };
 }

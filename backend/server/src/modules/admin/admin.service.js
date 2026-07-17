@@ -747,23 +747,79 @@ export async function getPendingTasks() {
   const [[donRow]] = await db.query(
     `SELECT COUNT(*) AS c FROM donation_request WHERE status='pending'`
   ).catch(() => [[{ c: 0 }]]);
+  const [[overdueDonationRow]] = await db.query(
+    `SELECT COUNT(*) AS c
+       FROM donation_record
+      WHERE status = 'pending'
+        AND (
+          (delivery_method = 'dropoff' AND donation_date IS NOT NULL
+           AND TIMESTAMPDIFF(DAY, donation_date, DATE_ADD(NOW(), INTERVAL 7 HOUR)) >= 3)
+          OR
+          (delivery_method != 'dropoff'
+           AND TIMESTAMPDIFF(DAY, COALESCE(donation_date, created_at), DATE_ADD(NOW(), INTERVAL 7 HOUR)) >= 7)
+        )`
+  ).catch(() => [[{ c: 0 }]]);
+  const [[payoutRow]] = await db.query(
+    `SELECT COUNT(*) AS c,
+            COUNT(DISTINCT seller_id) AS sellers,
+            COALESCE(SUM(net_amount), 0) AS amount
+       FROM (${pendingPayoutOrderSelect("")}) po
+      WHERE po.payout_stage IN ('ready','overdue')`
+  ).catch(() => [[{ c: 0, sellers: 0, amount: 0 }]]);
+  const [[systemWarningRow]] = await db.query(
+    `SELECT COUNT(*) AS c
+       FROM notifications n
+       JOIN users u ON u.user_id = n.user_id
+      WHERE u.role = 'admin'
+        AND n.type = 'system_warning'
+        AND n.is_read = 0`
+  ).catch(() => [[{ c: 0 }]]);
+  const [[wrongItemRow]] = await db.query(
+    `SELECT COUNT(*) AS c
+       FROM users u
+      WHERE u.strike_count > 0
+         OR EXISTS (
+           SELECT 1 FROM notifications n
+            WHERE n.ref_id = u.user_id
+              AND n.type = 'strike_appeal'
+              AND n.is_read = 0
+         )`
+  ).catch(() => [[{ c: 0 }]]);
 
   const counts = {
-    pending_schools:   Number(schoolRow?.c || 0),
-    pending_shipments: Number(shipRow?.c   || 0),
-    pending_donations: Number(donRow?.c    || 0),
+    pending_schools:     Number(schoolRow?.c || 0),
+    pending_shipments:   Number(shipRow?.c   || 0),
+    pending_donations:   Number(donRow?.c    || 0),
+    overdue_donations:   Number(overdueDonationRow?.c || 0),
+    payout_due:          Number(payoutRow?.sellers || payoutRow?.c || 0),
+    payout_due_orders:   Number(payoutRow?.c || 0),
+    payout_due_amount:   Math.round(Number(payoutRow?.amount || 0)),
+    system_warnings:     Number(systemWarningRow?.c || 0),
+    wrong_item_reviews:   Number(wrongItemRow?.c || 0),
   };
 
   // Array แบบ frontend ใช้ render รายการได้เลย (ซ่อนกล่องเมื่อ tasks.length === 0)
   const tasks = [];
   if (counts.pending_schools > 0) {
-    tasks.push({ key: "schools",   label: "โรงเรียนรออนุมัติ",   count: counts.pending_schools,   unit: "แห่ง",    action: "อนุมัติ", url: "/admin/schools?status=pending",   color: "yellow" });
+    tasks.push({ key: "schools", label: "โรงเรียนขอเข้าร่วม", count: counts.pending_schools, unit: "แห่ง", action: "ตรวจสอบ", url: "/admin/schools?status=pending", color: "yellow", bg: "#fff8d8", labelColor: "#92400e", icon: "mdi:school-outline" });
   }
   if (counts.pending_shipments > 0) {
-    tasks.push({ key: "shipments", label: "รายการสินค้าค้างส่ง", count: counts.pending_shipments, unit: "รายการ", action: "จัดการ",  url: "/admin/orders?status=shipping",  color: "red"    });
+    tasks.push({ key: "shipments", label: "ออเดอร์จ่ายแล้วรอจัดส่ง", count: counts.pending_shipments, unit: "รายการ", action: "จัดการ", url: "/admin/orders?status=pending", color: "red", bg: "#ffe2e2", labelColor: "#991b1b", icon: "mdi:truck-fast-outline" });
   }
   if (counts.pending_donations > 0) {
-    tasks.push({ key: "donations", label: "บริจาคไม่ถูกยืนยัน",   count: counts.pending_donations, unit: "รายการ", action: "จัดการ",  url: "/admin/donations?status=pending", color: "red"    });
+    tasks.push({ key: "donations", label: "คำขอบริจาครอตรวจสอบ", count: counts.pending_donations, unit: "รายการ", action: "จัดการ", url: "/admin/donations?status=pending", color: "blue", bg: "#e0f2fe", labelColor: "#0369a1", icon: "mdi:hand-heart-outline" });
+  }
+  if (counts.overdue_donations > 0) {
+    tasks.push({ key: "donation_overdue", label: "บริจาคค้างนาน", count: counts.overdue_donations, unit: "รายการ", action: "ตรวจสอบ", url: "/admin/donations", color: "orange", bg: "#ffedd5", labelColor: "#c2410c", icon: "mdi:clock-alert-outline" });
+  }
+  if (counts.wrong_item_reviews > 0) {
+    tasks.push({ key: "wrong_items", label: "ตรวจสอบของไม่ตรง", count: counts.wrong_item_reviews, unit: "เคส", action: "ตรวจสอบ", url: "/admin/wrong-items", color: "orange", bg: "#fff7ed", labelColor: "#c2410c", icon: "mdi:swap-horizontal-circle-outline" });
+  }
+  if (counts.payout_due > 0) {
+    tasks.push({ key: "payout_due", label: "ถึงรอบโอนเงินผู้ขาย", count: counts.payout_due, unit: "ผู้ขาย", action: "โอนเงิน", url: "/admin/payouts", color: "green", bg: "#dcfce7", labelColor: "#15803d", icon: "mdi:bank-transfer-out", meta: { orders: counts.payout_due_orders, amount: counts.payout_due_amount } });
+  }
+  if (counts.system_warnings > 0) {
+    tasks.push({ key: "system_warning", label: "แจ้งเตือนระบบ", count: counts.system_warnings, unit: "รายการ", action: "ดูรายละเอียด", url: "/admin/backoffice", color: "orange", bg: "#fef3c7", labelColor: "#b45309", icon: "mdi:alert-outline" });
   }
 
   return { ...counts, tasks };

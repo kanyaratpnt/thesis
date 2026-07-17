@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { request } from "../../../api/http.js";
 import ProfileDropdown from "../../auth/pages/ProfileDropdown.jsx";
 import NotificationBell from "../../../pages/NotificationBell.jsx";
@@ -96,9 +97,13 @@ const btnSt = (color) => ({
 });
 
 export default function AdminOrderPage() {
+  const [searchParams] = useSearchParams();
+  const initialStatus = ["pending", "shipping", "delivered", "cancelled"].includes(searchParams.get("status"))
+    ? searchParams.get("status")
+    : "";
   const [stats, setStats]               = useState({ total: 0, pending: 0, shipping: 0, delivered: 0, cancelled: 0 });
   const [rows, setRows]                 = useState([]);
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(initialStatus);
   const [q, setQ]                       = useState("");
   const [page, setPage]                 = useState(1);
   const [totalPages, setTotalPages]     = useState(1);
@@ -118,6 +123,14 @@ export default function AdminOrderPage() {
   const showToast = (msg, type = "success") => {
     setToast({ msg, type }); setTimeout(() => setToast(null), 3000);
   };
+
+  useEffect(() => {
+    const nextStatus = ["pending", "shipping", "delivered", "cancelled"].includes(searchParams.get("status"))
+      ? searchParams.get("status")
+      : "";
+    setStatusFilter(nextStatus);
+    setPage(1);
+  }, [searchParams]);
 
   const loadOrders = useCallback(async () => {
     try {

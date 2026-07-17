@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import * as svc from "../services/admin.service.js";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import SchoolDetailModal from "../components/SchoolDetailModal.jsx";
@@ -41,13 +42,17 @@ function isInDateRange(dateStr, period, startDate, endDate) {
 
 export default function AdminSchoolsPage() {
   const { userName } = useAuth();
+  const [searchParams] = useSearchParams();
+  const initialStatus = ["pending", "approved", "rejected"].includes(searchParams.get("status"))
+    ? searchParams.get("status")
+    : "";
 
   const [stats, setStats] = useState({ total: 0, pending: 0, approved: 0 });
   const [rows, setRows] = useState([]);
   const [err, setErr] = useState("");
 
   const [q, setQ] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(initialStatus);
   const [sort, setSort] = useState("latest");
   const [loading, setLoading] = useState(true);
 
@@ -80,6 +85,13 @@ export default function AdminSchoolsPage() {
   const [selectedSchool, setSelectedSchool] = useState(null);
   const openSchoolModal = (s) => setSelectedSchool(s);
   const closeSchoolModal = () => setSelectedSchool(null);
+
+  useEffect(() => {
+    const nextStatus = ["pending", "approved", "rejected"].includes(searchParams.get("status"))
+      ? searchParams.get("status")
+      : "";
+    setStatus(nextStatus);
+  }, [searchParams]);
 
   const load = async () => {
     try {

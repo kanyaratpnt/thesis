@@ -1,5 +1,5 @@
 import { db } from "../../config/db.js";
-import { sendNotification } from "../../lib/notify.js";
+import { sendNotification, sendNotificationMany } from "../../lib/notify.js";
 import Omise from "omise";
 
 // ── Omise client ──────────────────────────────────────────
@@ -598,6 +598,26 @@ const placeOrder = async ({
         });
       } catch (notifErr) {
         console.warn("[notify] seller_new_order:", notifErr.message);
+      }
+    }
+
+    if (paymentStatus === "paid") {
+      try {
+        const [admins] = await db.query(`SELECT user_id FROM users WHERE role = 'admin'`);
+        await sendNotificationMany(admins.map(a => a.user_id), {
+          type:  "order_paid_pending_ship",
+          title: `ออเดอร์ #${orderId} ชำระเงินแล้ว รอจัดส่ง`,
+          body:  {
+            message: `มีออเดอร์ชำระเงินแล้วและยังรอจัดส่ง`,
+            order_id: orderId,
+            item_count: items.reduce((sum, item) => sum + Number(item.quantity || 0), 0),
+            total_price: totalPrice,
+            order_type: orderType || "purchase",
+          },
+          ref_id: orderId,
+        });
+      } catch (notifErr) {
+        console.warn("[notify] order_paid_pending_ship:", notifErr.message);
       }
     }
 
