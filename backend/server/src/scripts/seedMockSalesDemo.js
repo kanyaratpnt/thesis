@@ -45,17 +45,24 @@ const PROVIDER = {
 };
 
 const UNIFORM_TYPES = [
-  { key: "shirt", category_name: "เสื้อ", type_name: "Mock Demo เสื้อ", gender: "unisex", uniform_category: "เสื้อ" },
-  { key: "pants", category_name: "กางเกง", type_name: "Mock Demo กางเกง", gender: "male", uniform_category: "กางเกง" },
-  { key: "skirt", category_name: "กระโปรง", type_name: "Mock Demo กระโปรง", gender: "female", uniform_category: "กระโปรง" },
+  { key: "male_shirt", category_name: "เสื้อ", type_name: "Mock Demo เสื้อนักเรียนชาย", gender: "male", uniform_category: "เสื้อ" },
+  { key: "female_shirt", category_name: "เสื้อ", type_name: "Mock Demo เสื้อนักเรียนหญิง", gender: "female", uniform_category: "เสื้อ" },
+  { key: "pants", category_name: "กางเกง", type_name: "Mock Demo กางเกงนักเรียน", gender: "male", uniform_category: "กางเกง" },
+  { key: "skirt", category_name: "กระโปรง", type_name: "Mock Demo กระโปรงนักเรียน", gender: "female", uniform_category: "กระโปรง" },
+];
+
+const OBSOLETE_UNIFORM_TYPE_NAMES = [
+  "Mock Demo เสื้อ",
+  "Mock Demo กางเกง",
+  "Mock Demo กระโปรง",
 ];
 
 const PRODUCT_TEMPLATES = [
   {
     sellerIndex: 0,
-    uniformKey: "shirt",
+    uniformKey: "male_shirt",
     categoryName: "เสื้อ",
-    title: "เสื้อเชิ้ตนักเรียนชาย A",
+    title: "เสื้อนักเรียนชาย",
     gender: "male",
     size: '{"chest":"36","length":"24"}',
     level: "มัธยมต้น",
@@ -64,9 +71,9 @@ const PRODUCT_TEMPLATES = [
   },
   {
     sellerIndex: 0,
-    uniformKey: "shirt",
+    uniformKey: "female_shirt",
     categoryName: "เสื้อ",
-    title: "เสื้อคอบัวนักเรียนหญิง A",
+    title: "เสื้อนักเรียนหญิง",
     gender: "female",
     size: '{"chest":"34","length":"23"}',
     level: "ประถมศึกษา",
@@ -77,7 +84,7 @@ const PRODUCT_TEMPLATES = [
     sellerIndex: 1,
     uniformKey: "pants",
     categoryName: "กางเกง",
-    title: "กางเกงนักเรียนชาย B",
+    title: "กางเกงนักเรียน",
     gender: "male",
     size: '{"waist":"28","length":"36"}',
     level: "มัธยมต้น",
@@ -85,37 +92,15 @@ const PRODUCT_TEMPLATES = [
     imageColor: "dcfce7",
   },
   {
-    sellerIndex: 1,
+    sellerIndex: 2,
     uniformKey: "skirt",
     categoryName: "กระโปรง",
-    title: "กระโปรงนักเรียนหญิง B",
+    title: "กระโปรงนักเรียน",
     gender: "female",
     size: '{"waist":"26","length":"22"}',
     level: "มัธยมปลาย",
     price: 210,
     imageColor: "fce7f3",
-  },
-  {
-    sellerIndex: 2,
-    uniformKey: "shirt",
-    categoryName: "เสื้อ",
-    title: "ชุดพละนักเรียน C",
-    gender: "unisex",
-    size: '{"chest":"38","waist":"30"}',
-    level: "ประถมศึกษา",
-    price: 250,
-    imageColor: "e0f2fe",
-  },
-  {
-    sellerIndex: 2,
-    uniformKey: "shirt",
-    categoryName: "เสื้อ",
-    title: "เสื้อกันหนาวนักเรียน C",
-    gender: "unisex",
-    size: '{"chest":"40","length":"26"}',
-    level: "มัธยมปลาย",
-    price: 300,
-    imageColor: "ede9fe",
   },
 ];
 
@@ -280,6 +265,15 @@ async function cleanupMockData(conn) {
     await conn.query("DELETE FROM product_images WHERE product_id IN (?)", [productIds]);
     await conn.query("DELETE FROM products WHERE product_id IN (?)", [productIds]);
   }
+
+  await conn.query(
+    `DELETE ut
+     FROM uniform_type ut
+     LEFT JOIN products p ON p.uniform_type_id = ut.uniform_type_id
+     WHERE ut.type_name IN (?)
+       AND p.product_id IS NULL`,
+    [OBSOLETE_UNIFORM_TYPE_NAMES]
+  );
 }
 
 async function upsertUsers(conn) {
