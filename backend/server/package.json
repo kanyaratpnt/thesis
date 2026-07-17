@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "node src/server.js",
     "start": "node src/server.js",
-    "create-admin": "node src/scripts/createAdmin.js"
+    "create-admin": "node src/scripts/createAdmin.js",
+    "seed:mock-sales": "node src/scripts/seedMockSalesDemo.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
