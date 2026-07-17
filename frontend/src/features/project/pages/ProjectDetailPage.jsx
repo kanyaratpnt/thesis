@@ -606,7 +606,17 @@ export default function ProjectDetailPage() {
                 </div>
 
                 <h1 className="pdSchoolName">{project.school_name}</h1>
-                <p className="pdTitle">{project.request_title}</p>
+
+                {/* ── Headline: ขอรับบริจาค X ชุด ── */}
+                <p className="pdHeadline">
+                  ขอรับบริจาคชุดนักเรียน{" "}
+                  <span className="pdHeadlineCount">
+                    {project.uniform_items?.reduce((s, i) => s + (i.quantity ?? 0), 0) || ""} ชุด
+                  </span>
+                </p>
+
+                {/* ── คำอธิบายโครงการ ── เล็กลง สีเทา */}
+                <p className="pdTitleSub">{project.request_title}</p>
                 <div className="pdLocation">
                   <Icon icon="fluent:location-20-filled" width="20" />
                   <span>{project.school_address || "-"}</span>
