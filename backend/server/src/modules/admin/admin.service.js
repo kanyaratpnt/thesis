@@ -804,7 +804,7 @@ export async function getPendingTasks() {
     tasks.push({ key: "schools", label: "โรงเรียนขอเข้าร่วม", count: counts.pending_schools, unit: "แห่ง", action: "ตรวจสอบ", url: "/admin/schools?status=pending", color: "yellow", bg: "#fff8d8", labelColor: "#92400e", icon: "mdi:school-outline" });
   }
   if (counts.pending_shipments > 0) {
-    tasks.push({ key: "shipments", label: "ออเดอร์จ่ายแล้วรอจัดส่ง", count: counts.pending_shipments, unit: "รายการ", action: "จัดการ", url: "/admin/orders?status=pending", color: "red", bg: "#ffe2e2", labelColor: "#991b1b", icon: "mdi:truck-fast-outline" });
+    tasks.push({ key: "shipments", label: "ออเดอร์รอจัดส่ง", count: counts.pending_shipments, unit: "รายการ", action: "จัดการ", url: "/admin/orders?status=pending", color: "red", bg: "#ffe2e2", labelColor: "#991b1b", icon: "mdi:truck-fast-outline" });
   }
   if (counts.pending_donations > 0) {
     tasks.push({ key: "donations", label: "คำขอบริจาครอตรวจสอบ", count: counts.pending_donations, unit: "รายการ", action: "จัดการ", url: "/admin/donations?status=pending", color: "blue", bg: "#e0f2fe", labelColor: "#0369a1", icon: "mdi:hand-heart-outline" });

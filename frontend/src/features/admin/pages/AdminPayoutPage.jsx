@@ -905,6 +905,7 @@ export default function AdminPayoutPage() {
   const pagedPending = pendingRows;
   const [err, setErr]                   = useState("");
   const [toast, setToast]               = useState(null);
+  const [payoutDueTask, setPayoutDueTask] = useState({ count: 0, orders: 0, amount: 0 });
 
   const now     = new Date();
   const dateStr = now.toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" });
@@ -929,13 +930,21 @@ export default function AdminPayoutPage() {
         params.set("start_date", customStart);
         params.set("end_date", customEnd);
       }
-      const data   = await request(`/admin/payouts?${params}`, { method: "GET", auth: true });
+      const [data, taskData] = await Promise.all([
+        request(`/admin/payouts?${params}`, { method: "GET", auth: true }),
+        request("/admin/pending-tasks", { method: "GET", auth: true }).catch(() => null),
+      ]);
       setSummaryStats(data.stats        || {});
       setPendingRows(data.pending       || []);
       setHistoryRows(data.history       || []);
       setTotalPages(data.total_pages    || 1);
       setPendingTotalPages(data.pending_total_pages || 1);
       if (data.payout_cycle) setPayoutCycle(data.payout_cycle);
+      setPayoutDueTask({
+        count: Number(taskData?.payout_due || 0),
+        orders: Number(taskData?.payout_due_orders || 0),
+        amount: Number(taskData?.payout_due_amount || 0),
+      });
     } catch (e) {
       setErr(e?.data?.message || e.message || "โหลดข้อมูลไม่สำเร็จ");
     } finally {
@@ -970,6 +979,13 @@ export default function AdminPayoutPage() {
     showToast(`โอนเงิน ${fmtBaht(net)} ให้ ${item.seller_name} สำเร็จ`);
     setSelectedItem(null);
     loadData();
+  };
+
+  const showAllDuePayouts = () => {
+    setPeriod("year");
+    setShowCustomPicker(false);
+    setPendingPage(1);
+    setPage(1);
   };
 
   return (
@@ -1118,6 +1134,58 @@ export default function AdminPayoutPage() {
           </div>
         </div>
 
+        {Number(payoutDueTask.count || 0) > 0 && (
+          <div style={{
+            background: "#ecfdf5",
+            border: "1px solid #86efac",
+            borderRadius: 14,
+            padding: "12px 16px",
+            marginBottom: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            flexWrap: "wrap",
+          }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 10, minWidth: 0 }}>
+              <div style={{ width: 34, height: 34, borderRadius: 10, background: "#16a34a", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Icon icon="mdi:bank-transfer-out" style={{ fontSize: 20 }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#14532d" }}>
+                  เลข {payoutDueTask.count} ที่เมนูซ้าย = ผู้ขายที่ถึงรอบโอนเงินแล้ว
+                </div>
+                <div style={{ fontSize: 12, color: "#166534", marginTop: 2, lineHeight: 1.5 }}>
+                  รวม {payoutDueTask.orders.toLocaleString("th-TH")} ออเดอร์ · {fmtBaht(payoutDueTask.amount)}
+                  {" "}เมื่อรายการแสดงในตาราง ให้กดปุ่ม <strong>โอนเงิน</strong> ในคอลัมน์จัดการ หรือกด <strong>โอนเงินที่พร้อมโอนทั้งหมด</strong>
+                </div>
+              </div>
+            </div>
+            {Number(summaryStats.payable_seller_count || 0) === 0 && period !== "year" && (
+              <button
+                type="button"
+                onClick={showAllDuePayouts}
+                style={{
+                  border: "1px solid #16a34a",
+                  background: "#fff",
+                  color: "#15803d",
+                  borderRadius: 10,
+                  padding: "8px 12px",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                ดูรายการที่ถึงรอบทั้งหมด
+                <Icon icon="mdi:arrow-right" style={{ fontSize: 15 }} />
+              </button>
+            )}
+          </div>
+        )}
+
         {/* stat cards */}
         <div className="admPayoutStatGrid3">
           {[
@@ -1221,8 +1289,32 @@ export default function AdminPayoutPage() {
                       <tr>
                         <td colSpan={8} className="admPayoutTable__empty">
                           <Icon icon="mdi:inbox-outline" className="admPayoutTable__emptyIcon" />
-                          <div className="admPayoutTable__emptyTitle">ไม่มีรายการรอโอน</div>
-                          <div className="admPayoutTable__emptyText">รายการจะปรากฏที่นี่เมื่อออเดอร์ถูกยืนยัน</div>
+                          <div className="admPayoutTable__emptyTitle">
+                            {Number(payoutDueTask.count || 0) > 0 ? "ไม่มีรายการในช่วงเวลาที่เลือก" : "ไม่มีรายการรอโอน"}
+                          </div>
+                          <div className="admPayoutTable__emptyText">
+                            {Number(payoutDueTask.count || 0) > 0
+                              ? `มี ${payoutDueTask.count} ผู้ขายที่ถึงรอบโอนอยู่ในช่วงอื่น`
+                              : "รายการจะปรากฏที่นี่เมื่อออเดอร์ถูกยืนยัน"}
+                          </div>
+                          {Number(payoutDueTask.count || 0) > 0 && period !== "year" && (
+                            <button
+                              type="button"
+                              onClick={showAllDuePayouts}
+                              style={{
+                                marginTop: 12,
+                                border: "1px solid #16a34a",
+                                background: "#ecfdf5",
+                                color: "#15803d",
+                                borderRadius: 10,
+                                padding: "8px 12px",
+                                fontSize: 12,
+                                fontWeight: 800,
+                              }}
+                            >
+                              ดูรายการที่ถึงรอบทั้งหมด
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ) : pagedPending.map((row, i) => {
