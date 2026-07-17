@@ -253,28 +253,35 @@ export default function ProjectDetailPage() {
         {(() => {
           const allItems = project.uniform_items || [];
           const ICONS = { "เสื้อ":"👕", "กางเกง":"👖", "กระโปรง":"👗", "ถุงเท้า":"🧦", "รองเท้า":"👟" };
+          const GENDER_TH = { male: "ชาย", female: "หญิง" };
           const summaryMap = new Map();
           for (const item of allItems) {
             if ((item.quantity ?? 0) <= 0) continue;
-            const cat = item.uniform_category || "อื่นๆ";
+            const baseCat = item.uniform_category || "อื่นๆ";
+            const genderTh = GENDER_TH[item.gender] || "";
+            // ใช้ subtype_name ถ้ามี ไม่งั้นประกอบจาก category + gender
+            const label = item.uniform_subtype_name?.trim()
+              || (genderTh ? `${baseCat}นักเรียน${genderTh}` : baseCat);
+            const key = label;
             const remaining = item.quantity_remaining ?? item.quantity ?? 0;
-            const prev = summaryMap.get(cat) || { remaining: 0, image_url: null };
-            summaryMap.set(cat, {
+            const prev = summaryMap.get(key) || { remaining: 0, image_url: null, baseCat };
+            summaryMap.set(key, {
               remaining: prev.remaining + remaining,
               image_url: prev.image_url || item.image_url || null,
+              baseCat,
             });
           }
           const summaryItems = [...summaryMap.entries()];
           if (!summaryItems.length) return null;
           return (
             <div className="pdNeedsSummary">
-              {summaryItems.map(([cat, info]) => (
-                <div key={cat} className="pdNeedsRow">
+              {summaryItems.map(([label, info]) => (
+                <div key={label} className="pdNeedsRow">
                   {info.image_url
-                    ? <img src={info.image_url} alt={cat} className="pdNeedsImg" />
-                    : <span className="pdNeedsEmoji">{ICONS[cat] || "👕"}</span>
+                    ? <img src={info.image_url} alt={label} className="pdNeedsImg" />
+                    : <span className="pdNeedsEmoji">{ICONS[info.baseCat] || "👕"}</span>
                   }
-                  <span className="pdNeedsLabel">{cat}</span>
+                  <span className="pdNeedsLabel">{label}</span>
                   <span className={info.remaining > 0 ? "pdNeedsCountWarn" : "pdNeedsCountOk"}>
                     {info.remaining > 0 ? `ขาด ${info.remaining} ตัว` : "ครบแล้ว!"}
                   </span>
