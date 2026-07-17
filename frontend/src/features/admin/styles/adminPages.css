@@ -1444,6 +1444,7 @@
 .admOrderInner {
   max-width: 1320px;
   margin: 0 auto;
+  min-width: 0;
 }
 
 .admOrderMetaRow {
@@ -3043,28 +3044,33 @@
 
 .admOrderPage .admOrderCard .admTable {
   table-layout: fixed;
-  min-width: 1120px;
+  min-width: 980px;
 }
 
 .admOrderPage .admTableWrap {
+  display: block;
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
 }
 
 .admOrderPage .admOrderCard .admTable th:nth-child(1),
-.admOrderPage .admOrderCard .admTable td:nth-child(1) { width: 11%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(1) { width: 12%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(2),
-.admOrderPage .admOrderCard .admTable td:nth-child(2) { width: 21%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(2) { width: 24%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(3),
-.admOrderPage .admOrderCard .admTable td:nth-child(3) { width: 19%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(3) { width: 20%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(4),
-.admOrderPage .admOrderCard .admTable td:nth-child(4) { width: 10%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(4) { width: 11%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(5),
-.admOrderPage .admOrderCard .admTable td:nth-child(5) { width: 10%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(5) { width: 11%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(6),
 .admOrderPage .admOrderCard .admTable td:nth-child(6) { width: 11%; }
 .admOrderPage .admOrderCard .admTable th:nth-child(7),
-.admOrderPage .admOrderCard .admTable td:nth-child(7) { width: 18%; }
+.admOrderPage .admOrderCard .admTable td:nth-child(7) { width: 11%; }
 
 .admOrderPage .admOrderCard .admTable th:nth-child(7),
 .admOrderPage .admOrderCard .admTable td:nth-child(7) {

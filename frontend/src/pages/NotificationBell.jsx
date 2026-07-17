@@ -693,46 +693,11 @@ function CertificatePopup({ notif, onClose, onViewAll }) {
   );
 }
 
-const taskTypeToNotifType = (key) => ({
-  schools: "school_join_request",
-  shipments: "order_paid_pending_ship",
-  donations: "donation_request_pending",
-  donation_overdue: "donation_overdue",
-  wrong_items: "wrong_items",
-  payout_due: "payout_due",
-  system_warning: "system_warning",
-}[key] || key);
-
-const buildAdminTaskNotifs = (tasks = []) => tasks
-  .filter(task => Number(task?.count || 0) > 0)
-  .map(task => {
-    const type = taskTypeToNotifType(task.key);
-    const unit = task.unit || "รายการ";
-    return {
-      notification_id: `admin_task_${task.key}`,
-      type,
-      title: task.label || "รายการรอดำเนินงาน",
-      body: JSON.stringify({
-        message: `${Number(task.count).toLocaleString()} ${unit} รอ${task.action || "จัดการ"}`,
-        task_key: task.key,
-        count: Number(task.count || 0),
-        unit,
-        url: task.url,
-      }),
-      ref_id: null,
-      is_read: false,
-      created_at: new Date().toISOString(),
-      _syntheticTask: true,
-      _taskUrl: task.url,
-    };
-  });
-
 // ── NotificationBell ───────────────────────────────────────────────
 export default function NotificationBell() {
   const { token, role } = useAuth();
   const navigate = useNavigate();
   const [notifs,        setNotifs]        = useState([]);
-  const [adminTaskNotifs, setAdminTaskNotifs] = useState([]);
   const [synSuspNotif,  setSynSuspNotif]  = useState(null);
   const [suspendedUntil, setSuspendedUntil] = useState(null);
   const [isSuspended,   setIsSuspended]   = useState(false);
@@ -750,11 +715,10 @@ export default function NotificationBell() {
   const [loading,   setLoading]   = useState(false);
   const dropRef = useRef(null);
   const isAdmin = role === "admin";
-
   // merge synthetic notifications เข้า list แล้ว sort ตามเวลา (newest first)
   // ถ้ามี real suspension notification จาก period ปัจจุบันอยู่แล้ว → ไม่ใส่ synthetic ซ้ำ
   const displayNotifs = (() => {
-    const base = isAdmin && adminTaskNotifs.length ? [...adminTaskNotifs, ...notifs] : notifs;
+    const base = notifs;
     if (!synSuspNotif) return base;
     if (suspendedUntil) {
       const suspStart = new Date(new Date(suspendedUntil).getTime() - 31 * 24 * 60 * 60 * 1000);
@@ -794,20 +758,9 @@ export default function NotificationBell() {
       } else {
         console.warn("[NotifBell] fetch failed:", res.status);
       }
-      if (role === "admin") {
-        const taskRes = await fetch(`${BASE}/admin/pending-tasks`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (taskRes.ok) {
-          const taskData = await taskRes.json();
-          setAdminTaskNotifs(buildAdminTaskNotifs(Array.isArray(taskData?.tasks) ? taskData.tasks : []));
-        }
-      } else {
-        setAdminTaskNotifs([]);
-      }
     } catch (e) { console.warn("[NotifBell] error:", e); }
     finally { setLoading(false); }
-  }, [token, role]);
+  }, [token]);
 
   // โหลดครั้งแรก + poll ทุก 60 วิ (fallback)
   useEffect(() => {
@@ -931,9 +884,7 @@ export default function NotificationBell() {
 
   const handleNotifClick = async (notif) => {
     if (!notif.is_read) {
-      if (notif._syntheticTask) {
-        // Task summaries stay unread until the underlying work is done.
-      } else if (notif.notification_id === "synthetic_suspension") {
+      if (notif.notification_id === "synthetic_suspension") {
         if (notif._ackKey) localStorage.setItem(notif._ackKey, "1");
         setSynSuspNotif(prev => prev ? { ...prev, is_read: true } : prev);
       } else {
@@ -943,11 +894,6 @@ export default function NotificationBell() {
 
     setOpen(false);
     const action = getNotifAction(notif, role);
-
-    if (notif._syntheticTask && notif._taskUrl) {
-      navigate(notif._taskUrl);
-      return;
-    }
 
     if (action.mode === "popup") {
       openNotifPopup(notif);
@@ -968,11 +914,6 @@ export default function NotificationBell() {
     if (m < 60) return `${m} นาทีที่แล้ว`;
     if (h < 24) return `${h} ชั่วโมงที่แล้ว`;
     return `${d} วันที่แล้ว`;
-  };
-
-  const notifTimeLabel = (notif) => {
-    if (notif._syntheticTask) return "รอดำเนินการ";
-    return timeAgo(notif.created_at);
   };
 
   if (!token) return null;
@@ -1046,7 +987,7 @@ export default function NotificationBell() {
                           {action.chip}
                         </div>
                       )}
-                      <div className="nb-item-time">{notifTimeLabel(notif)}</div>
+                      <div className="nb-item-time">{timeAgo(notif.created_at)}</div>
                     </div>
                     {!notif.is_read && <div className="nb-item-dot" />}
                   </div>
