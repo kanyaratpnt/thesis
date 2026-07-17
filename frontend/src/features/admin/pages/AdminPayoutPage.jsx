@@ -1233,11 +1233,11 @@ export default function AdminPayoutPage() {
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 800, color: "#14532d" }}>
-                  เลข {payoutDueTask.count} ที่เมนูซ้าย = ผู้ขายที่ถึงรอบโอนเงินแล้ว
+                  มีผู้ขาย {payoutDueTask.count.toLocaleString("th-TH")} รายที่ครบกำหนดโอนเงิน
                 </div>
                 <div style={{ fontSize: 12, color: "#166534", marginTop: 2, lineHeight: 1.5 }}>
-                  รวม {payoutDueTask.orders.toLocaleString("th-TH")} ออเดอร์ · {fmtBaht(payoutDueTask.amount)}
-                  {" "}เมื่อรายการแสดงในตาราง ให้กดปุ่ม <strong>โอนเงิน</strong> ในคอลัมน์จัดการ หรือกด <strong>โอนเงินที่พร้อมโอนทั้งหมด</strong>
+                  จำนวนแจ้งเตือนในเมนูซ้ายแสดงผู้ขายที่ต้องดำเนินการโอนเงิน รวม {payoutDueTask.orders.toLocaleString("th-TH")} ออเดอร์ · {fmtBaht(payoutDueTask.amount)}
+                  {" "}เมื่อรายการแสดงในตาราง ให้กด <strong>โอนเงิน</strong> ในคอลัมน์จัดการ หรือกด <strong>โอนเงินที่พร้อมโอนทั้งหมด</strong>
                 </div>
               </div>
             </div>
