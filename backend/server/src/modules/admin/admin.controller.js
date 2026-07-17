@@ -147,6 +147,7 @@ export async function adminListPayouts(req, res, next) {
       pending_limit = limit,
       history_page = page,
       history_limit = limit,
+      history_sort = "latest",
       start_date = "",
       end_date = "",
     } = req.query;
@@ -158,6 +159,7 @@ export async function adminListPayouts(req, res, next) {
       pending_limit: Number(pending_limit),
       history_page: Number(history_page),
       history_limit: Number(history_limit),
+      history_sort,
       start_date,
       end_date,
     }));

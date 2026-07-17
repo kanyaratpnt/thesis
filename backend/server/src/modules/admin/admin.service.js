@@ -1073,6 +1073,7 @@ export async function listPayouts({
   pending_limit,
   history_page,
   history_limit,
+  history_sort = "latest",
   start_date = "",
   end_date = "",
 } = {}) {
@@ -1087,6 +1088,7 @@ export async function listPayouts({
   const historyOffset    = (historySafePage - 1) * historySafeLimit;
   const pendingBaseSql = pendingPayoutOrderSelect("AND o.created_at BETWEEN ? AND ?");
   const pendingParams = [from, to];
+  const historyOrderDirection = history_sort === "oldest" ? "ASC" : "DESC";
 
   // ผู้ขายที่มีออเดอร์ delivered + ยังไม่ได้จ่าย (กรองตามวันที่สั่งซื้อของออเดอร์)
   // ใช้ seller_id จาก orders ก่อน หากข้อมูลเก่ายังว่างจะ fallback จาก products ผ่าน order_items
@@ -1138,7 +1140,7 @@ export async function listPayouts({
     LEFT JOIN users u ON u.user_id = p.seller_id
     WHERE p.status = 'completed'
       AND COALESCE(p.completed_at, p.created_at) BETWEEN ? AND ?
-    ORDER BY COALESCE(p.completed_at, p.created_at) DESC
+    ORDER BY COALESCE(p.completed_at, p.created_at) ${historyOrderDirection}, p.payout_id ${historyOrderDirection}
     LIMIT ? OFFSET ?
   `, [from, to, historySafeLimit, historyOffset]).catch(() => [[]]);
 

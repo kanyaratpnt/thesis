@@ -92,6 +92,10 @@ const fmtDateTime = (d) =>
       })
     : "—";
 const PAYOUT_PAGE_SIZE = 10;
+const HISTORY_SORT_OPTIONS = [
+  { value: "latest", label: "ล่าสุด", icon: "mdi:sort-calendar-descending" },
+  { value: "oldest", label: "เก่าที่สุด", icon: "mdi:sort-calendar-ascending" },
+];
 
 const payoutStageMeta = (stage) => {
   if (stage === "overdue") {
@@ -104,6 +108,70 @@ const payoutStageMeta = (stage) => {
 };
 
 const payableRows = (rows) => rows.filter((row) => Number(row.payable_amount || 0) > 0);
+
+const buildPageItems = (current, total) => {
+  const safeTotal = Math.max(1, Number(total) || 1);
+  const safeCurrent = Math.min(Math.max(1, Number(current) || 1), safeTotal);
+  const pages = new Set([1, safeTotal, safeCurrent - 1, safeCurrent, safeCurrent + 1]);
+  const items = [];
+  let last = 0;
+  Array.from(pages)
+    .filter((pageNo) => pageNo >= 1 && pageNo <= safeTotal)
+    .sort((a, b) => a - b)
+    .forEach((pageNo) => {
+      if (last && pageNo - last > 1) items.push(`gap-${last}-${pageNo}`);
+      items.push(pageNo);
+      last = pageNo;
+    });
+  return items;
+};
+
+function PayoutPager({ page, totalPages, onPageChange, totalItems = 0, label = "รายการ" }) {
+  if (Number(totalPages || 1) <= 1) return null;
+  const safePage = Math.min(Math.max(1, Number(page) || 1), Number(totalPages) || 1);
+  const from = totalItems ? (safePage - 1) * PAYOUT_PAGE_SIZE + 1 : 0;
+  const to = totalItems ? Math.min(totalItems, safePage * PAYOUT_PAGE_SIZE) : 0;
+
+  return (
+    <div className="admPager">
+      <div className="admPager__meta">
+        {totalItems ? `แสดง ${from}-${to} จาก ${Number(totalItems).toLocaleString("th-TH")} ${label}` : `หน้า ${safePage} จาก ${totalPages}`}
+      </div>
+      <div className="admPager__controls">
+        <button className="admPagerBtn admPagerBtn--icon" disabled={safePage <= 1} onClick={() => onPageChange(1)} aria-label="หน้าแรก">
+          <Icon icon="mdi:chevron-double-left" />
+        </button>
+        <button className="admPagerBtn" disabled={safePage <= 1} onClick={() => onPageChange(safePage - 1)}>
+          <Icon icon="mdi:chevron-left" />
+          ก่อนหน้า
+        </button>
+        <div className="admPagerNums">
+          {buildPageItems(safePage, totalPages).map((item) => (
+            typeof item === "number" ? (
+              <button
+                key={item}
+                className={`admPageNum ${item === safePage ? "active" : ""}`}
+                onClick={() => onPageChange(item)}
+                aria-current={item === safePage ? "page" : undefined}
+              >
+                {item}
+              </button>
+            ) : (
+              <span key={item} className="admPager__ellipsis">…</span>
+            )
+          ))}
+        </div>
+        <button className="admPagerBtn" disabled={safePage >= totalPages} onClick={() => onPageChange(safePage + 1)}>
+          ถัดไป
+          <Icon icon="mdi:chevron-right" />
+        </button>
+        <button className="admPagerBtn admPagerBtn--icon" disabled={safePage >= totalPages} onClick={() => onPageChange(totalPages)} aria-label="หน้าสุดท้าย">
+          <Icon icon="mdi:chevron-double-right" />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════════
    PayAllConfirmModal — แทน window.confirm สำหรับโอนทั้งหมด
@@ -901,6 +969,7 @@ export default function AdminPayoutPage() {
   const [totalPages, setTotalPages]     = useState(1);
   const [pendingPage, setPendingPage]   = useState(1);
   const [pendingTotalPages, setPendingTotalPages] = useState(1);
+  const [historySort, setHistorySort]   = useState("latest");
   const [loading, setLoading]           = useState(true);
   const pagedPending = pendingRows;
   const [err, setErr]                   = useState("");
@@ -925,6 +994,7 @@ export default function AdminPayoutPage() {
         history_page: page,
         pending_limit: PAYOUT_PAGE_SIZE,
         history_limit: PAYOUT_PAGE_SIZE,
+        history_sort: historySort,
       });
       if (period === "custom" && customStart && customEnd) {
         params.set("start_date", customStart);
@@ -950,7 +1020,7 @@ export default function AdminPayoutPage() {
     } finally {
       setLoading(false);
     }
-  }, [period, page, pendingPage, customStart, customEnd]);
+  }, [period, page, pendingPage, historySort, customStart, customEnd]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
@@ -959,11 +1029,18 @@ export default function AdminPayoutPage() {
     setPage(1);
   }, [period, customStart, customEnd]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [historySort]);
+
   const handlePayAll = async () => {
     try {
       const data = await request("/admin/payouts/pay-all", { method: "POST", auth: true });
       showToast(`โอนเงินสำเร็จ ${data.count || ""} ผู้ขาย`);
       setPayAllModal(false);
+      setHistorySort("latest");
+      setPage(1);
+      setPendingPage(1);
       loadData();
     } catch (e) {
       showToast(e?.data?.message || "เกิดข้อผิดพลาด", "error");
@@ -978,6 +1055,9 @@ export default function AdminPayoutPage() {
     });
     showToast(`โอนเงิน ${fmtBaht(net)} ให้ ${item.seller_name} สำเร็จ`);
     setSelectedItem(null);
+    setHistorySort("latest");
+    setPage(1);
+    setPendingPage(1);
     loadData();
   };
 
@@ -1402,19 +1482,13 @@ export default function AdminPayoutPage() {
                 </table>
               </div>
 
-              {pendingTotalPages > 1 && (
-                <div className="admPager">
-                  <div className="admPagerNums">
-                    {Array.from({ length: pendingTotalPages }, (_, i) => i + 1).map((p) => (
-                      <button key={p} className={`admPageNum ${p === pendingPage ? "active" : ""}`} onClick={() => setPendingPage(p)}>{p}</button>
-                    ))}
-                  </div>
-                  <div className="admPagerBtns">
-                    <button className="admPagerBtn" disabled={pendingPage <= 1} onClick={() => setPendingPage((p) => p - 1)}>{"< ก่อนหน้า"}</button>
-                    <button className="admPagerBtn" disabled={pendingPage >= pendingTotalPages} onClick={() => setPendingPage((p) => p + 1)}>{"ถัดไป >"}</button>
-                  </div>
-                </div>
-              )}
+              <PayoutPager
+                page={pendingPage}
+                totalPages={pendingTotalPages}
+                totalItems={summaryStats.pending_seller_count}
+                label="ผู้ขาย"
+                onPageChange={setPendingPage}
+              />
             </div>
 
             {/* ── ตารางประวัติการโอน ── */}
@@ -1433,6 +1507,19 @@ export default function AdminPayoutPage() {
                       </span>
                     )}
                   </div>
+                </div>
+                <div className="admPayoutSort">
+                  {HISTORY_SORT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`admPayoutSort__btn ${historySort === opt.value ? "active" : ""}`}
+                      onClick={() => setHistorySort(opt.value)}
+                    >
+                      <Icon icon={opt.icon} />
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
               <div className="admPayoutTableWrap">
@@ -1523,19 +1610,13 @@ export default function AdminPayoutPage() {
                 </table>
               </div>
 
-              {totalPages > 1 && (
-                <div className="admPager">
-                  <div className="admPagerNums">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                      <button key={p} className={`admPageNum ${p === page ? "active" : ""}`} onClick={() => setPage(p)}>{p}</button>
-                    ))}
-                  </div>
-                  <div className="admPagerBtns">
-                    <button className="admPagerBtn" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>{"< ก่อนหน้า"}</button>
-                    <button className="admPagerBtn" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>{"ถัดไป >"}</button>
-                  </div>
-                </div>
-              )}
+              <PayoutPager
+                page={page}
+                totalPages={totalPages}
+                totalItems={summaryStats.paid_count}
+                label="รายการ"
+                onPageChange={setPage}
+              />
             </div>
           </>
         )}

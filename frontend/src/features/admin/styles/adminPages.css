@@ -747,6 +747,43 @@
   color: #15803d;
 }
 
+.admPayoutSort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+.admPayoutSort__btn {
+  border: 0;
+  border-radius: 9px;
+  padding: 7px 12px;
+  background: transparent;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admPayoutSort__btn svg {
+  font-size: 15px;
+}
+
+.admPayoutSort__btn.active {
+  background: #fff;
+  color: #15803d;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
 .admPayoutTableWrap {
   overflow-x: visible;
 }
@@ -1071,6 +1108,93 @@
 
 .admPayoutBtn--detail:hover {
   background: #e0e9ff;
+}
+
+/* ── Payout pagination ── */
+.admPager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px 18px;
+  border-top: 1px solid #eef2f7;
+  background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+  flex-wrap: wrap;
+}
+
+.admPager__meta {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admPager__controls,
+.admPagerNums {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.admPagerBtn,
+.admPageNum {
+  border: 1px solid #dbe3ef;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+  font-weight: 800;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admPagerBtn {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.admPagerBtn--icon {
+  width: 34px;
+  padding: 0;
+}
+
+.admPageNum {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 9px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.admPagerBtn:not(:disabled):hover,
+.admPageNum:not(.active):hover {
+  border-color: #93c5fd;
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+
+.admPageNum.active {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.22);
+}
+
+.admPagerBtn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.admPager__ellipsis {
+  min-width: 20px;
+  color: #94a3b8;
+  text-align: center;
+  font-weight: 900;
 }
 
 /* ── Payout stat cards — icon row ── */

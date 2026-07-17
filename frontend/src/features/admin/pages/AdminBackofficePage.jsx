@@ -494,7 +494,7 @@ export default function AdminBackofficePage() {
             <div className="boPendingCard__header">
               <div className="boPendingCard__title">ศูนย์แจ้งเตือนแอดมิน</div>
               <div className="boPendingCard__count">
-                {pendingTaskTotal} งาน
+                {pendingTaskTotal} รายการ
               </div>
             </div>
 
