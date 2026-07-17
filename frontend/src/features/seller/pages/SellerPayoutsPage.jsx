@@ -161,9 +161,12 @@ export default function SellerPayoutsPage() {
         {/* Bank account + fee note */}
         <div>
           <div className="slBankCard">
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div className="slBankCard__head">
               <h4>บัญชีรับเงิน</h4>
-              <button className="slBankCard__editBtn" onClick={() => setEditingBank(true)}>แก้ไข</button>
+              <button className="slBankCard__editBtn" type="button" onClick={() => setEditingBank(true)}>
+                <Icon icon="mdi:pencil-outline" width={16} />
+                แก้ไข
+              </button>
             </div>
             <div className="slBankCard__row" style={{ marginTop:10 }}>
               <div className="slBankCard__icon">
