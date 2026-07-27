@@ -1006,7 +1006,10 @@ const getRecommendedProjectsByProduct = async (productId) => {
        s.school_address,
        s.school_phone,
        COALESCE((
-         SELECT SUM(ri.quantity) FROM request_item ri WHERE ri.request_id = dr.request_id
+         SELECT SUM(sn.quantity_needed)
+         FROM student_need sn
+         JOIN students st ON st.student_id = sn.student_id
+         WHERE st.request_id = dr.request_id
        ), 0) AS total_needed,
        COALESCE((
          SELECT SUM(f.quantity_fulfilled) FROM fulfillment f WHERE f.request_id = dr.request_id
